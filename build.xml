@@ -1,0 +1,31 @@
+<project name="luwrain-app-vk" default="jar" basedir=".">
+  <path id="classpath">
+    <pathelement location="."/>
+     <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+  <target name="clean">
+    <delete dir="build"/>
+    <delete dir="jar"/>
+  </target>
+  <target name="compile" depends="clean">
+    <mkdir dir="build"/>
+    <javac srcdir="src/main/java" destdir="build" source="1.8" target="1.8">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+  <target name="jar" depends="compile">
+    <mkdir dir="jar"/>
+    <jar jarfile="jar/luwrain-app-vk.jar">
+      <manifest>
+        <section name="org/luwrain">
+          <attribute name="Extensions" value="org.luwrain.app.vk.Extension"/>
+        </section>
+      </manifest>
+      <fileset dir="./build">
+        <include name="**/*.class"/>
+      </fileset>
+    </jar>
+  </target>
+</project>
