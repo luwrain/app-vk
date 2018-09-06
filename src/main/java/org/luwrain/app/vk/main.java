@@ -20,8 +20,8 @@ import com.vk.api.sdk.queries.friends.FriendsGetListsQuery;
 import com.vk.api.sdk.queries.friends.FriendsGetQuery;
 import com.vk.api.sdk.queries.users.UserField;
 
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.handler.AbstractHandler;
+//import org.eclipse.jetty.server.Request;
+//import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
