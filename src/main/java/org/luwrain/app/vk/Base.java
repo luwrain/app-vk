@@ -29,18 +29,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+final class Base
+{
+    final Settings sett = null;
 
-public class main {
-
-	public static void main(String[] args) {
+void main(String[] args)
+    {
 		// TODO Auto-generated method stub
 		TransportClient transportClient = new HttpTransportClient();
 		VkApiClient vk = new VkApiClient(transportClient); 
 		String code="";
 		UserAuthResponse authResponse=null;
 		try {
-			UserActor actor=new UserActor(id, "access-token");//id-id пользователя, https://vk.com/pages?oid=-1&p=%D0%90%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F_%D0%BA%D0%BB%D0%B8%D0%B5%D0%BD%D1%82%D1%81%D0%BA%D0%B8%D1%85_%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B9
-			vk.messages().send(actor).message("fdgdfg").peerId(userid).execute();//userid-id получателя
+		    UserActor actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+		    final int userId = 0;
+			vk.messages().send(actor).message("fdgdfg").peerId(userId).execute();//userid-id получателя
 		    UserField fields = null;
 		    GetFieldsResponse l = vk.friends().get(actor, fields.ABOUT).execute();
 			GetDialogsResponse x = vk.messages().getDialogs(actor).execute();
