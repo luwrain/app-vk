@@ -29,16 +29,35 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import org.luwrain.core.*;
+
 final class Base
 {
-    final Settings sett = null;
 
-void main(String[] args)
+
+    private final Luwrain luwrain;
+    private final Strings strings;
+        	private final TransportClient transportClient;
+	final VkApiClient vk;
+        final Settings sett;
+
+    Base(Luwrain luwrain, Strings strings)
     {
-		// TODO Auto-generated method stub
-		TransportClient transportClient = new HttpTransportClient();
-		VkApiClient vk = new VkApiClient(transportClient); 
-		String code="";
+	NullCheck.notNull(luwrain, "luwrain");
+	NullCheck.notNull(strings, "strings");
+	this.luwrain = luwrain;
+	this.strings = strings;
+	this.sett = Settings.create(luwrain);
+this.transportClient = new HttpTransportClient();
+this.vk = new VkApiClient(transportClient);
+    }
+
+    
+
+    void main(String[] args)
+    {
+	// TODO Auto-generated method stub
+	String code="";
 		UserAuthResponse authResponse=null;
 		try {
 		    UserActor actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
