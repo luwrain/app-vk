@@ -1,3 +1,18 @@
+/*
+   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+
+   This file is part of LUWRAIN.
+
+   LUWRAIN is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public
+   License as published by the Free Software Foundation; either
+   version 3 of the License, or (at your option) any later version.
+
+   LUWRAIN is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+*/
 
 package org.luwrain.app.vk;
 
@@ -20,17 +35,16 @@ final class UsersArea extends ConsoleArea2
 	      Actions actions, ActionLists actionLists)
     {
 	super(createParams(luwrain, strings, base));
-		this.luwrain = luwrain;
+	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
 	this.actionLists = actionLists;
-		setInputPrefix(strings.search() + ">");
+	setInputPrefix(strings.search() + ">");
 	setConsoleClickHandler((area,index,obj)->{
 		if (obj == null)
 		    return false;
-		//FIXME:
-		return true;
+		return false;
 	    });
 	setConsoleInputHandler((area,text)->{
 		NullCheck.notNull(text, "text");
@@ -43,12 +57,10 @@ final class UsersArea extends ConsoleArea2
 					  luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.ERROR);
 				      },
 				      ()->luwrain.onAreaNewBackgroundSound(area));
-							  luwrain.onAreaNewBackgroundSound(area);
+		luwrain.onAreaNewBackgroundSound(area);
 		return ConsoleArea2.InputHandler.Result.OK;
 	    });
-
     }
-
 
     @Override public boolean onInputEvent(KeyboardEvent event)
     {
@@ -131,32 +143,32 @@ final class UsersArea extends ConsoleArea2
 	@Override public String getTextAppearance(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    	    if (item instanceof UserFull)
+	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
-return user.getFirstName() + " " + user.getLastName();
+		return user.getFirstName() + " " + user.getLastName();
 	    }
 	    return item.toString();
 	}
     };
 
-        static private final class Model implements ConsoleArea2.Model
+    static private final class Model implements ConsoleArea2.Model
+    {
+	private final Base base;
+	Model(Base base)
 	{
-	    private final Base base;
-	    Model(Base base)
-	    {
-		NullCheck.notNull(base, "base");
-		this.base = base;
-	    }
-	    @Override public int getConsoleItemCount()
-	    {
-				NullCheck.notNullItems(base.users, "base.users");
-				return base.users.length;
-	    }
-	    @Override public Object getConsoleItem(int index)
-	    {
-		NullCheck.notNullItems(base.users, "base.users");
-		return base.users[index];
-	    }
-	};
+	    NullCheck.notNull(base, "base");
+	    this.base = base;
+	}
+	@Override public int getConsoleItemCount()
+	{
+	    NullCheck.notNullItems(base.users, "base.users");
+	    return base.users.length;
+	}
+	@Override public Object getConsoleItem(int index)
+	{
+	    NullCheck.notNullItems(base.users, "base.users");
+	    return base.users[index];
+	}
+    };
 }
