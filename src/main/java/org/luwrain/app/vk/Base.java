@@ -1,6 +1,8 @@
 
 package org.luwrain.app.vk;
 
+import com.vk.api.sdk.objects.users.UserFull;
+
 import com.vk.api.sdk.actions.Messages;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -33,14 +35,14 @@ import org.luwrain.core.*;
 
 final class Base
 {
-
-
     private final Luwrain luwrain;
     private final Strings strings;
         	private final TransportClient transportClient;
 	final VkApiClient vk;
     final UserActor actor;
         final Settings sett;
+
+    UserFull[] users = new UserFull[0];
 
     Base(Luwrain luwrain, Strings strings)
     {
