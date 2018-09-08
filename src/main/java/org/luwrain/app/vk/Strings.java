@@ -23,4 +23,5 @@ interface Strings
     String appName();
     String search();
     String usersAreaName();
+    String wallAreaName();
 }

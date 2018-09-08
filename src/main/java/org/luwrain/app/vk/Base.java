@@ -20,33 +20,20 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import com.vk.api.sdk.objects.wall.WallPost;
 import com.vk.api.sdk.objects.users.UserFull;
 
-import com.vk.api.sdk.actions.Messages;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.exceptions.ApiException;
-import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.UserAuthResponse;
 import com.vk.api.sdk.objects.friends.UserXtrLists;
 import com.vk.api.sdk.objects.friends.responses.GetFieldsResponse;
-import com.vk.api.sdk.objects.friends.responses.GetListsResponse;
-import com.vk.api.sdk.objects.friends.responses.GetResponse;
 import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
-import com.vk.api.sdk.queries.friends.FriendsGetListsQuery;
-import com.vk.api.sdk.queries.friends.FriendsGetQuery;
 import com.vk.api.sdk.queries.users.UserField;
-
-//import org.eclipse.jetty.server.Request;
-//import org.eclipse.jetty.server.handler.AbstractHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.luwrain.core.*;
 
@@ -60,6 +47,7 @@ final class Base
     final Settings sett;
 
     private FutureTask task = null;
+    WallPost[] wallPosts = new WallPost[0];
     UserFull[] users = new UserFull[0];
 
     Base(Luwrain luwrain, Strings strings)
