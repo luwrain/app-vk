@@ -39,6 +39,7 @@ final class Base
     private final Strings strings;
         	private final TransportClient transportClient;
 	final VkApiClient vk;
+    final UserActor actor;
         final Settings sett;
 
     Base(Luwrain luwrain, Strings strings)
@@ -50,6 +51,17 @@ final class Base
 	this.sett = Settings.create(luwrain);
 this.transportClient = new HttpTransportClient();
 this.vk = new VkApiClient(transportClient);
+this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+    }
+
+    boolean isBusy()
+    {
+	return false;
+    }
+
+    void closeApp()
+    {
+	luwrain.closeApp();
     }
 
     
@@ -60,7 +72,7 @@ this.vk = new VkApiClient(transportClient);
 	String code="";
 		UserAuthResponse authResponse=null;
 		try {
-		    UserActor actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+
 		    final int userId = 0;
 			vk.messages().send(actor).message("fdgdfg").peerId(userId).execute();//userid-id получателя
 		    UserField fields = null;

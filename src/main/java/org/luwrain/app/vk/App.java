@@ -30,7 +30,7 @@ class App implements Application
 	this.base = new Base(luwrain, strings);
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(luwrain, strings, base);
-	createArea();
+	//createArea();
 	this.layout = new AreaLayoutHelper(()->{
 		luwrain.onNewAreaLayout();
 		luwrain.announceActiveArea();
@@ -38,53 +38,10 @@ class App implements Application
 	return new InitResult();
     }
 
-    private void createArea()
-    {
-	final EditArea.Params params = new EditArea.Params();
-	params.context = new DefaultControlEnvironment(luwrain);
-	params.name = "";
-
-	this.editArea = new EditArea(params) {
-		@Override public boolean onInputEvent(KeyboardEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.isSpecial() && !event.isModified())
-			switch(event.getSpecial())
-		    {
-		    case ESCAPE:
-			closeApp();
-			return true;
-		    }
-		    return super.onInputEvent(event);
-		}
-		@Override public boolean onSystemEvent(EnvironmentEvent event)
-		{
-		    NullCheck.notNull(event, "event");
-		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
-			return super.onSystemEvent(event);
-		    switch(event.getCode())
-		    {
-		    case CLOSE:
-			closeApp();
-			return true;
-								    default:
-			return super.onSystemEvent(event);
-		    }
-		}
-		@Override public String getAreaName()
-		{
-		    return strings.appName();
-		}
-		@Override public Action[] getAreaActions()
-		{
-		    return new Action[0];
-		}
-	    };
-    }
 
     @Override public void closeApp()
     {
-	luwrain.closeApp();
+	base.closeApp();
     }
 
     @Override public AreaLayout getAreaLayout()
