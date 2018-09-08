@@ -1,6 +1,8 @@
 
 package org.luwrain.app.vk;
 
+import com.vk.api.sdk.objects.users.UserFull;
+
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
@@ -23,7 +25,7 @@ final class UsersArea extends ConsoleArea2
 	this.base = base;
 	this.actions = actions;
 	this.actionLists = actionLists;
-		setInputPrefix(strings.appName() + ">");
+		setInputPrefix(strings.search() + ">");
 	setConsoleClickHandler((area,index,obj)->{
 		if (obj == null)
 		    return false;
@@ -34,7 +36,14 @@ final class UsersArea extends ConsoleArea2
 		NullCheck.notNull(text, "text");
 		if (text.trim().isEmpty() || base.isBusy())
 		    return ConsoleArea2.InputHandler.Result.REJECTED;
-		//FIXME:
+		actions.onUsersSearch(text,
+				      ()->{
+					  area.refresh();
+					  luwrain.onAreaNewBackgroundSound(area);
+					  luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.ERROR);
+				      },
+				      ()->luwrain.onAreaNewBackgroundSound(area));
+							  luwrain.onAreaNewBackgroundSound(area);
 		return ConsoleArea2.InputHandler.Result.OK;
 	    });
 
@@ -111,11 +120,22 @@ final class UsersArea extends ConsoleArea2
 	@Override public void announceItem(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    luwrain.say(item.toString());
+	    if (item instanceof UserFull)
+	    {
+		final UserFull user = (UserFull)item;
+ 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName(), null));
+		return;
+	    }
+	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
 	}
 	@Override public String getTextAppearance(Object item)
 	{
 	    NullCheck.notNull(item, "item");
+	    	    if (item instanceof UserFull)
+	    {
+		final UserFull user = (UserFull)item;
+return user.getFirstName() + " " + user.getLastName();
+	    }
 	    return item.toString();
 	}
     };
@@ -139,7 +159,4 @@ final class UsersArea extends ConsoleArea2
 		return base.users[index];
 	    }
 	};
-
-
-    
 }

@@ -1,6 +1,12 @@
 
 package org.luwrain.app.vk;
 
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+
+
+
 import com.vk.api.sdk.objects.users.UserFull;
 
 import com.vk.api.sdk.actions.Messages;
@@ -28,8 +34,6 @@ import com.vk.api.sdk.queries.users.UserField;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
 
 import org.luwrain.core.*;
 
@@ -42,6 +46,7 @@ final class Base
     final UserActor actor;
         final Settings sett;
 
+    private FutureTask task = null;
     UserFull[] users = new UserFull[0];
 
     Base(Luwrain luwrain, Strings strings)
@@ -56,9 +61,24 @@ this.vk = new VkApiClient(transportClient);
 this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
     }
 
+    boolean runTask(FutureTask task)
+    {
+	NullCheck.notNull(task, "task");
+	if (isBusy())
+	    return false;
+	this.task = task;
+luwrain.executeBkg(this.task);
+	return true;
+    }
+
+    void resetTask()
+    {
+	this.task = null;
+    }
+
     boolean isBusy()
     {
-	return false;
+	return task != null && !task.isDone();
     }
 
     void closeApp()

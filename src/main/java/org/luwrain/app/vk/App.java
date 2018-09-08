@@ -16,7 +16,7 @@ class App implements Application
     private Actions actions = null;
     private ActionLists actionLists = null;
 
-    private EditArea editArea = null;
+    private Area defaultArea = null;
     private AreaLayoutHelper layout = null;
 
     @Override public InitResult onLaunchApp(Luwrain luwrain)
@@ -30,11 +30,11 @@ class App implements Application
 	this.base = new Base(luwrain, strings);
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(luwrain, strings, base);
-	//createArea();
+	this.defaultArea = new UsersArea(luwrain, strings, base, actions, actionLists);
 	this.layout = new AreaLayoutHelper(()->{
 		luwrain.onNewAreaLayout();
 		luwrain.announceActiveArea();
-	    }, editArea);
+	    }, defaultArea);
 	return new InitResult();
     }
 
