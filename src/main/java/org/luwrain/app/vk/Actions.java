@@ -87,11 +87,14 @@ final class Actions
 			final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
 			.message(text)
 			.execute();
+
+						final com.vk.api.sdk.objects.wall.responses.GetResponse respPosts = base.vk.wall().get(base.actor)
+			.execute();
+
+						
 			luwrain.runUiSafely(()->{
-				/*
-				final List<WallPostFull> list = resp.getItems();
+				final List<WallPostFull> list = respPosts.getItems();
 				base.wallPosts = list.toArray(new WallPostFull[list.size()]);
-				*/
 				base.resetTask();
 				onSuccess.run();
 			    });

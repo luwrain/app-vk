@@ -36,4 +36,12 @@ final class ActionLists
 	this.strings = strings;
 	this.base = base;
     }
+
+    Action[] getWallActions()
+    {
+	return new Action[]{
+	    new Action("post", strings.actionPost(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
+	    new Action("users", strings.actionUsers()),
+	};
+    }
 }

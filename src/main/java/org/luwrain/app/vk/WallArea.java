@@ -25,7 +25,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-final class WallArea extends ListArea
+class WallArea extends ListArea
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -58,10 +58,6 @@ final class WallArea extends ListArea
 	if (event.isSpecial() && !event.isModified())
 	    switch(event.getSpecial())
 	    {
-	    case ENTER:
-		actions.onWallPost("",
-				   ()->luwrain.playSound(Sounds.OK), ()->{});
-		return true;
 	    case ESCAPE:
 		base.closeApp();
 		return true;
@@ -99,6 +95,11 @@ final class WallArea extends ListArea
 	default:
 	    return super.onAreaQuery(query);
 	}
+    }
+
+    @Override public Action[] getAreaActions()
+    {
+	return actionLists.getWallActions();
     }
 
     static private ListArea.Params createParams(Luwrain luwrain, Strings strings, Base base)

@@ -20,8 +20,11 @@ interface Strings
 {
     static final String NAME = "luwrain.vk";
 
+    String actionPost();
+    String actionUsers();
     String appName();
     String search();
+    String sending();
     String usersAreaName();
     String wallAreaName();
 }

@@ -45,7 +45,7 @@ class App implements Application
 	this.base = new Base(luwrain, strings);
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(luwrain, strings, base);
-	this.defaultArea = new WallArea(luwrain, strings, base, actions, actionLists);
+	createDefaultArea();
 	this.layout = new AreaLayoutHelper(()->{
 		luwrain.onNewAreaLayout();
 		luwrain.announceActiveArea();
@@ -53,7 +53,7 @@ class App implements Application
 	return new InitResult();
     }
 
-    @Override public void closeApp()
+        @Override public void closeApp()
     {
 	base.closeApp();
     }
@@ -67,4 +67,35 @@ class App implements Application
     {
 	return strings.appName();
     }
+
+    private void createDefaultArea()
+    {
+	this.defaultArea = new WallArea(luwrain, strings, base, actions, actionLists){
+		@Override public boolean onSystemEvent(EnvironmentEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (event.getType() != EnvironmentEvent.Type.REGULAR)
+			return super.onSystemEvent(event);
+		    switch(event.getCode())
+		    {
+		    case ACTION:
+			if (ActionEvent.isAction(event, "post"))
+			    return onNewWallPost(this);
+		    default:
+			return super.onSystemEvent(event);
+		    }
+		}
+	    };
+    }
+
+    private boolean onNewWallPost(WallArea wallArea)
+    {
+	NullCheck.notNull(wallArea, "wallArea");
+	layout.openTempArea(new WallPostArea(luwrain, strings, base, actions, actionLists, ()->{
+		    layout.closeTempLayout();
+		    wallArea.refresh();
+	}));
+	return true;
+    }
+
 }
