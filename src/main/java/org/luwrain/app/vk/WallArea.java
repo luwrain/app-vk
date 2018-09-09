@@ -16,7 +16,9 @@
 
 package org.luwrain.app.vk;
 
-import com.vk.api.sdk.objects.wall.WallPost;
+import java.util.*;
+
+import com.vk.api.sdk.objects.wall.WallPostFull;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
@@ -32,7 +34,7 @@ final class WallArea extends ListArea
     private final ActionLists actionLists;
 
     WallArea(Luwrain luwrain, Strings strings, Base base,
-	      Actions actions, ActionLists actionLists)
+	     Actions actions, ActionLists actionLists)
     {
 	super(createParams(luwrain, strings, base));
 	this.luwrain = luwrain;
@@ -40,6 +42,14 @@ final class WallArea extends ListArea
 	this.base = base;
 	this.actions = actions;
 	this.actionLists = actionLists;
+	actions.onWallUpdate(()->{
+		luwrain.onAreaNewBackgroundSound(WallArea.this);
+		luwrain.playSound(Sounds.OK);
+		refresh();
+		Log.debug("proba", "wall " + base.wallPosts.length);
+	    },
+	    ()->luwrain.onAreaNewBackgroundSound(WallArea.this));
+	luwrain.onAreaNewBackgroundSound(this);
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)
@@ -48,6 +58,10 @@ final class WallArea extends ListArea
 	if (event.isSpecial() && !event.isModified())
 	    switch(event.getSpecial())
 	    {
+	    case ENTER:
+		actions.onWallPost("",
+				   ()->luwrain.playSound(Sounds.OK), ()->{});
+		return true;
 	    case ESCAPE:
 		base.closeApp();
 		return true;
@@ -95,7 +109,7 @@ final class WallArea extends ListArea
 	final ListArea.Params params = new ListArea.Params();
 	params.context = new DefaultControlEnvironment(luwrain);
 	params.model = new Model(base);
-	params.appearance = new ListUtils.DefaultAppearance(params.context);
+	params.appearance = new Appearance(luwrain, strings);
 	params.name = strings.wallAreaName();
 	return params;
     }
@@ -122,4 +136,48 @@ final class WallArea extends ListArea
 	{
 	}
     };
+
+    static private final class Appearance implements ListArea.Appearance
+    {
+	private final Luwrain luwrain;
+	private final Strings strings;
+	Appearance(Luwrain luwrain, Strings strings)
+	{
+	    NullCheck.notNull(luwrain, "luwrain");
+	    NullCheck.notNull(strings, "strings");
+	    this.luwrain = luwrain;
+	    this.strings = strings;
+	}
+	@Override public void announceItem(Object item, Set<Flags> flags)
+	{
+	    NullCheck.notNull(item, "item");
+	    NullCheck.notNull(flags, "flags");
+	    if (item instanceof WallPostFull)
+	    {
+		final WallPostFull post = (WallPostFull)item;
+	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, post.getText(), null));
+		return;
+	    }
+	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
+	}
+	@Override public String getScreenAppearance(Object item, Set<Flags> flags)
+	{
+	    NullCheck.notNull(item, "item");
+	    NullCheck.notNull(flags, "flags");
+	    if (item instanceof WallPostFull)
+	    {
+		final WallPostFull post = (WallPostFull)item;
+		return post.getText();
+	    }
+	    return item.toString();
+	}
+	@Override public int getObservableLeftBound(Object item)
+	{
+	    return 0;
+	}
+	@Override public int getObservableRightBound(Object item)
+	{
+	    return getScreenAppearance(item, EnumSet.noneOf(Flags.class)).length();
+	}
+    }
 }

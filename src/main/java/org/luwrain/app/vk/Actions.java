@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 
+import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.users.UserFull;
 
 import com.vk.api.sdk.queries.users.*;
@@ -48,6 +49,65 @@ final class Actions
 	this.base = base;
 	this.conv = new Conversations(luwrain, strings);
     }
+
+    boolean onWallUpdate(Runnable onSuccess, Runnable onFailure)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	NullCheck.notNull(onFailure, "onFailure");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
+			.execute();
+			luwrain.runUiSafely(()->{
+				final List<WallPostFull> list = resp.getItems();
+				base.wallPosts = list.toArray(new WallPostFull[list.size()]);
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				onFailure.run();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
+    boolean onWallPost(String text, Runnable onSuccess, Runnable onFailure)
+    {
+	NullCheck.notEmpty(text, "text");
+	NullCheck.notNull(onSuccess, "onSuccess");
+	NullCheck.notNull(onFailure, "onFailure");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
+			.message(text)
+			.execute();
+			luwrain.runUiSafely(()->{
+				/*
+				final List<WallPostFull> list = resp.getItems();
+				base.wallPosts = list.toArray(new WallPostFull[list.size()]);
+				*/
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				onFailure.run();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
 
     boolean onUsersSearch(String query, Runnable onSuccess, Runnable onFailure)
     {

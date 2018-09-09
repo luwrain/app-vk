@@ -20,7 +20,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import com.vk.api.sdk.objects.wall.WallPost;
+import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.users.UserFull;
 
 import com.vk.api.sdk.client.TransportClient;
@@ -47,7 +47,7 @@ final class Base
     final Settings sett;
 
     private FutureTask task = null;
-    WallPost[] wallPosts = new WallPost[0];
+    WallPostFull[] wallPosts = new WallPostFull[0];
     UserFull[] users = new UserFull[0];
 
     Base(Luwrain luwrain, Strings strings)

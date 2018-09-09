@@ -45,7 +45,7 @@ class App implements Application
 	this.base = new Base(luwrain, strings);
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(luwrain, strings, base);
-	this.defaultArea = new UsersArea(luwrain, strings, base, actions, actionLists);
+	this.defaultArea = new WallArea(luwrain, strings, base, actions, actionLists);
 	this.layout = new AreaLayoutHelper(()->{
 		luwrain.onNewAreaLayout();
 		luwrain.announceActiveArea();
