@@ -76,7 +76,7 @@ final class WallPostArea extends EditArea
 			closing.run();
 			}, ()->{}))
 		    return false;
-		luwrain.message(strings.sending());
+		luwrain.message(strings.sendingPost());
 		return true;
 	    }
 	case CLOSE:
@@ -111,7 +111,7 @@ return new Action[0];
 	NullCheck.notNull(base, "base");
 	final EditArea.Params params = new EditArea.Params();
 	params.context = new DefaultControlEnvironment(luwrain);
-	params.name = strings.wallAreaName();
+	params.name = strings.wallPostAreaName();
 	return params;
     }
 }

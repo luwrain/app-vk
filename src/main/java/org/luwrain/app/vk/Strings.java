@@ -23,8 +23,9 @@ interface Strings
     String actionPost();
     String actionUsers();
     String appName();
+        String sendingPost();
     String search();
-    String sending();
     String usersAreaName();
     String wallAreaName();
+    String wallPostAreaName();
 }

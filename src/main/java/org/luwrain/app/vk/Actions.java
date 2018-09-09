@@ -20,6 +20,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 
+
+import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.users.UserFull;
 
@@ -111,6 +113,31 @@ final class Actions
 	}, null));
     }
 
+    boolean onDialogsUpdate(Runnable onSuccess, Runnable onFailure)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	NullCheck.notNull(onFailure, "onFailure");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.messages.responses.GetDialogsResponse resp = base.vk.messages().getDialogs(base.actor).execute();
+			luwrain.runUiSafely(()->{
+				final List<Dialog> list = resp.getItems();
+				base.dialogs = list.toArray(new Dialog[list.size()]);
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				onFailure.run();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
 
     boolean onUsersSearch(String query, Runnable onSuccess, Runnable onFailure)
     {
