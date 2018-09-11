@@ -41,7 +41,13 @@ final class ActionLists
     {
 	return new Action[]{
 	    new Action("post", strings.actionPost(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
+	    	    new Action("dialogs", strings.actionDialogs()),
 	    new Action("users", strings.actionUsers()),
 	};
+    }
+
+    Action[] getDialogsActions()
+    {
+	return new Action[0];
     }
 }

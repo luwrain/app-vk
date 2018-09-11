@@ -71,6 +71,25 @@ class App implements Application
     private void createDefaultArea()
     {
 	this.defaultArea = new WallArea(luwrain, strings, base, actions, actionLists){
+		@Override public boolean onInputEvent(KeyboardEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (event.isSpecial() && !event.isModified())
+			switch(event.getSpecial())
+			{
+			case TAB:
+			    {
+				final Area[] areas = layout.getLayout().getAreas();
+				if (areas.length > 1)
+				{
+				    luwrain.setActiveArea(areas[1]);
+				    return true;
+				}
+				return false;
+			    }
+			}
+		    return super.onInputEvent(event);
+		}
 		@Override public boolean onSystemEvent(EnvironmentEvent event)
 		{
 		    NullCheck.notNull(event, "event");
@@ -79,6 +98,8 @@ class App implements Application
 		    switch(event.getCode())
 		    {
 		    case ACTION:
+						if (ActionEvent.isAction(event, "dialogs"))
+			    return onShowDialogs(this);
 			if (ActionEvent.isAction(event, "post"))
 			    return onNewWallPost(this);
 		    default:
@@ -98,4 +119,19 @@ class App implements Application
 	return true;
     }
 
+    private boolean onShowDialogs(WallArea wallArea)
+    {
+	NullCheck.notNull(wallArea, "wallArea");
+	final Runnable closing = ()->{
+	    layout.setBasicArea(defaultArea);
+	};
+	final DialogsArea dialogsArea = new DialogsArea(luwrain, strings, base, actions, actionLists);
+		final MessagesArea messagesArea = new MessagesArea(luwrain, strings, base, actions, actionLists);
+	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, dialogsArea, messagesArea));
+	dialogsArea.setMessagesArea(messagesArea);
+	messagesArea.setDialogsArea(dialogsArea);
+	dialogsArea.setDefaultArea(defaultArea);
+	messagesArea.setDefaultArea(defaultArea);
+	return true;
+    }
 }
