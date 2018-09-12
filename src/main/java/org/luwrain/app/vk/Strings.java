@@ -25,6 +25,7 @@ interface Strings
     String actionUsers();
     String appName();
     String dialogsAreaName();
+    String messagesAreaName();
         String sendingPost();
     String search();
     String usersAreaName();

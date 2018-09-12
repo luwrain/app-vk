@@ -132,6 +132,7 @@ class App implements Application
 	messagesArea.setDialogsArea(dialogsArea);
 	dialogsArea.setDefaultArea(defaultArea);
 	messagesArea.setDefaultArea(defaultArea);
+	luwrain.setActiveArea(dialogsArea);
 	return true;
     }
 }

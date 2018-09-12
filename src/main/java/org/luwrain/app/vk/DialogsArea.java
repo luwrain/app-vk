@@ -18,14 +18,15 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
-import com.vk.api.sdk.objects.wall.WallPostFull;
+import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.messages.Message;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-class DialogsArea extends ListArea
+final class DialogsArea extends ListArea
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -45,11 +46,27 @@ class DialogsArea extends ListArea
 	this.base = base;
 	this.actions = actions;
 	this.actionLists = actionLists;
-	actions.onWallUpdate(()->{
+
+	setListClickHandler((area,index,obj)->{
+		NullCheck.notNull(obj, "obj");
+		if (!(obj instanceof Dialog))
+		return false;
+		final Dialog dialog = (Dialog)obj;
+		if (dialog.getMessage() == null || dialog.getMessage().getUserId() < 0)
+		    return false;
+		if (!actions.onMessagesHistory(dialog.getMessage().getUserId(), ()->{
+			luwrain.onAreaNewBackgroundSound(area);
+			messagesArea.activateConv(dialog.getMessage().getUserId());
+		},
+		    ()->luwrain.onAreaNewBackgroundSound(area)))
+	    return false;
+		luwrain.onAreaNewBackgroundSound(area);
+	    return true;
+	});
+	actions.onDialogsUpdate(()->{
 		luwrain.onAreaNewBackgroundSound(DialogsArea.this);
 		luwrain.playSound(Sounds.OK);
 		refresh();
-		Log.debug("proba", "wall " + base.wallPosts.length);
 	    },
 	    ()->luwrain.onAreaNewBackgroundSound(DialogsArea.this));
 	luwrain.onAreaNewBackgroundSound(this);
@@ -182,14 +199,13 @@ class DialogsArea extends ListArea
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    /*
-	    if (item instanceof WallPostFull)
+	    if (item instanceof Dialog)
 	    {
-		final WallPostFull post = (WallPostFull)item;
-	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, post.getText(), null));
+		final Dialog dialog = (Dialog)item;
+		final Message message = dialog.getMessage();
+	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, message.getUserId() + " " + dialog.getUnread() + " " + message.getBody(), null));
 		return;
 	    }
-	    */
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
 	}
 	@Override public String getScreenAppearance(Object item, Set<Flags> flags)

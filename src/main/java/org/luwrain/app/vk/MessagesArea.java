@@ -65,6 +65,12 @@ class MessagesArea extends ConsoleArea2
 	    });
     }
 
+    void activateConv(int userId)
+    {
+	refresh();
+	luwrain.setActiveArea(this);
+    }
+
     @Override public boolean onInputEvent(KeyboardEvent event)
     {
 	NullCheck.notNull(event, "event");
@@ -145,7 +151,7 @@ class MessagesArea extends ConsoleArea2
 	params.context = new DefaultControlEnvironment(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain);
-	params.areaName = strings.appName();
+	params.areaName = strings.messagesAreaName();
 	params.inputPos = ConsoleArea2.InputPos.TOP;
 	return params;
     }
@@ -191,13 +197,13 @@ class MessagesArea extends ConsoleArea2
 	}
 	@Override public int getConsoleItemCount()
 	{
-	    NullCheck.notNullItems(base.users, "base.users");
-	    return base.users.length;
+	    NullCheck.notNullItems(base.messages, "base.messages");
+	    return base.messages.length;
 	}
 	@Override public Object getConsoleItem(int index)
 	{
-	    NullCheck.notNullItems(base.users, "base.users");
-	    return base.users[index];
+	    NullCheck.notNullItems(base.messages, "base.messages");
+	    return base.messages[index];
 	}
     };
 }

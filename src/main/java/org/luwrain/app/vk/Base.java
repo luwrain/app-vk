@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.users.UserFull;
 
@@ -50,6 +51,7 @@ final class Base
     private FutureTask task = null;
     WallPostFull[] wallPosts = new WallPostFull[0];
     Dialog[] dialogs = new Dialog[0];
+    Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];
 
     Base(Luwrain luwrain, Strings strings)

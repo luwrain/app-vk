@@ -22,6 +22,7 @@ import java.io.*;
 
 
 import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.users.UserFull;
 
@@ -89,11 +90,8 @@ final class Actions
 			final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
 			.message(text)
 			.execute();
-
 						final com.vk.api.sdk.objects.wall.responses.GetResponse respPosts = base.vk.wall().get(base.actor)
 			.execute();
-
-						
 			luwrain.runUiSafely(()->{
 				final List<WallPostFull> list = respPosts.getItems();
 				base.wallPosts = list.toArray(new WallPostFull[list.size()]);
@@ -138,6 +136,35 @@ final class Actions
 		    }
 	}, null));
     }
+
+    boolean onMessagesHistory(int userId, Runnable onSuccess, Runnable onFailure)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	NullCheck.notNull(onFailure, "onFailure");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
+			.userId(userId)
+			.execute();
+			luwrain.runUiSafely(()->{
+				final List<Message> list = resp.getItems();
+				base.messages = list.toArray(new Message[list.size()]);
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				onFailure.run();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
 
     boolean onUsersSearch(String query, Runnable onSuccess, Runnable onFailure)
     {
