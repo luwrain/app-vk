@@ -46,7 +46,7 @@ final class ActionLists
 	};
     }
 
-    Action[] getDialogsActions()
+    Action[] getConversationsActions()
     {
 	return new Action[0];
     }

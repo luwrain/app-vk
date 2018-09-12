@@ -58,8 +58,6 @@ class WallArea extends ListArea
 	if (event.isSpecial() && !event.isModified())
 	    switch(event.getSpecial())
 	    {
-	    case F5:
-		return actions.onDialogsUpdate(()->{}, ()->{});
 	    case ESCAPE:
 		base.closeApp();
 		return true;

@@ -16,7 +16,7 @@
 
 package org.luwrain.app.vk;
 
-import com.vk.api.sdk.objects.users.UserFull;
+import com.vk.api.sdk.objects.messages.Message;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
@@ -31,6 +31,8 @@ class MessagesArea extends ConsoleArea2
     private final Actions actions;
     private final ActionLists actionLists;
 
+    private int activeUserId = -1;
+
     private ConversationsArea conversationsArea = null;
     private Area defaultArea = null;
 
@@ -43,7 +45,7 @@ class MessagesArea extends ConsoleArea2
 	this.base = base;
 	this.actions = actions;
 	this.actionLists = actionLists;
-	setInputPrefix(strings.search() + ">");
+	setInputPrefix(">");
 	setConsoleClickHandler((area,index,obj)->{
 		if (obj == null)
 		    return false;
@@ -51,15 +53,13 @@ class MessagesArea extends ConsoleArea2
 	    });
 	setConsoleInputHandler((area,text)->{
 		NullCheck.notNull(text, "text");
-		if (text.trim().isEmpty() || base.isBusy())
+		if (activeUserId < 0 || text.trim().isEmpty() || base.isBusy())
 		    return ConsoleArea2.InputHandler.Result.REJECTED;
-		actions.onUsersSearch(text,
-				      ()->{
-					  area.refresh();
-					  luwrain.onAreaNewBackgroundSound(area);
-					  luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.ERROR);
-				      },
-				      ()->luwrain.onAreaNewBackgroundSound(area));
+		if (!actions.onMessageSend(activeUserId, text, ()->{
+luwrain.onAreaNewBackgroundSound(MessagesArea.this);
+			    					  luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.OK);
+			}, ()->luwrain.onAreaNewBackgroundSound(MessagesArea.this)))
+		    return ConsoleArea2.InputHandler.Result.REJECTED;
 		luwrain.onAreaNewBackgroundSound(area);
 		return ConsoleArea2.InputHandler.Result.OK;
 	    });
@@ -67,6 +67,10 @@ class MessagesArea extends ConsoleArea2
 
     void activateConv(int userId)
     {
+	if (userId < 0)
+	    throw new IllegalArgumentException("userId (" + userId + ") may not be negative");
+	this.activeUserId = userId;
+	setInputPrefix(base.getUserCommonName(userId) + ">");
 	refresh();
 	luwrain.setActiveArea(this);
     }
@@ -81,11 +85,6 @@ class MessagesArea extends ConsoleArea2
 		if (defaultArea == null)
 		    return false;
 		luwrain.setActiveArea(defaultArea);
-		return true;
-	    case BACKSPACE:
-		if (conversationsArea == null)
-		    return false;
-		luwrain.setActiveArea(conversationsArea);
 		return true;
 	    case ESCAPE:
 		base.closeApp();
@@ -152,7 +151,7 @@ class MessagesArea extends ConsoleArea2
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain);
 	params.areaName = strings.messagesAreaName();
-	params.inputPos = ConsoleArea2.InputPos.TOP;
+	params.inputPos = ConsoleArea2.InputPos.BOTTOM;
 	return params;
     }
 
@@ -167,10 +166,10 @@ class MessagesArea extends ConsoleArea2
 	@Override public void announceItem(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    if (item instanceof UserFull)
+	    if (item instanceof Message)
 	    {
-		final UserFull user = (UserFull)item;
- 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName(), null));
+		final Message message = (Message)item;
+ 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, message.getBody(), null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -178,10 +177,10 @@ class MessagesArea extends ConsoleArea2
 	@Override public String getTextAppearance(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    if (item instanceof UserFull)
+	    if (item instanceof Message)
 	    {
-		final UserFull user = (UserFull)item;
-		return user.getFirstName() + " " + user.getLastName();
+		final Message message = (Message)item;
+		return message.getBody();
 	    }
 	    return item.toString();
 	}

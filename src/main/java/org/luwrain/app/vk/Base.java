@@ -20,6 +20,8 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallPostFull;
@@ -48,6 +50,8 @@ final class Base
     final UserActor actor;
     final Settings sett;
 
+    final Map<Integer, UserFull> userCache = new HashMap();
+
     private FutureTask task = null;
     WallPostFull[] wallPosts = new WallPostFull[0];
     Dialog[] dialogs = new Dialog[0];
@@ -64,6 +68,26 @@ final class Base
 	this.transportClient = new HttpTransportClient();
 	this.vk = new VkApiClient(transportClient);
 	this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+    }
+
+    String getUserCommonName(int userId)
+    {
+	if (userId < 0)
+	    return "" + userId;
+	if (!userCache.containsKey(new Integer(userId)))
+	    return "" + userId;
+	final UserFull user = userCache.get(new Integer(userId));
+	return user.getFirstName() + " " + user.getLastName();
+    }
+
+    void cacheUsers(UserFull[] users)
+    {
+	NullCheck.notNullItems(users, "users");
+	for(UserFull u: users)
+	    if (!userCache.containsKey(u.getId()))
+		userCache.put(u.getId(), u);
+
+	
     }
 
     boolean runTask(FutureTask task)
@@ -90,16 +114,9 @@ final class Base
     {
 	luwrain.closeApp();
     }
+}
 
-    void main(String[] args)
-    {
-	// TODO Auto-generated method stub
-	String code="";
-		UserAuthResponse authResponse=null;
-		try {
-
-		    final int userId = 0;
-			vk.messages().send(actor).message("fdgdfg").peerId(userId).execute();//userid-id получателя
+/*
 		    UserField fields = null;
 		    GetFieldsResponse l = vk.friends().get(actor, fields.ABOUT).execute();
 			GetDialogsResponse x = vk.messages().getDialogs(actor).execute();
@@ -128,13 +145,4 @@ final class Base
 					System.out.println(m.getUserId()+" "+m.getBody());
 				}
 			}
-			//вывод поста на своей стене
-			vk.wall().post(actor).friendsOnly(true).message("dfgdfgd").execute();
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-}
+    */

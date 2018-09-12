@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 
-
+import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallPostFull;
@@ -118,9 +118,14 @@ final class Actions
 	return base.runTask(new FutureTask(()->{
 		    try {
 			final com.vk.api.sdk.objects.messages.responses.GetDialogsResponse resp = base.vk.messages().getDialogs(base.actor).execute();
+							final List<Dialog> list = resp.getItems();
+							final List<String> userIds = new LinkedList();
+							for(Dialog d: list)
+							    userIds.add(d.getMessage().getUserId().toString());
+							final UserFull[] users = getUsersForCache(userIds);
 			luwrain.runUiSafely(()->{
-				final List<Dialog> list = resp.getItems();
 				base.dialogs = list.toArray(new Dialog[list.size()]);
+				base.cacheUsers(users);
 				base.resetTask();
 				onSuccess.run();
 			    });
@@ -165,6 +170,30 @@ final class Actions
 	}, null));
     }
 
+    boolean onMessageSend(int userId, String text, Runnable onSuccess, Runnable onFailure)
+    {
+	NullCheck.notEmpty(text, "text");
+	NullCheck.notNull(onSuccess, "onSuccess");
+	NullCheck.notNull(onFailure, "onFailure");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			base.vk.messages().send(base.actor).message(text).peerId(userId).execute();
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				onFailure.run();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
 
     boolean onUsersSearch(String query, Runnable onSuccess, Runnable onFailure)
     {
@@ -194,5 +223,12 @@ final class Actions
 			    });
 		    }
 	}, null));
+    }
+
+    private UserFull[] getUsersForCache(List<String> ids) throws ApiException, ClientException
+    {
+	//FIXME:Limit up to 1000
+	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).execute();
+	return resp.toArray(new UserFull[resp.size()]);
     }
 }

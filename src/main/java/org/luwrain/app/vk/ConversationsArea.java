@@ -129,7 +129,7 @@ final class ConversationsArea extends ListArea
 
     @Override public Action[] getAreaActions()
     {
-	return actionLists.getDialogsActions();
+	return actionLists.getConversationsActions();
     }
 
         void setMessagesArea(MessagesArea messagesArea)
@@ -156,7 +156,7 @@ final class ConversationsArea extends ListArea
 	final ListArea.Params params = new ListArea.Params();
 	params.context = new DefaultControlEnvironment(luwrain);
 	params.model = new Model(base);
-	params.appearance = new Appearance(luwrain, strings);
+	params.appearance = new Appearance(luwrain, strings, base);
 	params.name = strings.conversationsAreaName();
 	return params;
     }
@@ -188,12 +188,15 @@ final class ConversationsArea extends ListArea
     {
 	private final Luwrain luwrain;
 	private final Strings strings;
-	Appearance(Luwrain luwrain, Strings strings)
+	private final Base base;
+	Appearance(Luwrain luwrain, Strings strings, Base base)
 	{
 	    NullCheck.notNull(luwrain, "luwrain");
 	    NullCheck.notNull(strings, "strings");
+	    NullCheck.notNull(base, "base");
 	    this.luwrain = luwrain;
 	    this.strings = strings;
+	    this.base = base;
 	}
 	@Override public void announceItem(Object item, Set<Flags> flags)
 	{
@@ -203,7 +206,7 @@ final class ConversationsArea extends ListArea
 	    {
 		final Dialog dialog = (Dialog)item;
 		final Message message = dialog.getMessage();
-	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, message.getUserId() + " " + dialog.getUnread() + " " + message.getBody(), null));
+	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -212,13 +215,12 @@ final class ConversationsArea extends ListArea
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    /*
-	    if (item instanceof WallPostFull)
+	    if (item instanceof Dialog)
 	    {
-		final WallPostFull post = (WallPostFull)item;
-		return post.getText();
+		final Dialog dialog = (Dialog)item;
+		final Message message = dialog.getMessage();
+		return base.getUserCommonName(message.getUserId()) + " (" + dialog.getUnread() + "): " + message.getBody();
 	    }
-	    */
 	    return item.toString();
 	}
 	@Override public int getObservableLeftBound(Object item)
