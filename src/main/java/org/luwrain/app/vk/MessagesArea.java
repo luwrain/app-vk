@@ -37,7 +37,7 @@ class MessagesArea extends ConsoleArea2
     private Area defaultArea = null;
 
     MessagesArea(Luwrain luwrain, Strings strings, Base base,
-	      Actions actions, ActionLists actionLists)
+		 Actions actions, ActionLists actionLists)
     {
 	super(createParams(luwrain, strings, base));
 	this.luwrain = luwrain;
@@ -57,8 +57,8 @@ class MessagesArea extends ConsoleArea2
 		    return ConsoleArea2.InputHandler.Result.REJECTED;
 		if (!actions.onMessageSend(activeUserId, text, ()->{
 			    refresh();
-luwrain.onAreaNewBackgroundSound(MessagesArea.this);
-			    					  luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.OK);
+			    luwrain.onAreaNewBackgroundSound(MessagesArea.this);
+			    luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.OK);
 			}, ()->luwrain.onAreaNewBackgroundSound(MessagesArea.this)))
 		    return ConsoleArea2.InputHandler.Result.REJECTED;
 		luwrain.onAreaNewBackgroundSound(area);

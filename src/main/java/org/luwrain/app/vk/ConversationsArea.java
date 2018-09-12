@@ -38,7 +38,7 @@ final class ConversationsArea extends ListArea
     private Area defaultArea = null;
 
     ConversationsArea(Luwrain luwrain, Strings strings, Base base,
-	     Actions actions, ActionLists actionLists)
+		      Actions actions, ActionLists actionLists)
     {
 	super(createParams(luwrain, strings, base));
 	this.luwrain = luwrain;
@@ -46,23 +46,22 @@ final class ConversationsArea extends ListArea
 	this.base = base;
 	this.actions = actions;
 	this.actionLists = actionLists;
-
 	setListClickHandler((area,index,obj)->{
 		NullCheck.notNull(obj, "obj");
 		if (!(obj instanceof Dialog))
-		return false;
+		    return false;
 		final Dialog dialog = (Dialog)obj;
 		if (dialog.getMessage() == null || dialog.getMessage().getUserId() < 0)
 		    return false;
 		if (!actions.onMessagesHistory(dialog.getMessage().getUserId(), ()->{
-			luwrain.onAreaNewBackgroundSound(area);
-			messagesArea.activateConv(dialog.getMessage().getUserId());
-		},
-		    ()->luwrain.onAreaNewBackgroundSound(area)))
-	    return false;
+			    luwrain.onAreaNewBackgroundSound(area);
+			    messagesArea.activateConv(dialog.getMessage().getUserId());
+			},
+			()->luwrain.onAreaNewBackgroundSound(area)))
+		    return false;
 		luwrain.onAreaNewBackgroundSound(area);
-	    return true;
-	});
+		return true;
+	    });
 	actions.onDialogsUpdate(()->{
 		luwrain.onAreaNewBackgroundSound(ConversationsArea.this);
 		luwrain.playSound(Sounds.OK);
@@ -78,7 +77,7 @@ final class ConversationsArea extends ListArea
 	if (event.isSpecial() && !event.isModified())
 	    switch(event.getSpecial())
 	    {
-			    case TAB:
+	    case TAB:
 		if (messagesArea == null)
 		    return false;
 		luwrain.setActiveArea(messagesArea);
@@ -132,7 +131,7 @@ final class ConversationsArea extends ListArea
 	return actionLists.getConversationsActions();
     }
 
-        void setMessagesArea(MessagesArea messagesArea)
+    void setMessagesArea(MessagesArea messagesArea)
     {
 	NullCheck.notNull(messagesArea, "messagesArea");
 	if (this.messagesArea != null)
@@ -206,9 +205,9 @@ final class ConversationsArea extends ListArea
 	    {
 		final Dialog dialog = (Dialog)item;
 		final Message message = dialog.getMessage();
-				if (dialog.getUnread() != null)
-				    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null)); else
-	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + message.getBody(), null));
+		if (dialog.getUnread() != null)
+		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null)); else
+		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + message.getBody(), null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -222,8 +221,8 @@ final class ConversationsArea extends ListArea
 		final Dialog dialog = (Dialog)item;
 		final Message message = dialog.getMessage();
 		if (dialog.getUnread() != null)
-		return base.getUserCommonName(message.getUserId()) + " (" + dialog.getUnread() + "): " + message.getBody(); else
-		    		return base.getUserCommonName(message.getUserId()) + ": " + message.getBody();
+		    return base.getUserCommonName(message.getUserId()) + " (" + dialog.getUnread() + "): " + message.getBody(); else
+		    return base.getUserCommonName(message.getUserId()) + ": " + message.getBody();
 	    }
 	    return item.toString();
 	}
