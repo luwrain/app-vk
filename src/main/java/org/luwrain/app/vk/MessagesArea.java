@@ -31,7 +31,7 @@ class MessagesArea extends ConsoleArea2
     private final Actions actions;
     private final ActionLists actionLists;
 
-    private DialogsArea dialogsArea = null;
+    private ConversationsArea conversationsArea = null;
     private Area defaultArea = null;
 
     MessagesArea(Luwrain luwrain, Strings strings, Base base,
@@ -83,9 +83,9 @@ class MessagesArea extends ConsoleArea2
 		luwrain.setActiveArea(defaultArea);
 		return true;
 	    case BACKSPACE:
-		if (dialogsArea == null)
+		if (conversationsArea == null)
 		    return false;
-		luwrain.setActiveArea(dialogsArea);
+		luwrain.setActiveArea(conversationsArea);
 		return true;
 	    case ESCAPE:
 		base.closeApp();
@@ -126,12 +126,12 @@ class MessagesArea extends ConsoleArea2
 	}
     }
 
-    void setDialogsArea(DialogsArea dialogsArea)
+    void setConversationsArea(ConversationsArea conversationsArea)
     {
-	NullCheck.notNull(dialogsArea, "dialogsArea");
-	if (this.dialogsArea != null)
-	    throw new RuntimeException("dialogsArea already set");
-	this.dialogsArea = dialogsArea;
+	NullCheck.notNull(conversationsArea, "conversationsArea");
+	if (this.conversationsArea != null)
+	    throw new RuntimeException("conversationsArea already set");
+	this.conversationsArea = conversationsArea;
     }
 
     void setDefaultArea(Area defaultArea)
