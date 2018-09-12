@@ -206,7 +206,9 @@ final class ConversationsArea extends ListArea
 	    {
 		final Dialog dialog = (Dialog)item;
 		final Message message = dialog.getMessage();
-	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null));
+				if (dialog.getUnread() != null)
+				    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null)); else
+	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + message.getBody(), null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -219,7 +221,9 @@ final class ConversationsArea extends ListArea
 	    {
 		final Dialog dialog = (Dialog)item;
 		final Message message = dialog.getMessage();
-		return base.getUserCommonName(message.getUserId()) + " (" + dialog.getUnread() + "): " + message.getBody();
+		if (dialog.getUnread() != null)
+		return base.getUserCommonName(message.getUserId()) + " (" + dialog.getUnread() + "): " + message.getBody(); else
+		    		return base.getUserCommonName(message.getUserId()) + ": " + message.getBody();
 	    }
 	    return item.toString();
 	}

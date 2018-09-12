@@ -56,12 +56,13 @@ class MessagesArea extends ConsoleArea2
 		if (activeUserId < 0 || text.trim().isEmpty() || base.isBusy())
 		    return ConsoleArea2.InputHandler.Result.REJECTED;
 		if (!actions.onMessageSend(activeUserId, text, ()->{
+			    refresh();
 luwrain.onAreaNewBackgroundSound(MessagesArea.this);
 			    					  luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.OK);
 			}, ()->luwrain.onAreaNewBackgroundSound(MessagesArea.this)))
 		    return ConsoleArea2.InputHandler.Result.REJECTED;
 		luwrain.onAreaNewBackgroundSound(area);
-		return ConsoleArea2.InputHandler.Result.OK;
+		return ConsoleArea2.InputHandler.Result.CLEAR_INPUT;
 	    });
     }
 
@@ -151,7 +152,7 @@ luwrain.onAreaNewBackgroundSound(MessagesArea.this);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain);
 	params.areaName = strings.messagesAreaName();
-	params.inputPos = ConsoleArea2.InputPos.BOTTOM;
+	params.inputPos = ConsoleArea2.InputPos.TOP;
 	return params;
     }
 

@@ -178,7 +178,12 @@ final class Actions
 	return base.runTask(new FutureTask(()->{
 		    try {
 			base.vk.messages().send(base.actor).message(text).peerId(userId).execute();
+						final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
+			.userId(userId)
+			.execute();
 			luwrain.runUiSafely(()->{
+				final List<Message> list = resp.getItems();
+				base.messages = list.toArray(new Message[list.size()]);
 				base.resetTask();
 				onSuccess.run();
 			    });
