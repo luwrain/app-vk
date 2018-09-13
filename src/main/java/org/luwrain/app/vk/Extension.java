@@ -24,6 +24,19 @@ import org.luwrain.cpanel.*;
 
 public final class Extension extends org.luwrain.core.extensions.EmptyExtension
 {
+    static final String LOG_COMPONENT = "vk";
+
+    private Watching watching = null;
+
+    @Override public String init(Luwrain luwrain)
+    {
+	NullCheck.notNull(luwrain, "luwrain");
+	this.watching = new Watching(luwrain);
+	watching.loadWatches();
+	watching.run();
+	return null;
+    }
+
     @Override public Command[] getCommands(Luwrain luwrain)
     {
 	return new Command[]{

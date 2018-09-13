@@ -18,14 +18,19 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
+import com.google.gson.JsonObject;
+
 import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.callback.longpoll.responses.GetLongPollEventsResponse;
 
 import org.luwrain.core.*;
 
 final class Watch implements Runnable
 {
+    static private final String LOG_COMPONENT = Extension.LOG_COMPONENT;
+    
     final VkApiClient vk;
     final UserActor actor;
 
@@ -36,14 +41,23 @@ final class Watch implements Runnable
 	this.vk = vk;
 	this.actor = actor;
     }
+
     @Override public void run()
     {
 	try {
 	    final com.vk.api.sdk.objects.messages.LongpollParams params = vk.messages().getLongPollServer(actor).needPts(true).execute();
-	    final com.vk.api.sdk.objects.messages.responses.GetLongPollHistoryResponse resp = vk.messages().getLongPollHistory(actor).pts(params.getPts()).execute();
+	    Log.debug(LOG_COMPONENT, "starting watch for " + params.getServer());
+	    while(true)
+	    {
+	    final GetLongPollEventsResponse resp = vk.longPoll().getEvents("https://" + params.getServer(), params.getKey(), params.getTs()).waitTime(10).execute();
+	    final List<JsonObject> objs = resp.getUpdates();
+	    Log.debug(LOG_COMPONENT, "watch get " + objs.size() + " update(s)");
+	    //	    final com.vk.api.sdk.objects.messages.responses.GetLongPollHistoryResponse resp = vk.messages().getLongPollHistory(actor).pts(params.getPts()).execute();
+	    }
 	}
 	catch(ApiException | ClientException e)
 	{
+	    Log.error(LOG_COMPONENT, "watch failed:" + e.getClass().getName() + ":" + e.getMessage());
 	}
     }
 }
