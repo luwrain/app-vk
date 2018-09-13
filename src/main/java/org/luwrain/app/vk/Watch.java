@@ -47,20 +47,20 @@ final class Watch implements Runnable
 	this.luwrain = luwrain;
 	this.vk = vk;
 	this.actor = actor;
-this.callback = new CallbackApi(){
-    @Override public void messageNew(Integer groupId, Message message)
-	    {
-		if (message == null)
-		    return;
-		luwrain.message(message.getBody(), Sounds.CHAT_MESSAGE);
-    }
-    @Override public void messageReply(Integer groupId, Message message)
-	    {
-				if (message == null)
-		    return;
-				luwrain.message(message.getBody(), Sounds.CHAT_MESSAGE);
-    }
-	};
+	this.callback = new CallbackApi(){
+		@Override public void messageNew(Integer groupId, Message message)
+		{
+		    if (message == null)
+			return;
+		    luwrain.message(message.getBody(), Sounds.CHAT_MESSAGE);
+		}
+		@Override public void messageReply(Integer groupId, Message message)
+		{
+		    if (message == null)
+			return;
+		    luwrain.message(message.getBody(), Sounds.CHAT_MESSAGE);
+		}
+	    };
     }
 
     @Override public void run()

@@ -34,7 +34,7 @@ import org.luwrain.core.*;
 final class Watching
 {
     static private final String LOG_COMPONENT = "vk";
-    
+
     private final Luwrain luwrain;
     private List<Watch> watches = new LinkedList();
 
