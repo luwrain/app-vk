@@ -40,7 +40,8 @@ final class ActionLists
     Action[] getWallActions()
     {
 	return new Action[]{
-	    new Action("post", strings.actionPost(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
+	    new Action("post", strings.actionWallPost(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
+	    	    new Action("delete", strings.actionWallDelete(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
 	    	    new Action("conversations", strings.actionConversations(), new KeyboardEvent(KeyboardEvent.Special.F5)),
 	    new Action("users", strings.actionUsers()),
 	};

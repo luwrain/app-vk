@@ -64,7 +64,7 @@ final class ConversationsArea extends ListArea
 	    });
 	actions.onDialogsUpdate(()->{
 		luwrain.onAreaNewBackgroundSound(ConversationsArea.this);
-		luwrain.playSound(Sounds.OK);
+		luwrain.playSound(Sounds.CLICK);
 		refresh();
 	    },
 	    ()->luwrain.onAreaNewBackgroundSound(ConversationsArea.this));

@@ -31,20 +31,18 @@ class WallArea extends ListArea
     private final Strings strings;
     private final Base base;
     private final Actions actions;
-    private final ActionLists actionLists;
 
     WallArea(Luwrain luwrain, Strings strings, Base base,
-	     Actions actions, ActionLists actionLists)
+	     Actions actions)
     {
 	super(createParams(luwrain, strings, base));
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-	this.actionLists = actionLists;
 	actions.onWallUpdate(()->{
 		luwrain.onAreaNewBackgroundSound(WallArea.this);
-		luwrain.playSound(Sounds.OK);
+		luwrain.playSound(Sounds.CLICK);
 		refresh();
 		Log.debug("proba", "wall " + base.wallPosts.length);
 	    },
@@ -72,6 +70,24 @@ class WallArea extends ListArea
 	    return super.onSystemEvent(event);
 	switch(event.getCode())
 	{
+	case ACTION:
+	    if (ActionEvent.isAction(event, "delete"))
+	    {
+		final Object selected = selected();
+		if (selected == null || !(selected instanceof WallPostFull))
+		    return false;
+		//FIXME:confirmation
+		if (!actions.onWallDelete((WallPostFull)selected, ()->{
+			    refresh();
+			    luwrain.onAreaNewBackgroundSound(this);
+			    luwrain.playSound(Sounds.OK);
+			}, ()->luwrain.onAreaNewBackgroundSound(this)))
+		    return false;
+		luwrain.onAreaNewBackgroundSound(this);
+		return true;
+	    }
+	    
+	    return super.onSystemEvent(event);
 	case CLOSE:
 	    base.closeApp();
 	    return true;
@@ -99,7 +115,7 @@ class WallArea extends ListArea
 
     @Override public Action[] getAreaActions()
     {
-	return actionLists.getWallActions();
+	return actions.lists.getWallActions();
     }
 
     static private ListArea.Params createParams(Luwrain luwrain, Strings strings, Base base)

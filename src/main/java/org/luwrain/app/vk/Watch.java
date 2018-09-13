@@ -76,14 +76,18 @@ final class Watch implements Runnable
 		final List<JsonObject> objs = resp.getUpdates();
 		Log.debug(LOG_COMPONENT, "watch get " + objs.size() + " update(s)");
 		for(JsonObject obj: objs)
-		    if (!callback.parse(obj))
-			Log.warning(LOG_COMPONENT, "unparsed longpoll update: " + obj.toString());
+		{
+		    Log.debug(LOG_COMPONENT, "parsing " + obj.toString());
+		    //		    if (!callback.parse(obj))
+		    //			Log.warning(LOG_COMPONENT, "unparsed longpoll update: " + obj.toString());
+		}
 		//	    final com.vk.api.sdk.objects.messages.responses.GetLongPollHistoryResponse resp = vk.messages().getLongPollHistory(actor).pts(params.getPts()).execute();
 	    }
 	}
 	catch(ApiException | ClientException e)
 	{
 	    Log.error(LOG_COMPONENT, "watch failed:" + e.getClass().getName() + ":" + e.getMessage());
+	    e.printStackTrace();
 	}
     }
 }

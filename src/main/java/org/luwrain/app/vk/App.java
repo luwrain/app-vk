@@ -70,7 +70,7 @@ class App implements Application
 
     private void createDefaultArea()
     {
-	this.defaultArea = new WallArea(luwrain, strings, base, actions, actionLists){
+	this.defaultArea = new WallArea(luwrain, strings, base, actions){
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");
@@ -102,6 +102,7 @@ class App implements Application
 			    return onShowConversations(this);
 			if (ActionEvent.isAction(event, "post"))
 			    return onNewWallPost(this);
+			return super.onSystemEvent(event);
 		    default:
 			return super.onSystemEvent(event);
 		    }

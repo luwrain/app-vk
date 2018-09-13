@@ -41,6 +41,7 @@ final class Actions
     private final Strings strings;
     private final Base base;
     final Conversations conv;
+    final ActionLists lists;
 
     Actions(Luwrain luwrain, Strings strings, Base base)
     {
@@ -51,6 +52,7 @@ final class Actions
 	this.strings = strings;
 	this.base = base;
 	this.conv = new Conversations(luwrain, strings);
+	this.lists = new ActionLists(luwrain, strings, base);
     }
 
     boolean onWallUpdate(Runnable onSuccess, Runnable onFailure)
@@ -79,6 +81,36 @@ final class Actions
 		    }
 	}, null));
     }
+
+    boolean onWallDelete(WallPostFull post, Runnable onSuccess, Runnable onFailure)
+    {
+	NullCheck.notNull(post, "post");
+	NullCheck.notNull(onSuccess, "onSuccess");
+	NullCheck.notNull(onFailure, "onFailure");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			base.vk.wall().delete(base.actor).postId(post.getId()).execute();
+			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
+			.execute();
+			luwrain.runUiSafely(()->{
+				final List<WallPostFull> list = resp.getItems();
+				base.wallPosts = list.toArray(new WallPostFull[list.size()]);
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				onFailure.run();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
 
     boolean onWallPost(String text, Runnable onSuccess, Runnable onFailure)
     {
