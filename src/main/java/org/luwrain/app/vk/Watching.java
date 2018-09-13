@@ -59,6 +59,6 @@ final class Watching
 	final TransportClient transportClient = new HttpTransportClient();
 	final VkApiClient vk = new VkApiClient(transportClient);
 	final UserActor actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
-	watches.add(new Watch(vk, actor));
+	watches.add(new Watch(luwrain, vk, actor));
     }
 }
