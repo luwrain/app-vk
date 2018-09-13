@@ -19,15 +19,17 @@ package org.luwrain.app.vk;
 import java.util.*;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 
 import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.callback.longpoll.responses.GetLongPollEventsResponse;
+//import com.vk.api.sdk.callback.longpoll.responses.GetLongPollEventsResponse;
 import com.vk.api.sdk.callback.CallbackApi;
 import com.vk.api.sdk.objects.messages.Message;
 
 import org.luwrain.core.*;
+import org.luwrain.app.vk.custom.*;
 
 final class Watch implements Runnable
 {
@@ -63,6 +65,11 @@ final class Watch implements Runnable
 	    };
     }
 
+    private void onMessage(int messageId, int peerId, String messageText)
+    {
+	luwrain.message(messageText, Sounds.CHAT_MESSAGE);
+    }
+
     @Override public void run()
     {
 	try {
@@ -71,15 +78,23 @@ final class Watch implements Runnable
 	    int ts = params.getTs();
 	    while(true)
 	    {
-		final GetLongPollEventsResponse resp = vk.longPoll().getEvents("https://" + params.getServer(), params.getKey(), ts).waitTime(WAIT_TIME).execute();
+		final GetLongPollEventsQuery query = new GetLongPollEventsQuery(vk, "https://" + params.getServer(), params.getKey(), ts);
+		final GetLongPollEventsResponse resp = query.waitTime(WAIT_TIME).execute();
 		ts = resp.getTs();
-		final List<JsonObject> objs = resp.getUpdates();
-		Log.debug(LOG_COMPONENT, "watch get " + objs.size() + " update(s)");
-		for(JsonObject obj: objs)
+		final List<JsonArray> objs = resp.getUpdates();
+		//		Log.debug(LOG_COMPONENT, "watch get " + objs.size() + " update(s)");
+		for(JsonArray a: objs)
 		{
-		    Log.debug(LOG_COMPONENT, "parsing " + obj.toString());
-		    //		    if (!callback.parse(obj))
-		    //			Log.warning(LOG_COMPONENT, "unparsed longpoll update: " + obj.toString());
+		    if (a.size() == 0 || a.get(0).getAsInt() != 4)
+			continue;
+		    if (a.size() < 7)
+			continue;
+		    final int messageId = a.get(1).getAsInt();
+		    		    final int peerId = a.get(3).getAsInt();
+final String messageText = a.get(6).getAsString();
+if (messageId < 0 || peerId < 0 || messageText == null)
+    continue;
+onMessage(messageId, peerId, messageText);
 		}
 		//	    final com.vk.api.sdk.objects.messages.responses.GetLongPollHistoryResponse resp = vk.messages().getLongPollHistory(actor).pts(params.getPts()).execute();
 	    }
