@@ -20,13 +20,9 @@ import java.util.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;
-
 import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-//import com.vk.api.sdk.callback.longpoll.responses.GetLongPollEventsResponse;
-import com.vk.api.sdk.callback.CallbackApi;
-import com.vk.api.sdk.objects.messages.Message;
 
 import org.luwrain.core.*;
 import org.luwrain.app.vk.custom.*;
@@ -39,7 +35,6 @@ final class Watch implements Runnable
     private final Luwrain luwrain;
     final VkApiClient vk;
     final UserActor actor;
-    private final CallbackApi callback;
 
     Watch(Luwrain luwrain, VkApiClient vk, UserActor actor)
     {
@@ -49,20 +44,6 @@ final class Watch implements Runnable
 	this.luwrain = luwrain;
 	this.vk = vk;
 	this.actor = actor;
-	this.callback = new CallbackApi(){
-		@Override public void messageNew(Integer groupId, Message message)
-		{
-		    if (message == null)
-			return;
-		    luwrain.message(message.getBody(), Sounds.CHAT_MESSAGE);
-		}
-		@Override public void messageReply(Integer groupId, Message message)
-		{
-		    if (message == null)
-			return;
-		    luwrain.message(message.getBody(), Sounds.CHAT_MESSAGE);
-		}
-	    };
     }
 
     private void onMessage(int messageId, int peerId, String messageText)
@@ -82,7 +63,6 @@ final class Watch implements Runnable
 		final GetLongPollEventsResponse resp = query.waitTime(WAIT_TIME).execute();
 		ts = resp.getTs();
 		final List<JsonArray> objs = resp.getUpdates();
-		//		Log.debug(LOG_COMPONENT, "watch get " + objs.size() + " update(s)");
 		for(JsonArray a: objs)
 		{
 		    if (a.size() == 0 || a.get(0).getAsInt() != 4)
@@ -90,13 +70,12 @@ final class Watch implements Runnable
 		    if (a.size() < 7)
 			continue;
 		    final int messageId = a.get(1).getAsInt();
-		    		    final int peerId = a.get(3).getAsInt();
-final String messageText = a.get(6).getAsString();
-if (messageId < 0 || peerId < 0 || messageText == null)
-    continue;
-onMessage(messageId, peerId, messageText);
+		    final int peerId = a.get(3).getAsInt();
+		    final String messageText = a.get(6).getAsString();
+		    if (messageId < 0 || peerId < 0 || messageText == null)
+			continue;
+		    onMessage(messageId, peerId, messageText);
 		}
-		//	    final com.vk.api.sdk.objects.messages.responses.GetLongPollHistoryResponse resp = vk.messages().getLongPollHistory(actor).pts(params.getPts()).execute();
 	    }
 	}
 	catch(ApiException | ClientException e)
