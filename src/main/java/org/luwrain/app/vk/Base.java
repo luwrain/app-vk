@@ -50,6 +50,7 @@ final class Base
     final UserActor actor;
     final Settings sett;
 
+    private Area[] visibleAreas = new Area[0];
     final Map<Integer, UserFull> userCache = new HashMap();
 
     private FutureTask task = null;
@@ -70,6 +71,12 @@ final class Base
 	this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
     }
 
+    void setVisibleAreas(Area[] visibleAreas)
+    {
+	NullCheck.notNullItems(visibleAreas, "visibleAreas");
+	this.visibleAreas = visibleAreas;
+    }
+
     String getUserCommonName(int userId)
     {
 	if (userId < 0)
@@ -86,8 +93,6 @@ final class Base
 	for(UserFull u: users)
 	    if (!userCache.containsKey(u.getId()))
 		userCache.put(u.getId(), u);
-
-	
     }
 
     boolean runTask(FutureTask task)

@@ -47,8 +47,9 @@ class App implements Application
 	this.actionLists = new ActionLists(luwrain, strings, base);
 	createDefaultArea();
 	this.layout = new AreaLayoutHelper(()->{
+		base.setVisibleAreas(layout.getLayout().getAreas());
 		luwrain.onNewAreaLayout();
-		luwrain.announceActiveArea();
+		//luwrain.announceActiveArea();
 	    }, defaultArea);
 	return new InitResult();
     }
@@ -115,8 +116,10 @@ class App implements Application
 	NullCheck.notNull(wallArea, "wallArea");
 	layout.openTempArea(new WallPostArea(luwrain, strings, base, actions, actionLists, ()->{
 		    layout.closeTempLayout();
+		    luwrain.announceActiveArea();
 		    wallArea.refresh();
 	}));
+	luwrain.announceActiveArea();
 	return true;
     }
 
