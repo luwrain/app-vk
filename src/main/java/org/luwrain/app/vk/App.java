@@ -34,6 +34,13 @@ class App implements Application
     private Area defaultArea = null;
     private AreaLayoutHelper layout = null;
 
+    private final Watching watching;
+
+    App(Watching watching)
+    {
+	this.watching = watching;
+    }
+
     @Override public InitResult onLaunchApp(Luwrain luwrain)
     {
 	NullCheck.notNull(luwrain, "luwrain");
@@ -42,7 +49,7 @@ class App implements Application
 	    return new InitResult(InitResult.Type.NO_STRINGS_OBJ, Strings.NAME);
 	strings = (Strings)o;
 	this.luwrain = luwrain;
-	this.base = new Base(luwrain, strings);
+	this.base = new Base(luwrain, strings, watching);
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(luwrain, strings, base);
 	createDefaultArea();

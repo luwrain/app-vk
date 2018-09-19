@@ -35,6 +35,11 @@ final class Watching
 {
     static private final String LOG_COMPONENT = "vk";
 
+    interface Listener
+    {
+	void onMessage(int messageId, int peerId, String messageText);
+    }
+
     private final Luwrain luwrain;
     private List<Watch> watches = new LinkedList();
 
@@ -59,6 +64,17 @@ final class Watching
 	final TransportClient transportClient = new HttpTransportClient();
 	final VkApiClient vk = new VkApiClient(transportClient);
 	final UserActor actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
-	watches.add(new Watch(luwrain, vk, actor));
+	watches.add(new Watch(luwrain, sett.getUserId(0), vk, actor));
+    }
+
+    void addListener(int userId, Listener listener)
+    {
+	NullCheck.notNull(listener, "listener");
+	for(Watch w: watches)
+	    if (w.userId == userId)
+	    {
+		w.listeners.add(listener);
+		return;
+	    }
     }
 }

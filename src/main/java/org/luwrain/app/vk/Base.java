@@ -41,10 +41,11 @@ import com.vk.api.sdk.queries.users.UserField;
 
 import org.luwrain.core.*;
 
-final class Base
+final class Base implements Watching.Listener
 {
     private final Luwrain luwrain;
     private final Strings strings;
+    private final Watching watching;
     private final TransportClient transportClient;
     final VkApiClient vk;
     final UserActor actor;
@@ -59,16 +60,23 @@ final class Base
     Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];
 
-    Base(Luwrain luwrain, Strings strings)
+    Base(Luwrain luwrain, Strings strings, Watching watching)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
 	this.luwrain = luwrain;
 	this.strings = strings;
+	this.watching = watching;
 	this.sett = Settings.create(luwrain);
 	this.transportClient = new HttpTransportClient();
 	this.vk = new VkApiClient(transportClient);
 	this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+	if (watching != null)
+	    watching.addListener(sett.getUserId(0), this);
+    }
+
+    @Override public void onMessage(int messageId, int peerId, String messageText)
+    {
     }
 
     void setVisibleAreas(Area[] visibleAreas)
