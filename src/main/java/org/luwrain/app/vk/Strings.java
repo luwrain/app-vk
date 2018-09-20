@@ -26,6 +26,8 @@ interface Strings
         String actionWallPost();
     String appName();
     String conversationsAreaName();
+    String friendsAreaName();
+    String friendshipRequestsAreaName();
     String messagesAreaName();
         String sendingPost();
     String search();

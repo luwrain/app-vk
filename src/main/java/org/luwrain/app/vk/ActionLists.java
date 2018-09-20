@@ -51,4 +51,15 @@ final class ActionLists
     {
 	return new Action[0];
     }
+
+            Action[] getFriendsActions()
+    {
+	return new Action[0];
+    }
+
+
+        Action[] getFriendshipRequestsActions()
+    {
+	return new Action[0];
+    }
 }
