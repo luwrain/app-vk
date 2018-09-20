@@ -147,7 +147,7 @@ class App implements Application
 	messagesArea.setConversationsArea(conversationsArea);
 	conversationsArea.setDefaultArea(defaultArea);
 	messagesArea.setDefaultArea(defaultArea);
-	luwrain.setActiveArea(conversationsArea);
+	//luwrain.setActiveArea(conversationsArea);
 	return true;
     }
 
@@ -164,7 +164,7 @@ class App implements Application
 	friendshipRequestsArea.setFriendsArea(friendsArea);
 	friendsArea.setDefaultArea(defaultArea);
 	friendshipRequestsArea.setDefaultArea(defaultArea);
-	luwrain.setActiveArea(friendsArea);
+	//	luwrain.setActiveArea(friendsArea);
 	return true;
     }
 
@@ -192,6 +192,4 @@ class App implements Application
 	luwrain.setActiveArea(usersArea);
 	return true;
     }
-
-    
 }

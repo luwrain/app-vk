@@ -59,7 +59,8 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 		    }, ()->{});
 	    });
 	actions.onDialogsUpdate(()->{
-		luwrain.playSound(Sounds.CLICK);
+		//luwrain.playSound(Sounds.CLICK);
+		luwrain.setActiveArea(ConversationsArea.this);
 		refresh();
 	    }, ()->{});
     }
@@ -81,9 +82,9 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 		luwrain.setActiveArea(messagesArea);
 		return true;
 	    case BACKSPACE:
-		if (messagesArea == null)
+		if (defaultArea == null)
 		    return false;
-		luwrain.setActiveArea(messagesArea);
+		luwrain.setActiveArea(defaultArea);
 		return true;
 	    case ESCAPE:
 		closing.run();

@@ -47,7 +47,8 @@ final class FriendsArea extends ListArea
 	this.actions = actions;
 	this.closing = closing;
 	actions.onFriendshipRequestsUpdate(()->{
-		luwrain.playSound(Sounds.CLICK);
+		//		luwrain.playSound(Sounds.CLICK);
+		luwrain.setActiveArea(FriendsArea.this);
 		refresh();
 		friendshipRequestsArea.refresh();
 	    });
