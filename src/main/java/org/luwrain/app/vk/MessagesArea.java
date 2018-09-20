@@ -23,7 +23,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-class MessagesArea extends ConsoleArea2
+class MessagesArea extends ConsoleArea2 implements NotificationNewMessage
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -75,6 +75,13 @@ class MessagesArea extends ConsoleArea2
 	setInputPrefix(base.getUserCommonName(userId) + ">");
 	refresh();
 	luwrain.setActiveArea(this);
+    }
+
+        @Override public void onMessage(int messageId, int peerId, String messageText)
+    {
+	if (activeUserId < 0)
+	    return;
+	actions.onMessagesHistoryNonInteractive(activeUserId, ()->refresh());
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)

@@ -226,6 +226,29 @@ final class Actions
 	}, null));
     }
 
+        void onMessagesHistoryNonInteractive(int userId, Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	luwrain.executeBkg(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
+			.userId(userId)
+			.execute();
+			luwrain.runUiSafely(()->{
+				final List<Message> list = resp.getItems();
+				base.messages = list.toArray(new Message[list.size()]);
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+				luwrain.crash(e);
+		    }
+	}, null));
+    }
+
+
     boolean onMessageSend(int userId, String text, Runnable onSuccess, Runnable onFailure)
     {
 	NullCheck.notEmpty(text, "text");
