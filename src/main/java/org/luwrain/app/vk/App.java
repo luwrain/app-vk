@@ -112,8 +112,13 @@ class App implements Application
 			    return onShowFriends();
 			if (ActionEvent.isAction(event, "post"))
 			    return onNewWallPost(this);
-						if (ActionEvent.isAction(event, "users"))
+						if (ActionEvent.isAction(event, "news"))
+						    return actions.onNewsfeedUpdate(()->{});
+
+												if (ActionEvent.isAction(event, "users"))
 			    return onShowUsers();
+
+												
 			return super.onSystemEvent(event);
 		    default:
 			return super.onSystemEvent(event);

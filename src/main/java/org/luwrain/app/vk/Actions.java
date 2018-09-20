@@ -26,8 +26,8 @@ import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.queries.users.UserField;
 import com.vk.api.sdk.objects.users.UserFull;
-
 import com.vk.api.sdk.queries.users.*;
+import com.vk.api.sdk.objects.newsfeed.NewsfeedItem;
 
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
@@ -370,6 +370,33 @@ final class Actions
 	}, null));
     }
 
+	    boolean onNewsfeedUpdate(Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.newsfeed.responses.GetResponse resp = base.vk.newsfeed().get(base.actor).execute();
+			luwrain.runUiSafely(()->{
+							final List<NewsfeedItem> list = resp.getItems();
+							base.newsfeedItems = list.toArray(new NewsfeedItem[list.size()]);
+							for(Object o: list)
+							    Log.debug("proba", o.toString());
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
+
             private UserFull[] getUsersForCache(Integer[] ids) throws ApiException, ClientException
     {
 	final List<String> list = new LinkedList();
@@ -381,7 +408,7 @@ final class Actions
     private UserFull[] getUsersForCache(List<String> ids) throws ApiException, ClientException
     {
 	//FIXME:Limit up to 1000
-	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).execute();
+	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(UserField.STATUS).execute();
 	return resp.toArray(new UserFull[resp.size()]);
     }
 }

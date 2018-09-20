@@ -26,6 +26,7 @@ import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.users.UserFull;
+import com.vk.api.sdk.objects.newsfeed.NewsfeedItem;
 
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
@@ -61,6 +62,7 @@ final class Base implements Watching.Listener
     UserFull[] users = new UserFull[0];
     UserFull[] friends = new UserFull[0];
     UserFull[] friendshipRequests = new UserFull[0];
+    NewsfeedItem[] newsfeedItems = new NewsfeedItem[0];
 
     Base(Luwrain luwrain, Strings strings, Watching watching)
     {

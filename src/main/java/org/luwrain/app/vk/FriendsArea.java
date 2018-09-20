@@ -187,7 +187,11 @@ final class FriendsArea extends ListArea
 	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
- 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName(), null));
+				final String status;
+		if (user.getStatus() != null && !user.getStatus().trim().isEmpty())
+		    status = " " + user.getStatus().trim(); else
+		    status = "";
+ 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName() + status, null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -199,7 +203,11 @@ final class FriendsArea extends ListArea
 	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
-		return user.getFirstName() + " " + user.getLastName();
+		final String status;
+		if (user.getStatus() != null && !user.getStatus().trim().isEmpty())
+		    status = " (" + user.getStatus().trim() + ")"; else
+		    status = "";
+		return user.getFirstName() + " " + user.getLastName() + status;
 	    }
 	    return item.toString();
 	}

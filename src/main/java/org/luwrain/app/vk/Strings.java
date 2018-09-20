@@ -22,6 +22,7 @@ interface Strings
 
     String actionConversations();
     String actionFriends();
+    String actionNewsfeed();
     String actionUsers();
     String actionWallDelete();
         String actionWallPost();
