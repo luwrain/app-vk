@@ -24,6 +24,7 @@ import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallPostFull;
+import com.vk.api.sdk.queries.users.UserField;
 import com.vk.api.sdk.objects.users.UserFull;
 
 import com.vk.api.sdk.queries.users.*;
@@ -55,10 +56,9 @@ final class Actions
 	this.lists = new ActionLists(luwrain, strings, base);
     }
 
-    boolean onWallUpdate(Runnable onSuccess, Runnable onFailure)
+    boolean onWallUpdate(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
-	NullCheck.notNull(onFailure, "onFailure");
 	return base.runTask(new FutureTask(()->{
 		    try {
 			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
@@ -75,7 +75,6 @@ final class Actions
 		    {
 			luwrain.runUiSafely(()->{
 				base.resetTask();
-				onFailure.run();
 				luwrain.crash(e);
 			    });
 		    }
@@ -285,6 +284,40 @@ final class Actions
 			    });
 		    }
 	}, null));
+    }
+
+    boolean onFriendshipRequestsUpdate(Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse resp = base.vk.friends().getRequests(base.actor).execute();
+			final List<Integer> list = resp.getItems();
+			final Integer[] ids = list.toArray(new Integer[list.size()]);
+			final UserFull[] users = getUsersForCache(ids);
+			luwrain.runUiSafely(()->{
+				base.friendshipRequests = users;
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
+            private UserFull[] getUsersForCache(Integer[] ids) throws ApiException, ClientException
+    {
+	final List<String> list = new LinkedList();
+	for(Integer i: ids)
+	    list.add(i.toString());
+	return getUsersForCache(list);
     }
 
     private UserFull[] getUsersForCache(List<String> ids) throws ApiException, ClientException

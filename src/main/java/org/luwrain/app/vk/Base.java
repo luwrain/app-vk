@@ -59,6 +59,7 @@ final class Base implements Watching.Listener
     Dialog[] dialogs = new Dialog[0];
     Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];
+        UserFull[] friendshipRequests = new UserFull[0];
 
     Base(Luwrain luwrain, Strings strings, Watching watching)
     {

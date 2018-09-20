@@ -41,13 +41,9 @@ class WallArea extends ListArea
 	this.base = base;
 	this.actions = actions;
 	actions.onWallUpdate(()->{
-		luwrain.onAreaNewBackgroundSound(WallArea.this);
 		luwrain.playSound(Sounds.CLICK);
 		refresh();
-		Log.debug("proba", "wall " + base.wallPosts.length);
-	    },
-	    ()->luwrain.onAreaNewBackgroundSound(WallArea.this));
-	luwrain.onAreaNewBackgroundSound(this);
+	    });
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)

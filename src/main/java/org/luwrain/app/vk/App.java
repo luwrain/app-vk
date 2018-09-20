@@ -53,6 +53,7 @@ class App implements Application
 	this.actions = new Actions(luwrain, strings, base);
 	this.actionLists = new ActionLists(luwrain, strings, base);
 	createDefaultArea();
+	base.setVisibleAreas(new Area[]{defaultArea});
 	this.layout = new AreaLayoutHelper(()->{
 		base.setVisibleAreas(layout.getLayout().getAreas());
 		luwrain.onNewAreaLayout();
