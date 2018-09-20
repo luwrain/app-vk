@@ -26,26 +26,24 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-final class ConversationsArea extends ListArea
+final class ConversationsArea extends ListArea implements NotificationNewMessage
 {
     private final Luwrain luwrain;
     private final Strings strings;
     private final Base base;
     private final Actions actions;
-    private final ActionLists actionLists;
 
     private MessagesArea messagesArea = null;
     private Area defaultArea = null;
 
-    ConversationsArea(Luwrain luwrain, Strings strings, Base base,
-		      Actions actions, ActionLists actionLists)
+    ConversationsArea(Luwrain luwrain, Strings strings, Base base, Actions actions)
     {
 	super(createParams(luwrain, strings, base));
+	NullCheck.notNull(actions, "actions");
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-	this.actionLists = actionLists;
 	setListClickHandler((area,index,obj)->{
 		NullCheck.notNull(obj, "obj");
 		if (!(obj instanceof Dialog))
@@ -69,6 +67,11 @@ final class ConversationsArea extends ListArea
 	    },
 	    ()->luwrain.onAreaNewBackgroundSound(ConversationsArea.this));
 	luwrain.onAreaNewBackgroundSound(this);
+    }
+
+    @Override public void onMessage(int messageId, int peerId, String messageText)
+    {
+	actions.onDialogsUpdateNonInteractive(()->refresh());
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)
@@ -128,7 +131,7 @@ final class ConversationsArea extends ListArea
 
     @Override public Action[] getAreaActions()
     {
-	return actionLists.getConversationsActions();
+	return actions.lists.getConversationsActions();
     }
 
     void setMessagesArea(MessagesArea messagesArea)

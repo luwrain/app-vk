@@ -136,7 +136,7 @@ class App implements Application
 	final Runnable closing = ()->{
 	    layout.setBasicArea(defaultArea);
 	};
-	final ConversationsArea conversationsArea = new ConversationsArea(luwrain, strings, base, actions, actionLists);
+	final ConversationsArea conversationsArea = new ConversationsArea(luwrain, strings, base, actions);
 		final MessagesArea messagesArea = new MessagesArea(luwrain, strings, base, actions, actionLists);
 	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, conversationsArea, messagesArea));
 	conversationsArea.setMessagesArea(messagesArea);

@@ -174,6 +174,31 @@ final class Actions
 	}, null));
     }
 
+        void onDialogsUpdateNonInteractive(Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	luwrain.executeBkg(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.messages.responses.GetDialogsResponse resp = base.vk.messages().getDialogs(base.actor).execute();
+							final List<Dialog> list = resp.getItems();
+							final List<String> userIds = new LinkedList();
+							for(Dialog d: list)
+							    userIds.add(d.getMessage().getUserId().toString());
+							final UserFull[] users = getUsersForCache(userIds);
+			luwrain.runUiSafely(()->{
+				base.dialogs = list.toArray(new Dialog[list.size()]);
+				base.cacheUsers(users);
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+				luwrain.crash(e);
+		    }
+	}, null));
+    }
+
     boolean onMessagesHistory(int userId, Runnable onSuccess, Runnable onFailure)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");

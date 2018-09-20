@@ -35,9 +35,8 @@ final class Watching
 {
     static private final String LOG_COMPONENT = "vk";
 
-    interface Listener
+    interface Listener extends NotificationNewMessage
     {
-	void onMessage(int messageId, int peerId, String messageText);
     }
 
     private final Luwrain luwrain;

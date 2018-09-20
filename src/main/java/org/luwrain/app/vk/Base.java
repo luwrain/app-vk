@@ -77,6 +77,9 @@ final class Base implements Watching.Listener
 
     @Override public void onMessage(int messageId, int peerId, String messageText)
     {
+	for(Area a: visibleAreas)
+	    if (a instanceof NotificationNewMessage)
+		luwrain.runUiSafely(()->{((NotificationNewMessage)a).onMessage(messageId, peerId, messageText);});
     }
 
     void setVisibleAreas(Area[] visibleAreas)
