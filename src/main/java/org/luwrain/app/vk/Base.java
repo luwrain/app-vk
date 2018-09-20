@@ -113,12 +113,16 @@ final class Base implements Watching.Listener
 	    return false;
 	this.task = task;
 	luwrain.executeBkg(this.task);
+	for(Area a: visibleAreas)
+	    luwrain.onAreaNewBackgroundSound(a);
 	return true;
     }
 
     void resetTask()
     {
 	this.task = null;
+	for(Area a: visibleAreas)
+	    luwrain.onAreaNewBackgroundSound(a);
     }
 
     boolean isBusy()

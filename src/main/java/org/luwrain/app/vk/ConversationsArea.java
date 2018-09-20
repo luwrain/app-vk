@@ -51,22 +51,14 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 		final Dialog dialog = (Dialog)obj;
 		if (dialog.getMessage() == null || dialog.getMessage().getUserId() < 0)
 		    return false;
-		if (!actions.onMessagesHistory(dialog.getMessage().getUserId(), ()->{
-			    luwrain.onAreaNewBackgroundSound(area);
-			    messagesArea.activateConv(dialog.getMessage().getUserId());
-			},
-			()->luwrain.onAreaNewBackgroundSound(area)))
-		    return false;
-		luwrain.onAreaNewBackgroundSound(area);
-		return true;
+		return actions.onMessagesHistory(dialog.getMessage().getUserId(), ()->{
+			messagesArea.activateConv(dialog.getMessage().getUserId());
+		    }, ()->{});
 	    });
 	actions.onDialogsUpdate(()->{
-		luwrain.onAreaNewBackgroundSound(ConversationsArea.this);
 		luwrain.playSound(Sounds.CLICK);
 		refresh();
-	    },
-	    ()->luwrain.onAreaNewBackgroundSound(ConversationsArea.this));
-	luwrain.onAreaNewBackgroundSound(this);
+	    }, ()->{});
     }
 
     @Override public void onMessage(int messageId, int peerId, String messageText)
