@@ -29,22 +29,23 @@ class MessagesArea extends ConsoleArea2
     private final Strings strings;
     private final Base base;
     private final Actions actions;
-    private final ActionLists actionLists;
+    private final Runnable closing;
 
     private int activeUserId = -1;
 
     private ConversationsArea conversationsArea = null;
     private Area defaultArea = null;
 
-    MessagesArea(Luwrain luwrain, Strings strings, Base base,
-		 Actions actions, ActionLists actionLists)
+    MessagesArea(Luwrain luwrain, Strings strings, Base base, Actions actions, Runnable closing)
     {
 	super(createParams(luwrain, strings, base));
+	NullCheck.notNull(actions, "actions");
+	NullCheck.notNull(closing, "closing");
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-	this.actionLists = actionLists;
+	this.closing = closing;
 	setInputPrefix(">");
 	setConsoleClickHandler((area,index,obj)->{
 		if (obj == null)
@@ -88,7 +89,7 @@ class MessagesArea extends ConsoleArea2
 		luwrain.setActiveArea(defaultArea);
 		return true;
 	    case ESCAPE:
-		base.closeApp();
+		closing.run();
 		return true;
 	    }
 	return super.onInputEvent(event);

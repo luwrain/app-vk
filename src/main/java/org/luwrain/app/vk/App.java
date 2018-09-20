@@ -57,8 +57,7 @@ class App implements Application
 	this.layout = new AreaLayoutHelper(()->{
 		base.setVisibleAreas(layout.getLayout().getAreas());
 		luwrain.onNewAreaLayout();
-		//luwrain.announceActiveArea();
-	    }, defaultArea);
+	    }, new AreaLayout(defaultArea));
 	return new InitResult();
     }
 
@@ -108,9 +107,9 @@ class App implements Application
 		    {
 		    case ACTION:
 			if (ActionEvent.isAction(event, "conversations"))
-			    return onShowConversations(this);
+			    return onShowConversations();
 			if (ActionEvent.isAction(event, "friends"))
-			    return onShowFriends(this);
+			    return onShowFriends();
 			if (ActionEvent.isAction(event, "post"))
 			    return onNewWallPost(this);
 			return super.onSystemEvent(event);
@@ -133,14 +132,14 @@ class App implements Application
 	return true;
     }
 
-    private boolean onShowConversations(WallArea wallArea)
+    private boolean onShowConversations()
     {
-	NullCheck.notNull(wallArea, "wallArea");
 	final Runnable closing = ()->{
-	    layout.setBasicArea(defaultArea);
+	    this.layout.setBasicLayout(new AreaLayout(defaultArea));
+	    luwrain.announceActiveArea();
 	};
-	final ConversationsArea conversationsArea = new ConversationsArea(luwrain, strings, base, actions);
-		final MessagesArea messagesArea = new MessagesArea(luwrain, strings, base, actions, actionLists);
+	final ConversationsArea conversationsArea = new ConversationsArea(luwrain, strings, base, actions, closing);
+	final MessagesArea messagesArea = new MessagesArea(luwrain, strings, base, actions, closing);
 	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, conversationsArea, messagesArea));
 	conversationsArea.setMessagesArea(messagesArea);
 	messagesArea.setConversationsArea(conversationsArea);
@@ -150,14 +149,14 @@ class App implements Application
 	return true;
     }
 
-        private boolean onShowFriends(WallArea wallArea)
+    private boolean onShowFriends()
     {
-	NullCheck.notNull(wallArea, "wallArea");
 	final Runnable closing = ()->{
-	    layout.setBasicArea(defaultArea);
+	    this.layout.setBasicLayout(new AreaLayout(defaultArea));
+	    luwrain.announceActiveArea();
 	};
-	final FriendsArea friendsArea = new FriendsArea(luwrain, strings, base, actions);
-		final FriendshipRequestsArea friendshipRequestsArea = new FriendshipRequestsArea(luwrain, strings, base, actions);
+	final FriendsArea friendsArea = new FriendsArea(luwrain, strings, base, actions, closing);
+	final FriendshipRequestsArea friendshipRequestsArea = new FriendshipRequestsArea(luwrain, strings, base, actions, closing);
 	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, friendsArea, friendshipRequestsArea));
 	friendsArea.setFriendshipRequestsArea(friendshipRequestsArea);
 	friendshipRequestsArea.setFriendsArea(friendsArea);

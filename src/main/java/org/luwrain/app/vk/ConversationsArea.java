@@ -32,18 +32,21 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
     private final Strings strings;
     private final Base base;
     private final Actions actions;
+    private final Runnable closing;
 
     private MessagesArea messagesArea = null;
     private Area defaultArea = null;
 
-    ConversationsArea(Luwrain luwrain, Strings strings, Base base, Actions actions)
+    ConversationsArea(Luwrain luwrain, Strings strings, Base base, Actions actions, Runnable closing)
     {
 	super(createParams(luwrain, strings, base));
 	NullCheck.notNull(actions, "actions");
+	NullCheck.notNull(closing, "closing");
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
+	this.closing = closing;
 	setListClickHandler((area,index,obj)->{
 		NullCheck.notNull(obj, "obj");
 		if (!(obj instanceof Dialog))
@@ -83,7 +86,7 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 		luwrain.setActiveArea(messagesArea);
 		return true;
 	    case ESCAPE:
-		base.closeApp();
+		closing.run();
 		return true;
 	    }
 	return super.onInputEvent(event);

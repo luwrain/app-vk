@@ -31,23 +31,26 @@ final class FriendsArea extends ListArea
     private final Strings strings;
     private final Base base;
     private final Actions actions;
+    private final Runnable closing;
 
     private Area defaultArea = null;
     private FriendshipRequestsArea friendshipRequestsArea = null;
 
-    FriendsArea(Luwrain luwrain, Strings strings, Base base, Actions actions)
+    FriendsArea(Luwrain luwrain, Strings strings, Base base, Actions actions, Runnable closing)
     {
 	super(createParams(luwrain, strings, base));
 	NullCheck.notNull(actions, "actions");
+	NullCheck.notNull(closing, "closing");
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-actions.onFriendshipRequestsUpdate(()->{
+	this.closing = closing;
+	actions.onFriendshipRequestsUpdate(()->{
 		luwrain.playSound(Sounds.CLICK);
 		refresh();
 		friendshipRequestsArea.refresh();
-    });
+	    });
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)
@@ -67,7 +70,7 @@ actions.onFriendshipRequestsUpdate(()->{
 		luwrain.setActiveArea(defaultArea);
 		return true;
 	    case ESCAPE:
-		base.closeApp();
+		closing.run();
 		return true;
 	    }
 	return super.onInputEvent(event);
@@ -180,22 +183,19 @@ actions.onFriendshipRequestsUpdate(()->{
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-
-	    	    if (item instanceof UserFull)
+	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
  		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName(), null));
 		return;
 	    }
-
-	    
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
 	}
 	@Override public String getScreenAppearance(Object item, Set<Flags> flags)
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    	    if (item instanceof UserFull)
+	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
 		return user.getFirstName() + " " + user.getLastName();

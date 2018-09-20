@@ -31,18 +31,21 @@ final class FriendshipRequestsArea extends ListArea
     private final Strings strings;
     private final Base base;
     private final Actions actions;
+    private final Runnable closing;
 
     private FriendsArea friendsArea = null;
     private Area defaultArea = null;
 
-    FriendshipRequestsArea(Luwrain luwrain, Strings strings, Base base, Actions actions)
+    FriendshipRequestsArea(Luwrain luwrain, Strings strings, Base base, Actions actions, Runnable closing)
     {
 	super(createParams(luwrain, strings, base));
 	NullCheck.notNull(actions, "actions");
+	NullCheck.notNull(closing, "closing");
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
+	this.closing = closing;
 	setListClickHandler((area,index,obj)->{
 		NullCheck.notNull(obj, "obj");
 		if (!(obj instanceof UserFull))
@@ -73,7 +76,7 @@ final class FriendshipRequestsArea extends ListArea
 		luwrain.setActiveArea(friendsArea);
 		return true;
 	    case ESCAPE:
-		base.closeApp();
+		closing.run();
 		return true;
 	    }
 	return super.onInputEvent(event);
