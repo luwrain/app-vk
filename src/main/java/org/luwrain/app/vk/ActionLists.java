@@ -43,6 +43,7 @@ final class ActionLists
 	    new Action("post", strings.actionWallPost(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
 	    	    new Action("delete", strings.actionWallDelete(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
 	    	    new Action("conversations", strings.actionConversations(), new KeyboardEvent(KeyboardEvent.Special.F5)),
+	    	    	    new Action("friends", strings.actionFriends(), new KeyboardEvent(KeyboardEvent.Special.F6)),
 	    new Action("users", strings.actionUsers()),
 	};
     }

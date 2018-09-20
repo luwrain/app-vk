@@ -107,8 +107,10 @@ class App implements Application
 		    switch(event.getCode())
 		    {
 		    case ACTION:
-						if (ActionEvent.isAction(event, "conversations"))
+			if (ActionEvent.isAction(event, "conversations"))
 			    return onShowConversations(this);
+			if (ActionEvent.isAction(event, "friends"))
+			    return onShowFriends(this);
 			if (ActionEvent.isAction(event, "post"))
 			    return onNewWallPost(this);
 			return super.onSystemEvent(event);
@@ -145,6 +147,23 @@ class App implements Application
 	conversationsArea.setDefaultArea(defaultArea);
 	messagesArea.setDefaultArea(defaultArea);
 	luwrain.setActiveArea(conversationsArea);
+	return true;
+    }
+
+        private boolean onShowFriends(WallArea wallArea)
+    {
+	NullCheck.notNull(wallArea, "wallArea");
+	final Runnable closing = ()->{
+	    layout.setBasicArea(defaultArea);
+	};
+	final FriendsArea friendsArea = new FriendsArea(luwrain, strings, base, actions);
+		final FriendshipRequestsArea friendshipRequestsArea = new FriendshipRequestsArea(luwrain, strings, base, actions);
+	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, friendsArea, friendshipRequestsArea));
+	friendsArea.setFriendshipRequestsArea(friendshipRequestsArea);
+	friendshipRequestsArea.setFriendsArea(friendsArea);
+	friendsArea.setDefaultArea(defaultArea);
+	friendshipRequestsArea.setDefaultArea(defaultArea);
+	luwrain.setActiveArea(friendsArea);
 	return true;
     }
 }

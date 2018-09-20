@@ -291,12 +291,23 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
-			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse resp = base.vk.friends().getRequests(base.actor).execute();
-			final List<Integer> list = resp.getItems();
-			final Integer[] ids = list.toArray(new Integer[list.size()]);
-			final UserFull[] users = getUsersForCache(ids);
+
+						final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).execute();
+			final List<Integer> friendsList = friendsResp.getItems();
+			final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
+			final UserFull[] friendsUsers = getUsersForCache(friendsIds);
+
+			
+			
+final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).execute();
+			final List<Integer> requestsList = requestsResp.getItems();
+			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+
+
 			luwrain.runUiSafely(()->{
-				base.friendshipRequests = users;
+				base.friends = friendsUsers;
+				base.friendshipRequests = requestsUsers;
 				base.resetTask();
 				onSuccess.run();
 			    });
@@ -311,6 +322,44 @@ final class Actions
 		    }
 	}, null));
     }
+
+    boolean onNewFriendship(int userId, Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			base.vk.friends().add(base.actor, userId).execute();
+
+			final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).execute();
+			final List<Integer> friendsList = friendsResp.getItems();
+			final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
+			final UserFull[] friendsUsers = getUsersForCache(friendsIds);
+
+			
+			
+final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).execute();
+			final List<Integer> requestsList = requestsResp.getItems();
+			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+			
+			luwrain.runUiSafely(()->{
+				base.friends = friendsUsers;
+				base.friendshipRequests = requestsUsers;
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
 
             private UserFull[] getUsersForCache(Integer[] ids) throws ApiException, ClientException
     {

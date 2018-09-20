@@ -43,24 +43,11 @@ final class FriendsArea extends ListArea
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-	setListClickHandler((area,index,obj)->{
-		NullCheck.notNull(obj, "obj");
-		if (!(obj instanceof UserFull))
-		    return false;
-		//FIXME:
-		/*
-		return actions.onMessagesHistory(dialog.getMessage().getUserId(), ()->{
-			messagesArea.activateConv(dialog.getMessage().getUserId());
-		    }, ()->{});
-		*/
-		return false;
-	    });
-	/*
-	actions.onFriendshipRequestsUpdate(()->{
+actions.onFriendshipRequestsUpdate(()->{
 		luwrain.playSound(Sounds.CLICK);
 		refresh();
-	    }, ()->{});
-	*/
+		friendshipRequestsArea.refresh();
+    });
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)
@@ -193,33 +180,26 @@ final class FriendsArea extends ListArea
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    /*
-	    if (item instanceof Dialog)
+
+	    	    if (item instanceof UserFull)
 	    {
-		final Dialog dialog = (Dialog)item;
-		final Message message = dialog.getMessage();
-		if (dialog.getUnread() != null)
-		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.ATTENTION, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null)); else
-		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + message.getBody(), null));
+		final UserFull user = (UserFull)item;
+ 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName(), null));
 		return;
 	    }
-	    */
+
+	    
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
 	}
 	@Override public String getScreenAppearance(Object item, Set<Flags> flags)
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    /*
-	    if (item instanceof Dialog)
+	    	    if (item instanceof UserFull)
 	    {
-		final Dialog dialog = (Dialog)item;
-		final Message message = dialog.getMessage();
-		if (dialog.getUnread() != null)
-		    return base.getUserCommonName(message.getUserId()) + " (" + dialog.getUnread() + "): " + message.getBody(); else
-		    return base.getUserCommonName(message.getUserId()) + ": " + message.getBody();
+		final UserFull user = (UserFull)item;
+		return user.getFirstName() + " " + user.getLastName();
 	    }
-	    */
 	    return item.toString();
 	}
 	@Override public int getObservableLeftBound(Object item)

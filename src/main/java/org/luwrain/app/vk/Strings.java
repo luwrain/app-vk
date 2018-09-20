@@ -21,6 +21,7 @@ interface Strings
     static final String NAME = "luwrain.vk";
 
     String actionConversations();
+    String actionFriends();
     String actionUsers();
     String actionWallDelete();
         String actionWallPost();
