@@ -23,23 +23,24 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-final class UsersArea extends ConsoleArea2
+class UsersArea extends ConsoleArea2
 {
     private final Luwrain luwrain;
     private final Strings strings;
     private final Base base;
     private final Actions actions;
-    private final ActionLists actionLists;
+    private final Runnable closing;
 
-    UsersArea(Luwrain luwrain, Strings strings, Base base,
-	      Actions actions, ActionLists actionLists)
+    UsersArea(Luwrain luwrain, Strings strings, Base base, Actions actions, Runnable closing)
     {
 	super(createParams(luwrain, strings, base));
+	NullCheck.notNull(actions, "actions");
+	NullCheck.notNull(closing, "closing");
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-	this.actionLists = actionLists;
+	this.closing = closing;
 	setInputPrefix(strings.search() + ">");
 	setConsoleClickHandler((area,index,obj)->{
 		if (obj == null)
@@ -50,14 +51,11 @@ final class UsersArea extends ConsoleArea2
 		NullCheck.notNull(text, "text");
 		if (text.trim().isEmpty() || base.isBusy())
 		    return ConsoleArea2.InputHandler.Result.REJECTED;
-		actions.onUsersSearch(text,
-				      ()->{
-					  area.refresh();
-					  luwrain.onAreaNewBackgroundSound(area);
-					  luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.ERROR);
-				      },
-				      ()->luwrain.onAreaNewBackgroundSound(area));
-		luwrain.onAreaNewBackgroundSound(area);
+		if (!actions.onUsersSearch(text, ()->{
+			    area.refresh();
+			    luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.ERROR);
+			}))
+		    return ConsoleArea2.InputHandler.Result.REJECTED;
 		return ConsoleArea2.InputHandler.Result.OK;
 	    });
     }
@@ -69,7 +67,7 @@ final class UsersArea extends ConsoleArea2
 	    switch(event.getSpecial())
 	    {
 	    case ESCAPE:
-		base.closeApp();
+		closing.run();
 		return true;
 	    }
 	return super.onInputEvent(event);
@@ -116,7 +114,7 @@ final class UsersArea extends ConsoleArea2
 	params.context = new DefaultControlEnvironment(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain);
-	params.areaName = strings.appName();
+	params.areaName = strings.usersAreaName();
 	params.inputPos = ConsoleArea2.InputPos.TOP;
 	return params;
     }

@@ -256,11 +256,10 @@ final class Actions
 	}, null));
     }
 
-    boolean onUsersSearch(String query, Runnable onSuccess, Runnable onFailure)
+    boolean onUsersSearch(String query, Runnable onSuccess)
     {
 	NullCheck.notEmpty(query, "query");
 	NullCheck.notNull(onSuccess, "onSuccess");
-	NullCheck.notNull(onFailure, "onFailure");
 	return base.runTask(new FutureTask(()->{
 		    try {
 			final com.vk.api.sdk.objects.users.responses.SearchResponse resp = base.vk.users().search(base.actor).q(query)
@@ -279,7 +278,6 @@ final class Actions
 		    {
 			luwrain.runUiSafely(()->{
 				base.resetTask();
-				onFailure.run();
 				luwrain.crash(e);
 			    });
 		    }

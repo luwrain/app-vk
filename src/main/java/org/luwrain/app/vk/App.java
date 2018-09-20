@@ -112,6 +112,8 @@ class App implements Application
 			    return onShowFriends();
 			if (ActionEvent.isAction(event, "post"))
 			    return onNewWallPost(this);
+						if (ActionEvent.isAction(event, "users"))
+			    return onShowUsers();
 			return super.onSystemEvent(event);
 		    default:
 			return super.onSystemEvent(event);
@@ -165,4 +167,31 @@ class App implements Application
 	luwrain.setActiveArea(friendsArea);
 	return true;
     }
+
+        private boolean onShowUsers()
+    {
+	final Runnable closing = ()->{
+	    this.layout.setBasicLayout(new AreaLayout(defaultArea));
+	    luwrain.announceActiveArea();
+	};
+	final UsersArea usersArea = new UsersArea(luwrain, strings, base, actions, closing){
+		@Override public boolean onInputEvent(KeyboardEvent event)
+		{
+		    NullCheck.notNull(event, "event");
+		    if (event.isSpecial() && !event.isModified())
+			switch(event.getSpecial())
+			{
+			case TAB:
+			    luwrain.setActiveArea(defaultArea);
+			    return true;
+			}
+		    return super.onInputEvent(event);
+		}
+	    };
+	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_RIGHT, defaultArea, usersArea));
+	luwrain.setActiveArea(usersArea);
+	return true;
+    }
+
+    
 }
