@@ -16,6 +16,8 @@
 
 package org.luwrain.app.vk;
 
+import java.util.*;
+
 import com.vk.api.sdk.objects.users.UserFull;
 
 import org.luwrain.core.*;
@@ -113,7 +115,7 @@ class UsersArea extends ConsoleArea2
 	final ConsoleArea2.Params params = new ConsoleArea2.Params();
 	params.context = new DefaultControlEnvironment(luwrain);
 	params.model = new Model(base);
-	params.appearance = new Appearance(luwrain);
+	params.appearance = new Appearance(luwrain, strings);
 	params.areaName = strings.usersAreaName();
 	params.inputPos = ConsoleArea2.InputPos.TOP;
 	return params;
@@ -122,10 +124,13 @@ class UsersArea extends ConsoleArea2
     static private final class Appearance implements ConsoleArea2.Appearance
     {
 	private final Luwrain luwrain;
-	Appearance(Luwrain luwrain)
+	private final Strings strings;
+	Appearance(Luwrain luwrain, Strings strings)
 	{
 	    NullCheck.notNull(luwrain, "luwrain");
+	    NullCheck.notNull(strings, "strings");
 	    this.luwrain = luwrain;
+	    this.strings = strings ; 
 	}
 	@Override public void announceItem(Object item)
 	{
@@ -133,7 +138,13 @@ class UsersArea extends ConsoleArea2
 	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
- 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName(), null));
+String extInfo = getExtInfo(user);
+if (user.getLastSeen() != null)
+{
+    final Date date = new Date(user.getLastSeen().getTime().longValue() * 1000);
+    extInfo += ", " + strings.lastSeen(luwrain.i18n().getPastTimeBrief(date));
+}
+ 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName() + extInfo, null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -144,11 +155,21 @@ class UsersArea extends ConsoleArea2
 	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
-		return user.getFirstName() + " " + user.getLastName();
+		return user.getFirstName() + " " + user.getLastName() + getExtInfo(user);
 	    }
 	    return item.toString();
 	}
-    };
+	    private String getExtInfo(UserFull user)
+    {
+	NullCheck.notNull(user, "user");
+	final StringBuilder b = new StringBuilder();
+	if (user.getCity() != null && user.getCity().getTitle() != null && !user.getCity().getTitle().trim().isEmpty())
+	    b.append(", ").append(user.getCity().getTitle().trim());
+	if (user.getStatus() != null && !user.getStatus().trim().isEmpty())
+	    b.append(", ").append(user.getStatus().trim());
+	    return new String(b);
+    }
+	    };
 
     static private final class Model implements ConsoleArea2.Model
     {

@@ -292,7 +292,8 @@ final class Actions
 		    try {
 			final com.vk.api.sdk.objects.users.responses.SearchResponse resp = base.vk.users().search(base.actor).q(query)
 			.offset(0)
-			.count(ANSWER_LIMIT)
+			.count(100)
+			.fields(UserField.STATUS, UserField.CITY, UserField.LAST_SEEN)
 			.execute();
 			luwrain.runUiSafely(()->{
 				final List<UserFull> list = resp.getItems();
@@ -375,26 +376,15 @@ final class Actions
 	}, null));
     }
 
-	    boolean onNewsfeedUpdate(Runnable onSuccess)
+    boolean onNewsfeedUpdate(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
 			final GetNewsfeedPostsResponse resp = new NewsfeedGetPostsQuery (base.vk, base.actor).filters(NewsfeedGetFilter.POST).execute();
 			final List<ItemWallpost> items = resp.getItems();
-			//			for(ItemWallpost i: items)
-			//			    Log.debug("proba", i.getText());
-			for(UserFull u: resp.getProfiles())
-			    Log.debug("proba", u.getLastName());
-			resp.getNewOffset();
-
-										
-										
 			luwrain.runUiSafely(()->{
-				//							final List<NewsfeedItem> list = resp.getItems();
 				//							base.newsfeedItems = list.toArray(new NewsfeedItem[list.size()]);
-							//							for(Object o: list)
-							//							    Log.debug("proba", o.toString());
 				base.resetTask();
 				onSuccess.run();
 			    });
@@ -409,7 +399,6 @@ final class Actions
 		    }
 	}, null));
     }
-
 
             private UserFull[] getUsersForCache(Integer[] ids) throws ApiException, ClientException
     {

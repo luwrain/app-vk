@@ -30,6 +30,7 @@ interface Strings
     String conversationsAreaName();
     String friendsAreaName();
     String friendshipRequestsAreaName();
+    String lastSeen(String value);
     String messagesAreaName();
         String sendingPost();
     String search();
