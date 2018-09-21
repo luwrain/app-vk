@@ -28,11 +28,16 @@ import com.vk.api.sdk.queries.users.UserField;
 import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.queries.users.*;
 import com.vk.api.sdk.objects.newsfeed.NewsfeedItem;
+import com.vk.api.sdk.objects.newsfeed.ItemWallpost;
+import com.vk.api.sdk.objects.newsfeed.NewsfeedItemType;
+import com.vk.api.sdk.queries.newsfeed.NewsfeedGetFilter;
 
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
 import org.luwrain.popups.Popups;
 import org.luwrain.speech.*;
+
+import org.luwrain.app.vk.custom.*;
 
 final class Actions
 {
@@ -375,12 +380,21 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
-			final com.vk.api.sdk.objects.newsfeed.responses.GetResponse resp = base.vk.newsfeed().get(base.actor).execute();
+			final GetNewsfeedPostsResponse resp = new NewsfeedGetPostsQuery (base.vk, base.actor).filters(NewsfeedGetFilter.POST).execute();
+			final List<ItemWallpost> items = resp.getItems();
+			//			for(ItemWallpost i: items)
+			//			    Log.debug("proba", i.getText());
+			for(UserFull u: resp.getProfiles())
+			    Log.debug("proba", u.getLastName());
+			resp.getNewOffset();
+
+										
+										
 			luwrain.runUiSafely(()->{
-							final List<NewsfeedItem> list = resp.getItems();
-							base.newsfeedItems = list.toArray(new NewsfeedItem[list.size()]);
-							for(Object o: list)
-							    Log.debug("proba", o.toString());
+				//							final List<NewsfeedItem> list = resp.getItems();
+				//							base.newsfeedItems = list.toArray(new NewsfeedItem[list.size()]);
+							//							for(Object o: list)
+							//							    Log.debug("proba", o.toString());
 				base.resetTask();
 				onSuccess.run();
 			    });
