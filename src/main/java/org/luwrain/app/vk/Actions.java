@@ -411,7 +411,7 @@ final class Actions
     private UserFull[] getUsersForCache(List<String> ids) throws ApiException, ClientException
     {
 	//FIXME:Limit up to 1000
-	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(UserField.STATUS).execute();
+	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(UserField.STATUS, UserField.LAST_SEEN).execute();
 	return resp.toArray(new UserFull[resp.size()]);
     }
 }

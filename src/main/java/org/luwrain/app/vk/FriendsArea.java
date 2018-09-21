@@ -18,6 +18,8 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
+import java.util.*;
+
 import com.vk.api.sdk.objects.users.UserFull;
 
 import org.luwrain.core.*;
@@ -187,11 +189,15 @@ final class FriendsArea extends ListArea
 	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
-				final String status;
+		String extInfo = "";
 		if (user.getStatus() != null && !user.getStatus().trim().isEmpty())
-		    status = " " + user.getStatus().trim(); else
-		    status = "";
- 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName() + status, null));
+		    extInfo += ", " + user.getStatus().trim();
+		if (user.getLastSeen() != null)
+		{
+		    final Date date = new Date(user.getLastSeen().getTime().longValue() * 1000);
+		    extInfo += ", " + strings.lastSeen(luwrain.i18n().getPastTimeBrief(date));
+		}
+ 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName() + extInfo, null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
