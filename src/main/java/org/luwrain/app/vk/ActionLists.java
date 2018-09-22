@@ -49,6 +49,14 @@ final class ActionLists
 	};
     }
 
+        Action[] getUsersActions()
+    {
+	return new Action[] {
+	    new Action("request-friendship", strings.actionRequestFriendship(), new KeyboardEvent(KeyboardEvent.Special.F5)),
+	};
+    }
+
+
     Action[] getConversationsActions()
     {
 	return new Action[0];

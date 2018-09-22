@@ -82,6 +82,9 @@ class UsersArea extends ConsoleArea2
 	    return super.onSystemEvent(event);
 	switch(event.getCode())
 	{
+	case ACTION:
+	    if (ActionEvent.isAction(event, "request-friendship"))
+		return onRequestFriendship();
 	case CLOSE:
 	    base.closeApp();
 	    return true;
@@ -105,6 +108,20 @@ class UsersArea extends ConsoleArea2
 	default:
 	    return super.onAreaQuery(query);
 	}
+    }
+
+	@Override public Action[] getAreaActions()
+	{
+	    return actions.lists.getUsersActions();
+	}
+
+    private boolean onRequestFriendship()
+    {
+	final Object selected = selected();
+	if (selected == null || !(selected instanceof UserFull))
+	    return false;
+	final UserFull user = (UserFull)selected;
+	return  actions.onNewFriendship(user.getId(), ()->luwrain.message(strings.friendshipRequestSent(), Luwrain.MessageType.OK));
     }
 
     static private ConsoleArea2.Params createParams(Luwrain luwrain, Strings strings, Base base)
