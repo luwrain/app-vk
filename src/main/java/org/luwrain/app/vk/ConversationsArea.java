@@ -205,7 +205,7 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 		final Dialog dialog = (Dialog)item;
 		final Message message = dialog.getMessage();
 		if (dialog.getUnread() != null)
-		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.ATTENTION, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null)); else
+		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.SELECTED, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null)); else
 		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + message.getBody(), null));
 		return;
 	    }

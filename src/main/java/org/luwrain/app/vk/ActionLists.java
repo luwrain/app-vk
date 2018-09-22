@@ -52,7 +52,7 @@ final class ActionLists
         Action[] getUsersActions()
     {
 	return new Action[] {
-	    new Action("request-friendship", strings.actionRequestFriendship(), new KeyboardEvent(KeyboardEvent.Special.F5)),
+	    new Action("request-friendship", strings.actionRequestFriendship(), new KeyboardEvent(KeyboardEvent.Special.F6)),
 	};
     }
 
@@ -64,7 +64,9 @@ final class ActionLists
 
             Action[] getFriendsActions()
     {
-	return new Action[0];
+	return new Action[]{
+	    new Action("message", strings.actionMessage(), new KeyboardEvent(KeyboardEvent.Special.F5))
+	};
     }
 
 

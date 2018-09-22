@@ -22,6 +22,7 @@ interface Strings
 
     String actionConversations();
     String actionFriends();
+    String actionMessage();
     String actionNewsfeed();
     String actionRequestFriendship();
     String actionUsers();
@@ -34,6 +35,9 @@ interface Strings
     String friendshipRequestSent();
     String lastSeen(String value);
     String messagesAreaName();
+    String messageTextPopupName();
+    String messageTextPopupPrefix();
+    String messageSent();
         String sendingPost();
     String search();
     String usersAreaName();

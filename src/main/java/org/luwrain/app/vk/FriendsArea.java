@@ -86,6 +86,9 @@ final class FriendsArea extends ListArea
 	    return super.onSystemEvent(event);
 	switch(event.getCode())
 	{
+	case ACTION:
+	    if (ActionEvent.isAction(event, "message"))
+		return onMessage();
 	case CLOSE:
 	    base.closeApp();
 	    return true;
@@ -114,6 +117,18 @@ final class FriendsArea extends ListArea
     @Override public Action[] getAreaActions()
     {
 	return actions.lists.getFriendsActions();
+    }
+
+    private boolean onMessage()
+    {
+	final Object selected = selected();
+	if (selected == null || !(selected instanceof UserFull))
+	    return false;
+	final UserFull user = (UserFull)selected;
+	final String text = actions.conv.messageText();
+	if (text == null || text.trim().isEmpty())
+	    return true;
+	return actions.onMessageSend(user.getId(), text, ()->luwrain.message(strings.messageSent(), Luwrain.MessageType.OK), ()->{});
     }
 
     void setDefaultArea(Area defaultArea)
