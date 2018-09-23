@@ -290,6 +290,18 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
+			if (query.trim().toLowerCase().matches("id[0-9]+"))
+			{
+			    final List<String> ids = new LinkedList();
+			    ids.add(query.trim().substring(2));
+			    final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(UserField.STATUS, UserField.CITY, UserField.LAST_SEEN).execute();
+			    luwrain.runUiSafely(()->{
+				    base.users = resp.toArray(new UserFull[resp.size()]);
+				    base.resetTask();
+				    onSuccess.run();
+				});
+			    return;
+			}
 			final com.vk.api.sdk.objects.users.responses.SearchResponse resp = base.vk.users().search(base.actor).q(query)
 			.offset(0)
 			.count(100)
