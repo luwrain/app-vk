@@ -356,6 +356,34 @@ final class Actions
 	}, null));
     }
 
+        boolean onFriendshipSuggestionsUpdate(Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
+			luwrain.runUiSafely(()->{
+				final List<UserFull> list = resp.getItems();
+				for(UserFull u: list)
+				    Log.debug("proba", "" + u.getId() + " " + u.getFirstName() + " " + u.getLastName());
+				//				base.friends = friendsUsers;
+				//base.friendshipRequests = requestsUsers;
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
+
     boolean onNewFriendship(int userId, Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");

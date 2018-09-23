@@ -115,6 +115,10 @@ class App implements Application
 						if (ActionEvent.isAction(event, "news"))
 						    return actions.onNewsfeedUpdate(()->{});
 
+												if (ActionEvent.isAction(event, "followings"))
+						    return actions.onFriendshipSuggestionsUpdate(()->{});
+
+
 												if (ActionEvent.isAction(event, "users"))
 			    return onShowUsers();
 
