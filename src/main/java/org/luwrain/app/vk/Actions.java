@@ -91,13 +91,17 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
+			final List<com.vk.api.sdk.objects.users.UserXtrCounters> userResp = base.vk.users().get(base.actor).userIds(new Integer(userId).toString()).fields(UserField.STATUS, UserField.LAST_SEEN).execute();
+			if (userResp.isEmpty())
+			    return;
+			base.shownUser = userResp.get(0);
 			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
 			.ownerId(userId)
 			.count(30)
 			.execute();
 			luwrain.runUiSafely(()->{
 				final List<WallPostFull> list = resp.getItems();
-				base.wallPosts = list.toArray(new WallPostFull[list.size()]);
+				base.shownUserWallPosts = list.toArray(new WallPostFull[list.size()]);
 				base.resetTask();
 				onSuccess.run();
 			    });
@@ -112,7 +116,6 @@ final class Actions
 		    }
 	}, null));
     }
-
 
     boolean onWallDelete(WallPostFull post, Runnable onSuccess, Runnable onFailure)
     {

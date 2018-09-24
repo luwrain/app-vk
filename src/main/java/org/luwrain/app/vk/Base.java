@@ -56,7 +56,13 @@ final class Base implements Watching.Listener
     final Map<Integer, UserFull> userCache = new HashMap();
 
     private FutureTask task = null;
+
+    //Central area
     WallPostFull[] wallPosts = new WallPostFull[0];
+    UserFull shownUser = null;
+    WallPostFull[] shownUserWallPosts = new WallPostFull[0];
+
+    
     Dialog[] dialogs = new Dialog[0];
     Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];

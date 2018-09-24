@@ -40,10 +40,20 @@ class WallArea extends ListArea
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-	actions.onHomeWallUpdate(()->{
-		luwrain.playSound(Sounds.CLICK);
-		refresh();
-	    });
+	showHome();
+    }
+
+    boolean showHome()
+    {
+	if (!actions.onHomeWallUpdate(()->{
+		    		refresh();
+				reset(false);
+		    luwrain.setActiveArea(WallArea.this);
+
+		}))
+	    return false;
+	base.shownUser = null;
+	return true;
     }
 
     boolean showUserInfo(int userId)
@@ -62,6 +72,8 @@ class WallArea extends ListArea
 	    switch(event.getSpecial())
 	    {
 	    case ESCAPE:
+		if (base.shownUser != null)
+		    return showHome();
 		base.closeApp();
 		return true;
 	    }
@@ -147,11 +159,17 @@ class WallArea extends ListArea
 	@Override public int getItemCount()
 	{
 	    NullCheck.notNullItems(base.wallPosts, "base.wallPosts");
+	    NullCheck.notNullItems(base.shownUserWallPosts, "base.shownUserWallPosts");
+	    if (base.shownUser != null)
+		return base.shownUserWallPosts.length;
 	    return base.wallPosts.length;
 	}
 	@Override public Object getItem(int index)
 	{
 	    NullCheck.notNullItems(base.wallPosts, "base.wallPOsts");
+	    	    NullCheck.notNullItems(base.shownUserWallPosts, "base.shownUserWallPosts");
+		    	    if (base.shownUser != null)
+		return base.shownUserWallPosts[index];
 	    return base.wallPosts[index];
 	}
 	@Override public void refresh()
