@@ -31,6 +31,7 @@ interface Strings
         String actionWallPost();
     String appName();
     String conversationsAreaName();
+    String followingsAreaName();
     String friendsAreaName();
     String friendshipRequestsAreaName();
     String friendshipRequestSent();
@@ -41,6 +42,7 @@ interface Strings
     String messageSent();
         String sendingPost();
     String search();
+    String suggestionsAreaName();
     String usersAreaName();
     String wallAreaName();
     String wallPostAreaName();

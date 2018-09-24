@@ -68,6 +68,10 @@ final class Base implements Watching.Listener
     UserFull[] users = new UserFull[0];
     UserFull[] friends = new UserFull[0];
     UserFull[] friendshipRequests = new UserFull[0];
+
+        UserFull[] followings = new UserFull[0];
+        UserFull[] suggestions = new UserFull[0];
+    
     NewsfeedItem[] newsfeedItems = new NewsfeedItem[0];
 
     Base(Luwrain luwrain, Strings strings, Watching watching)

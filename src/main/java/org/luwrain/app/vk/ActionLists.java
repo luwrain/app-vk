@@ -75,4 +75,17 @@ final class ActionLists
     {
 	return new Action[0];
     }
+
+        Action[] getFollowingsActions()
+    {
+	return new Action[0];
+    }
+
+
+        Action[] getSuggestionsActions()
+    {
+	return new Action[0];
+    }
+
+    
 }
