@@ -27,7 +27,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-final class FriendsArea extends ListArea
+abstract class FriendsArea extends ListArea
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -49,12 +49,18 @@ final class FriendsArea extends ListArea
 	this.actions = actions;
 	this.closing = closing;
 	actions.onFriendshipRequestsUpdate(()->{
-		//		luwrain.playSound(Sounds.CLICK);
+		setListClickHandler((area,index,obj)->{
+			if (obj == null || !(obj instanceof UserFull))
+			    return false;
+			return onClick((UserFull)obj);
+		    });
 		luwrain.setActiveArea(FriendsArea.this);
 		refresh();
 		friendshipRequestsArea.refresh();
 	    });
     }
+
+    abstract boolean onClick(UserFull user);
 
     @Override public boolean onInputEvent(KeyboardEvent event)
     {

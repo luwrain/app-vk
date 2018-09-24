@@ -19,6 +19,8 @@ package org.luwrain.app.vk;
 import java.util.*;
 import java.io.*;
 
+import com.vk.api.sdk.objects.users.UserFull;
+
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
@@ -31,7 +33,7 @@ class App implements Application
     private Actions actions = null;
     private ActionLists actionLists = null;
 
-    private Area defaultArea = null;
+    private WallArea defaultArea = null;
     private AreaLayoutHelper layout = null;
 
     private final Watching watching;
@@ -117,12 +119,8 @@ class App implements Application
 
 												if (ActionEvent.isAction(event, "followings"))
 						    return actions.onFriendshipSuggestionsUpdate(()->{});
-
-
 												if (ActionEvent.isAction(event, "users"))
 			    return onShowUsers();
-
-												
 			return super.onSystemEvent(event);
 		    default:
 			return super.onSystemEvent(event);
@@ -166,7 +164,13 @@ class App implements Application
 	    this.layout.setBasicLayout(new AreaLayout(defaultArea));
 	    luwrain.announceActiveArea();
 	};
-	final FriendsArea friendsArea = new FriendsArea(luwrain, strings, base, actions, closing);
+	final FriendsArea friendsArea = new FriendsArea(luwrain, strings, base, actions, closing){
+		@Override boolean onClick(UserFull user)
+		{
+		    NullCheck.notNull(user, "user");
+		    return defaultArea.showUserInfo(user.getId());
+		}
+	    };
 	final FriendshipRequestsArea friendshipRequestsArea = new FriendshipRequestsArea(luwrain, strings, base, actions, closing);
 	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, friendsArea, friendshipRequestsArea));
 	friendsArea.setFriendshipRequestsArea(friendshipRequestsArea);
@@ -184,6 +188,11 @@ class App implements Application
 	    luwrain.announceActiveArea();
 	};
 	final UsersArea usersArea = new UsersArea(luwrain, strings, base, actions, closing){
+		@Override boolean onClick(UserFull user)
+		{
+		    NullCheck.notNull(user, "user");
+		    return defaultArea.showUserInfo(user.getId());
+		}
 		@Override public boolean onInputEvent(KeyboardEvent event)
 		{
 		    NullCheck.notNull(event, "event");

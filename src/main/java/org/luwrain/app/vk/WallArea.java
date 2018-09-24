@@ -40,10 +40,19 @@ class WallArea extends ListArea
 	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
-	actions.onWallUpdate(()->{
+	actions.onHomeWallUpdate(()->{
 		luwrain.playSound(Sounds.CLICK);
 		refresh();
 	    });
+    }
+
+    boolean showUserInfo(int userId)
+    {
+	return actions.onUserInfoUpdate(userId, ()->{
+		refresh();
+		reset(false);
+		luwrain.setActiveArea(WallArea.this);
+				    });
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)

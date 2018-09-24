@@ -25,7 +25,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-class UsersArea extends ConsoleArea2
+abstract class UsersArea extends ConsoleArea2
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -45,9 +45,9 @@ class UsersArea extends ConsoleArea2
 	this.closing = closing;
 	setInputPrefix(strings.search() + ">");
 	setConsoleClickHandler((area,index,obj)->{
-		if (obj == null)
+		if (obj == null || !(obj instanceof UserFull))
 		    return false;
-		return false;
+		return onClick((UserFull)obj);
 	    });
 	setConsoleInputHandler((area,text)->{
 		NullCheck.notNull(text, "text");
@@ -61,6 +61,8 @@ class UsersArea extends ConsoleArea2
 		return ConsoleArea2.InputHandler.Result.OK;
 	    });
     }
+
+    abstract boolean onClick(UserFull user);
 
     @Override public boolean onInputEvent(KeyboardEvent event)
     {

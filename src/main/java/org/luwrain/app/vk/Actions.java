@@ -61,7 +61,7 @@ final class Actions
 	this.lists = new ActionLists(luwrain, strings, base);
     }
 
-    boolean onWallUpdate(Runnable onSuccess)
+    boolean onHomeWallUpdate(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
@@ -85,6 +85,34 @@ final class Actions
 		    }
 	}, null));
     }
+
+    boolean onUserInfoUpdate(int userId, Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	return base.runTask(new FutureTask(()->{
+		    try {
+			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
+			.ownerId(userId)
+			.count(30)
+			.execute();
+			luwrain.runUiSafely(()->{
+				final List<WallPostFull> list = resp.getItems();
+				base.wallPosts = list.toArray(new WallPostFull[list.size()]);
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
 
     boolean onWallDelete(WallPostFull post, Runnable onSuccess, Runnable onFailure)
     {
