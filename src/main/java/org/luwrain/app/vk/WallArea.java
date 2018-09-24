@@ -19,6 +19,8 @@ package org.luwrain.app.vk;
 import java.util.*;
 
 import com.vk.api.sdk.objects.wall.WallPostFull;
+import com.vk.api.sdk.objects.wall.WallpostAttachment;
+import com.vk.api.sdk.objects.wall.WallpostAttachmentType;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
@@ -232,7 +234,19 @@ class WallArea extends ListArea
 	    if (item instanceof WallPostFull)
 	    {
 		final WallPostFull post = (WallPostFull)item;
-	    	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, post.getText(), null));
+		boolean picture = false;
+		final List<WallpostAttachment> attachments = post.getAttachments();
+		if (attachments != null)
+		for(WallpostAttachment a: attachments)
+		    if (a.getType() == WallpostAttachmentType.PHOTO || a.getType() == WallpostAttachmentType.POSTED_PHOTO)
+			picture = true;
+		final String text = getText(post);
+		if (text.isEmpty())
+		{
+		    luwrain.setEventResponse(DefaultEventResponse.hint(Hint.EMPTY_LINE));
+		    return;
+		    }
+	    	luwrain.setEventResponse(DefaultEventResponse.listItem(picture?Sounds.PICTURE:Sounds.LIST_ITEM, text, null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -243,10 +257,11 @@ class WallArea extends ListArea
 	    if (item instanceof WallPostFull)
 	    {
 		final WallPostFull post = (WallPostFull)item;
-		return post.getText();
+		return getText(post);
 	    }
 	    return item.toString();
 	}
+	/*
 	@Override public int getObservableLeftBound(Object item)
 	{
 	    return 0;
@@ -255,6 +270,25 @@ class WallArea extends ListArea
 	{
 	    return getScreenAppearance(item, EnumSet.noneOf(Flags.class)).length();
 	}
+	*/
+	private String getText(WallPostFull post)
+	{
+	    NullCheck.notNull(post, "post");
+	    boolean picture = false;
+	    		final List<WallpostAttachment> attachments = post.getAttachments();
+		if (attachments != null)
+		for(WallpostAttachment a: attachments)
+		    if (a.getType() == WallpostAttachmentType.PHOTO || a.getType() == WallpostAttachmentType.POSTED_PHOTO)
+			picture = true;
+		if (post.getText() != null && !post.getText().trim().isEmpty())
+		    return post.getText().trim();
+		    if (picture)
+			return "[ФОТО]";//FIXME:
+		return "";
+
+		
+	}
+	
     }
 
     static private final class Section
