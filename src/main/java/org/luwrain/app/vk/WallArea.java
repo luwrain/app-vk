@@ -161,7 +161,7 @@ class WallArea extends ListArea
 	    NullCheck.notNullItems(base.wallPosts, "base.wallPosts");
 	    NullCheck.notNullItems(base.shownUserWallPosts, "base.shownUserWallPosts");
 	    if (base.shownUser != null)
-		return base.shownUserWallPosts.length;
+		return base.shownUserWallPosts.length + 2;
 	    return base.wallPosts.length;
 	}
 	@Override public Object getItem(int index)
@@ -169,7 +169,27 @@ class WallArea extends ListArea
 	    NullCheck.notNullItems(base.wallPosts, "base.wallPOsts");
 	    	    NullCheck.notNullItems(base.shownUserWallPosts, "base.shownUserWallPosts");
 		    	    if (base.shownUser != null)
-		return base.shownUserWallPosts[index];
+				switch(index)
+			    {
+			    case 0:
+				{
+				    final StringBuilder b = new StringBuilder();
+				    b.append("Образование/работа:");
+				    if (base.shownUser.getOccupation() != null && base.shownUser.getOccupation().getName() != null && !base.shownUser.getOccupation().getName().trim().isEmpty())
+					b.append(" ").append(base.shownUser.getOccupation().getName().trim());
+				    return new String(b);
+				}
+				case 1:
+				    {
+					final StringBuilder b = new StringBuilder();
+					b.append("Интересы:");
+					if (base.shownUser.getInterests() != null && !base.shownUser.getInterests().trim().isEmpty())
+					    b.append(" ").append(base.shownUser.getInterests().trim());
+					return new String(b);
+				    }
+			    default:
+		return base.shownUserWallPosts[index - 2];
+			    }
 	    return base.wallPosts[index];
 	}
 	@Override public void refresh()

@@ -91,7 +91,9 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
-			final List<com.vk.api.sdk.objects.users.UserXtrCounters> userResp = base.vk.users().get(base.actor).userIds(new Integer(userId).toString()).fields(UserField.STATUS, UserField.LAST_SEEN).execute();
+			final List<com.vk.api.sdk.objects.users.UserXtrCounters> userResp = base.vk.users().get(base.actor).userIds(new Integer(userId).toString())
+			.fields(UserField.STATUS, UserField.LAST_SEEN, UserField.OCCUPATION, UserField.INTERESTS)
+			.execute();
 			if (userResp.isEmpty())
 			    return;
 			base.shownUser = userResp.get(0);
