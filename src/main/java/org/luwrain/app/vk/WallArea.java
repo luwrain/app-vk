@@ -48,10 +48,9 @@ class WallArea extends ListArea
     boolean showHome()
     {
 	if (!actions.onHomeWallUpdate(()->{
-		    		refresh();
-				reset(false);
+		    refresh();
+		    reset(false);
 		    luwrain.setActiveArea(WallArea.this);
-
 		}))
 	    return false;
 	base.shownUser = null;
@@ -64,7 +63,7 @@ class WallArea extends ListArea
 		refresh();
 		reset(false);
 		luwrain.setActiveArea(WallArea.this);
-				    });
+	    });
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)
@@ -105,7 +104,6 @@ class WallArea extends ListArea
 		luwrain.onAreaNewBackgroundSound(this);
 		return true;
 	    }
-	    
 	    return super.onSystemEvent(event);
 	case CLOSE:
 	    base.closeApp();
@@ -169,41 +167,41 @@ class WallArea extends ListArea
 	@Override public Object getItem(int index)
 	{
 	    NullCheck.notNullItems(base.wallPosts, "base.wallPOsts");
-	    	    NullCheck.notNullItems(base.shownUserWallPosts, "base.shownUserWallPosts");
-		    	    if (base.shownUser != null)
-				switch(index)
-			    {
-			    case 0:
-				return new Section(base.shownUser.getFirstName() + " " + base.shownUser.getLastName());
-			    case 1:
-				{
-				    final StringBuilder b = new StringBuilder();
-				    b.append("Дата рождения:");
-				    if (base.shownUser.getBdate() != null && !base.shownUser.getBdate().trim().isEmpty())
-					b.append(" ").append(base.shownUser.getBdate().trim());
-				    return new String(b);
-				}
-			    case 2:
-				{
-				    final StringBuilder b = new StringBuilder();
-				    b.append("Образование/работа:");
-				    if (base.shownUser.getOccupation() != null && base.shownUser.getOccupation().getName() != null && !base.shownUser.getOccupation().getName().trim().isEmpty())
-					b.append(" ").append(base.shownUser.getOccupation().getName().trim());
-				    return new String(b);
-				}
-				case 3:
-				    {
-					final StringBuilder b = new StringBuilder();
-					b.append("Интересы:");
-					if (base.shownUser.getInterests() != null && !base.shownUser.getInterests().trim().isEmpty())
-					    b.append(" ").append(base.shownUser.getInterests().trim());
-					return new String(b);
-				    }
-			    case 4:
-				return new Section("Стена");
-			    default:
-		return base.shownUserWallPosts[index - 5];
-			    }
+	    NullCheck.notNullItems(base.shownUserWallPosts, "base.shownUserWallPosts");
+	    if (base.shownUser != null)
+		switch(index)
+		{
+		case 0:
+		    return new Section(base.shownUser.getFirstName() + " " + base.shownUser.getLastName());
+		case 1:
+		    {
+			final StringBuilder b = new StringBuilder();
+			b.append("Дата рождения:");
+			if (base.shownUser.getBdate() != null && !base.shownUser.getBdate().trim().isEmpty())
+			    b.append(" ").append(base.shownUser.getBdate().trim());
+			return new String(b);
+		    }
+		case 2:
+		    {
+			final StringBuilder b = new StringBuilder();
+			b.append("Образование/работа:");
+			if (base.shownUser.getOccupation() != null && base.shownUser.getOccupation().getName() != null && !base.shownUser.getOccupation().getName().trim().isEmpty())
+			    b.append(" ").append(base.shownUser.getOccupation().getName().trim());
+			return new String(b);
+		    }
+		case 3:
+		    {
+			final StringBuilder b = new StringBuilder();
+			b.append("Интересы:");
+			if (base.shownUser.getInterests() != null && !base.shownUser.getInterests().trim().isEmpty())
+			    b.append(" ").append(base.shownUser.getInterests().trim());
+			return new String(b);
+		    }
+		case 4:
+		    return new Section("Стена");
+		default:
+		    return base.shownUserWallPosts[index - 5];
+		}
 	    return base.wallPosts[index];
 	}
 	@Override public void refresh()
@@ -237,15 +235,15 @@ class WallArea extends ListArea
 		boolean picture = false;
 		final List<WallpostAttachment> attachments = post.getAttachments();
 		if (attachments != null)
-		for(WallpostAttachment a: attachments)
-		    if (a.getType() == WallpostAttachmentType.PHOTO || a.getType() == WallpostAttachmentType.POSTED_PHOTO)
-			picture = true;
+		    for(WallpostAttachment a: attachments)
+			if (a.getType() == WallpostAttachmentType.PHOTO || a.getType() == WallpostAttachmentType.POSTED_PHOTO)
+			    picture = true;
 		final String text = getText(post);
 		if (text.isEmpty())
 		{
 		    luwrain.setEventResponse(DefaultEventResponse.hint(Hint.EMPTY_LINE));
 		    return;
-		    }
+		}
 	    	luwrain.setEventResponse(DefaultEventResponse.listItem(picture?Sounds.PICTURE:Sounds.LIST_ITEM, text, null));
 		return;
 	    }
@@ -275,20 +273,17 @@ class WallArea extends ListArea
 	{
 	    NullCheck.notNull(post, "post");
 	    boolean picture = false;
-	    		final List<WallpostAttachment> attachments = post.getAttachments();
-		if (attachments != null)
+	    final List<WallpostAttachment> attachments = post.getAttachments();
+	    if (attachments != null)
 		for(WallpostAttachment a: attachments)
 		    if (a.getType() == WallpostAttachmentType.PHOTO || a.getType() == WallpostAttachmentType.POSTED_PHOTO)
 			picture = true;
-		if (post.getText() != null && !post.getText().trim().isEmpty())
-		    return post.getText().trim();
-		    if (picture)
-			return "[ФОТО]";//FIXME:
-		return "";
-
-		
+	    if (post.getText() != null && !post.getText().trim().isEmpty())
+		return post.getText().trim();
+	    if (picture)
+		return "[ФОТО]";//FIXME:
+	    return "";
 	}
-	
     }
 
     static private final class Section
