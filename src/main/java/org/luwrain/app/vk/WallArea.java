@@ -197,21 +197,25 @@ class WallArea extends ListArea
 	}
     };
 
-    static private final class Appearance implements ListArea.Appearance
+    static private final class Appearance extends ListUtils.DoubleLevelAppearance
     {
 	private final Luwrain luwrain;
 	private final Strings strings;
 	Appearance(Luwrain luwrain, Strings strings)
 	{
+	    super(new DefaultControlEnvironment(luwrain));
 	    NullCheck.notNull(luwrain, "luwrain");
 	    NullCheck.notNull(strings, "strings");
 	    this.luwrain = luwrain;
 	    this.strings = strings;
 	}
-	@Override public void announceItem(Object item, Set<Flags> flags)
+	@Override public boolean isSectionItem(Object item)
+	{
+	    return false;
+	}
+	@Override public void announceNonSection(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    NullCheck.notNull(flags, "flags");
 	    if (item instanceof WallPostFull)
 	    {
 		final WallPostFull post = (WallPostFull)item;
@@ -220,10 +224,9 @@ class WallArea extends ListArea
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
 	}
-	@Override public String getScreenAppearance(Object item, Set<Flags> flags)
+	@Override public String getNonSectionScreenAppearance(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    NullCheck.notNull(flags, "flags");
 	    if (item instanceof WallPostFull)
 	    {
 		final WallPostFull post = (WallPostFull)item;
@@ -239,5 +242,25 @@ class WallArea extends ListArea
 	{
 	    return getScreenAppearance(item, EnumSet.noneOf(Flags.class)).length();
 	}
+    }
+
+    static private final class Section
+    {
+	final String str;
+	Section(String str)
+	{
+	    NullCheck.notNull(str, "str");
+	    this.str = str;
+	}
+	@Override public String toString()
+	{
+	    return str;
+	}
+    @Override public boolean equals(Object sect)
+    {
+	if (sect == null || !(sect instanceof Section))
+	    return false;
+	    return str.equals(((Section)sect).str);
+    }
     }
 }
