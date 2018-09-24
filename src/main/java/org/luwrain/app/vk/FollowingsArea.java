@@ -48,12 +48,13 @@ abstract class FollowingsArea extends ListArea
 	this.base = base;
 	this.actions = actions;
 	this.closing = closing;
-	actions.onFriendshipRequestsUpdate(()->{
+
 		setListClickHandler((area,index,obj)->{
 			if (obj == null || !(obj instanceof UserFull))
 			    return false;
 			return onClick((UserFull)obj);
 		    });
+			actions.onFollowingsUpdate(()->{
 		luwrain.setActiveArea(FollowingsArea.this);
 		refresh();
 		suggestionsArea.refresh();
@@ -93,6 +94,11 @@ abstract class FollowingsArea extends ListArea
 	switch(event.getCode())
 	{
 	case ACTION:
+
+	    	    if (ActionEvent.isAction(event, "delete"))
+		return onDelete();
+
+		    
 	    if (ActionEvent.isAction(event, "message"))
 		return onMessage();
 	case CLOSE:
@@ -137,6 +143,20 @@ abstract class FollowingsArea extends ListArea
 	return actions.onMessageSend(user.getId(), text, ()->luwrain.message(strings.messageSent(), Luwrain.MessageType.OK), ()->{});
     }
 
+        private boolean onDelete()
+    {
+	final Object selected = selected();
+	if (selected == null || !(selected instanceof UserFull))
+	    return false;
+	final UserFull user = (UserFull)selected;
+	return actions.onFriendshipDelete(user.getId(), ()->{
+		refresh();
+		suggestionsArea.refresh();
+		luwrain.playSound(Sounds.OK);
+	    });
+    }
+
+
     void setDefaultArea(Area defaultArea)
     {
 	NullCheck.notNull(defaultArea, "defaultArea");
@@ -177,12 +197,12 @@ abstract class FollowingsArea extends ListArea
 	@Override public int getItemCount()
 	{
 	    NullCheck.notNullItems(base.followings, "base.followings");
-	    return base.suggestions.length;
+	    return base.followings.length;
 	}
 	@Override public Object getItem(int index)
 	{
-	    NullCheck.notNullItems(base.suggestions, "base.suggestions");
-	    return base.suggestions[index];
+	    NullCheck.notNullItems(base.followings, "base.followings");
+	    return base.followings[index];
 	}
 	@Override public void refresh()
 	{

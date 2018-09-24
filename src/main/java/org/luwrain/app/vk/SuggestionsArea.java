@@ -25,7 +25,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-final class SuggestionsArea extends ListArea
+abstract class SuggestionsArea extends ListArea
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -52,12 +52,14 @@ final class SuggestionsArea extends ListArea
 		    return false;
 		final UserFull user = (UserFull)obj;
 		return actions.onNewFriendship(user.getId(), ()->{
-			luwrain.playSound(Sounds.OK);
-			refresh();
-			followingsArea.refresh();
-		    });
+refresh();
+followingsArea.refresh();
+luwrain.playSound(Sounds.OK);
+				    });
 	    });
     }
+
+        abstract boolean onProperties(UserFull user);
 
     @Override public boolean onInputEvent(KeyboardEvent event)
     {
@@ -89,6 +91,13 @@ final class SuggestionsArea extends ListArea
 	    return super.onSystemEvent(event);
 	switch(event.getCode())
 	{
+	case PROPERTIES:
+	    {
+		final Object obj = selected();
+		if (obj == null || !(obj instanceof UserFull))
+		    return false;
+		return onProperties((UserFull)obj);
+		}
 	case CLOSE:
 	    base.closeApp();
 	    return true;

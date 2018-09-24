@@ -389,18 +389,53 @@ final class Actions
 	}, null));
     }
 
-        boolean onFriendshipSuggestionsUpdate(Runnable onSuccess)
+        boolean onFollowingsUpdate(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
-			final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
-			luwrain.runUiSafely(()->{
+			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).out(true).execute();
+			final List<Integer> requestsList = requestsResp.getItems();
+			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+						final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
 				final List<UserFull> list = resp.getItems();
-				for(UserFull u: list)
-				    Log.debug("proba", "" + u.getId() + " " + u.getFirstName() + " " + u.getLastName());
-				//				base.friends = friendsUsers;
-				//base.friendshipRequests = requestsUsers;
+			luwrain.runUiSafely(()->{
+				base.followings = requestsUsers;
+				base.suggestions = list.toArray(new UserFull[list.size()]);
+				base.resetTask();
+				onSuccess.run();
+			    });
+			return;
+		    }
+		    catch(Exception e)
+		    {
+			luwrain.runUiSafely(()->{
+				base.resetTask();
+				luwrain.crash(e);
+			    });
+		    }
+	}, null));
+    }
+
+    //FIXME:refresh friends and friendsrequests
+    boolean onFriendshipDelete(int userId, Runnable onSuccess)
+    {
+	NullCheck.notNull(onSuccess, "onSuccess");
+	return base.runTask(new FutureTask(()->{
+		    try {
+
+			final com.vk.api.sdk.objects.friends.responses.DeleteResponse deleteResp = base.vk.friends().delete(base.actor, userId).execute();
+						
+			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).out(true).execute();
+			final List<Integer> requestsList = requestsResp.getItems();
+			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+						final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
+				final List<UserFull> list = resp.getItems();
+			luwrain.runUiSafely(()->{
+				base.followings = requestsUsers;
+				base.suggestions = list.toArray(new UserFull[list.size()]);
 				base.resetTask();
 				onSuccess.run();
 			    });
@@ -417,6 +452,7 @@ final class Actions
     }
 
 
+    //FIXME:request followings and suggestions
     boolean onNewFriendship(int userId, Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");

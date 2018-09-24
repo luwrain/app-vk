@@ -78,7 +78,10 @@ final class ActionLists
 
         Action[] getFollowingsActions()
     {
-	return new Action[0];
+	return new Action[]{
+	    	    new Action("message", strings.actionMessage(), new KeyboardEvent(KeyboardEvent.Special.F5)),
+	    new Action("delete", strings.actionDelete(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
+	};
     }
 
 

@@ -116,9 +116,8 @@ class App implements Application
 			    return onNewWallPost(this);
 						if (ActionEvent.isAction(event, "news"))
 						    return actions.onNewsfeedUpdate(()->{});
-
 												if (ActionEvent.isAction(event, "followings"))
-						    return actions.onFriendshipSuggestionsUpdate(()->{});
+												    return onShowFollowings();
 												if (ActionEvent.isAction(event, "users"))
 			    return onShowUsers();
 			return super.onSystemEvent(event);
@@ -177,9 +176,37 @@ class App implements Application
 	friendshipRequestsArea.setFriendsArea(friendsArea);
 	friendsArea.setDefaultArea(defaultArea);
 	friendshipRequestsArea.setDefaultArea(defaultArea);
-	//	luwrain.setActiveArea(friendsArea);
 	return true;
     }
+
+        private boolean onShowFollowings()
+    {
+	final Runnable closing = ()->{
+	    this.layout.setBasicLayout(new AreaLayout(defaultArea));
+	    luwrain.announceActiveArea();
+	};
+	final FollowingsArea followingsArea = new FollowingsArea(luwrain, strings, base, actions, closing){
+		@Override boolean onClick(UserFull user)
+		{
+		    NullCheck.notNull(user, "user");
+		    return defaultArea.showUserInfo(user.getId());
+		}
+	    };
+	final SuggestionsArea suggestionsArea = new SuggestionsArea(luwrain, strings, base, actions, closing){
+				@Override boolean onProperties(UserFull user)
+		{
+		    NullCheck.notNull(user, "user");
+		    return defaultArea.showUserInfo(user.getId());
+		}
+	    };
+	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, followingsArea, suggestionsArea));
+	followingsArea.setSuggestionsArea(suggestionsArea);
+	suggestionsArea.setFollowingsArea(followingsArea);
+	followingsArea.setDefaultArea(defaultArea);
+	suggestionsArea.setDefaultArea(defaultArea);
+	return true;
+    }
+
 
         private boolean onShowUsers()
     {

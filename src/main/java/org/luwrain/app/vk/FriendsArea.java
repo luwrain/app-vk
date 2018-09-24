@@ -48,12 +48,12 @@ abstract class FriendsArea extends ListArea
 	this.base = base;
 	this.actions = actions;
 	this.closing = closing;
-	actions.onFriendshipRequestsUpdate(()->{
 		setListClickHandler((area,index,obj)->{
 			if (obj == null || !(obj instanceof UserFull))
 			    return false;
 			return onClick((UserFull)obj);
 		    });
+			actions.onFriendshipRequestsUpdate(()->{
 		luwrain.setActiveArea(FriendsArea.this);
 		refresh();
 		friendshipRequestsArea.refresh();
