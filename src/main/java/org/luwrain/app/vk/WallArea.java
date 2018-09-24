@@ -18,9 +18,11 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
+import com.vk.api.sdk.objects.wall.WallPost;
 import com.vk.api.sdk.objects.wall.WallPostFull;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import com.vk.api.sdk.objects.wall.WallpostAttachmentType;
+import com.vk.api.sdk.objects.wall.PostType;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
@@ -231,7 +233,7 @@ class WallArea extends ListArea
 	    NullCheck.notNull(item, "item");
 	    if (item instanceof WallPostFull)
 	    {
-		final WallPostFull post = (WallPostFull)item;
+		final WallPost post = getOrigPost((WallPostFull)item);
 		boolean picture = false;
 		final List<WallpostAttachment> attachments = post.getAttachments();
 		if (attachments != null)
@@ -254,22 +256,12 @@ class WallArea extends ListArea
 	    NullCheck.notNull(item, "item");
 	    if (item instanceof WallPostFull)
 	    {
-		final WallPostFull post = (WallPostFull)item;
+		final WallPost post = getOrigPost((WallPostFull)item);
 		return getText(post);
 	    }
 	    return item.toString();
 	}
-	/*
-	@Override public int getObservableLeftBound(Object item)
-	{
-	    return 0;
-	}
-	@Override public int getObservableRightBound(Object item)
-	{
-	    return getScreenAppearance(item, EnumSet.noneOf(Flags.class)).length();
-	}
-	*/
-	private String getText(WallPostFull post)
+	private String getText(WallPost post)
 	{
 	    NullCheck.notNull(post, "post");
 	    boolean picture = false;
@@ -283,6 +275,14 @@ class WallArea extends ListArea
 	    if (picture)
 		return "[ФОТО]";//FIXME:
 	    return "";
+	}
+	private WallPost getOrigPost(WallPostFull post)
+	{
+	    NullCheck.notNull(post, "post");
+	    if (post.getCopyHistory() == null || post.getCopyHistory().isEmpty())
+		return post;
+	    //	    return post.getCopyHistory().get(0/*post.getCopyHistory().size() - 1*/);
+	    	    return post.getCopyHistory().get(post.getCopyHistory().size() - 1);
 	}
     }
 
