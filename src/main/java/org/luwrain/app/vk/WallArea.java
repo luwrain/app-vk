@@ -161,7 +161,7 @@ class WallArea extends ListArea
 	    NullCheck.notNullItems(base.wallPosts, "base.wallPosts");
 	    NullCheck.notNullItems(base.shownUserWallPosts, "base.shownUserWallPosts");
 	    if (base.shownUser != null)
-		return base.shownUserWallPosts.length + 2;
+		return base.shownUserWallPosts.length + 5;
 	    return base.wallPosts.length;
 	}
 	@Override public Object getItem(int index)
@@ -172,6 +172,16 @@ class WallArea extends ListArea
 				switch(index)
 			    {
 			    case 0:
+				return new Section(base.shownUser.getFirstName() + " " + base.shownUser.getLastName());
+			    case 1:
+				{
+				    final StringBuilder b = new StringBuilder();
+				    b.append("Дата рождения:");
+				    if (base.shownUser.getBdate() != null && !base.shownUser.getBdate().trim().isEmpty())
+					b.append(" ").append(base.shownUser.getBdate().trim());
+				    return new String(b);
+				}
+			    case 2:
 				{
 				    final StringBuilder b = new StringBuilder();
 				    b.append("Образование/работа:");
@@ -179,7 +189,7 @@ class WallArea extends ListArea
 					b.append(" ").append(base.shownUser.getOccupation().getName().trim());
 				    return new String(b);
 				}
-				case 1:
+				case 3:
 				    {
 					final StringBuilder b = new StringBuilder();
 					b.append("Интересы:");
@@ -187,8 +197,10 @@ class WallArea extends ListArea
 					    b.append(" ").append(base.shownUser.getInterests().trim());
 					return new String(b);
 				    }
+			    case 4:
+				return new Section("Стена");
 			    default:
-		return base.shownUserWallPosts[index - 2];
+		return base.shownUserWallPosts[index - 5];
 			    }
 	    return base.wallPosts[index];
 	}
@@ -211,7 +223,8 @@ class WallArea extends ListArea
 	}
 	@Override public boolean isSectionItem(Object item)
 	{
-	    return false;
+	    NullCheck.notNull(item, "item");
+	    return (item instanceof Section);
 	}
 	@Override public void announceNonSection(Object item)
 	{
@@ -256,11 +269,11 @@ class WallArea extends ListArea
 	{
 	    return str;
 	}
-    @Override public boolean equals(Object sect)
-    {
-	if (sect == null || !(sect instanceof Section))
-	    return false;
+	@Override public boolean equals(Object sect)
+	{
+	    if (sect == null || !(sect instanceof Section))
+		return false;
 	    return str.equals(((Section)sect).str);
-    }
+	}
     }
 }

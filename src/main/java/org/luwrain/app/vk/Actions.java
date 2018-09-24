@@ -92,7 +92,7 @@ final class Actions
 	return base.runTask(new FutureTask(()->{
 		    try {
 			final List<com.vk.api.sdk.objects.users.UserXtrCounters> userResp = base.vk.users().get(base.actor).userIds(new Integer(userId).toString())
-			.fields(UserField.STATUS, UserField.LAST_SEEN, UserField.OCCUPATION, UserField.INTERESTS)
+			.fields(UserField.STATUS, UserField.LAST_SEEN, UserField.OCCUPATION, UserField.INTERESTS, UserField.BDATE)
 			.execute();
 			if (userResp.isEmpty())
 			    return;
