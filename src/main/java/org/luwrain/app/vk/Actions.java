@@ -363,7 +363,7 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	return base.runTask(new FutureTask(()->{
 		    try {
-			final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).execute();
+			final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).order(com.vk.api.sdk.queries.friends.FriendsGetOrder.NAME).execute();
 			final List<Integer> friendsList = friendsResp.getItems();
 			final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
 			final UserFull[] friendsUsers = getUsersForCache(friendsIds);
@@ -520,7 +520,7 @@ final class Actions
     private UserFull[] getUsersForCache(List<String> ids) throws ApiException, ClientException
     {
 	//FIXME:Limit up to 1000
-	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(UserField.STATUS, UserField.LAST_SEEN).execute();
+	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(UserField.STATUS, UserField.LAST_SEEN, UserField.CITY, UserField.BDATE).execute();
 	return resp.toArray(new UserFull[resp.size()]);
     }
 }

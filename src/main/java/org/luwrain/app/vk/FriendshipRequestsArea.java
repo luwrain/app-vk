@@ -25,7 +25,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-final class FriendshipRequestsArea extends ListArea
+abstract class FriendshipRequestsArea extends ListArea
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -59,6 +59,8 @@ final class FriendshipRequestsArea extends ListArea
 	    });
     }
 
+    abstract boolean onProperties(UserFull user);
+
     @Override public boolean onInputEvent(KeyboardEvent event)
     {
 	NullCheck.notNull(event, "event");
@@ -89,6 +91,13 @@ final class FriendshipRequestsArea extends ListArea
 	    return super.onSystemEvent(event);
 	switch(event.getCode())
 	{
+	case PROPERTIES:
+	    {
+		final Object obj = selected();
+		if (obj == null || !(obj instanceof UserFull))
+		    return false;
+		return onProperties((UserFull)obj);
+	    }
 	case CLOSE:
 	    base.closeApp();
 	    return true;
@@ -192,7 +201,10 @@ final class FriendshipRequestsArea extends ListArea
 	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
- 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName(), null));
+			final StringBuilder b = new StringBuilder();
+	if (user.getCity() != null && user.getCity().getTitle() != null && !user.getCity().getTitle().trim().isEmpty())
+	    b.append(", ").append(user.getCity().getTitle().trim());
+	luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, user.getFirstName() + " " + user.getLastName() + (new String(b)), null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -204,7 +216,10 @@ final class FriendshipRequestsArea extends ListArea
 	    if (item instanceof UserFull)
 	    {
 		final UserFull user = (UserFull)item;
-		return user.getFirstName() + " " + user.getLastName();
+					final StringBuilder b = new StringBuilder();
+	if (user.getCity() != null && user.getCity().getTitle() != null && !user.getCity().getTitle().trim().isEmpty())
+	    b.append(", ").append(user.getCity().getTitle().trim());
+	return user.getFirstName() + " " + user.getLastName() + (new String(b));
 	    }
 	    return item.toString();
 	}

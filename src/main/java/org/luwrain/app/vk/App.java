@@ -170,7 +170,13 @@ class App implements Application
 		    return defaultArea.showUserInfo(user.getId());
 		}
 	    };
-	final FriendshipRequestsArea friendshipRequestsArea = new FriendshipRequestsArea(luwrain, strings, base, actions, closing);
+	final FriendshipRequestsArea friendshipRequestsArea = new FriendshipRequestsArea(luwrain, strings, base, actions, closing){
+				@Override boolean onProperties(UserFull user)
+		{
+		    NullCheck.notNull(user, "user");
+		    return defaultArea.showUserInfo(user.getId());
+		}
+	    };
 	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, friendsArea, friendshipRequestsArea));
 	friendsArea.setFriendshipRequestsArea(friendshipRequestsArea);
 	friendshipRequestsArea.setFriendsArea(friendsArea);
