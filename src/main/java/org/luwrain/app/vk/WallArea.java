@@ -233,6 +233,13 @@ class WallArea extends ListArea
 	    NullCheck.notNull(item, "item");
 	    if (item instanceof WallPostFull)
 	    {
+
+				final WallPostFull full = (WallPostFull)item;
+String extInfo = "";
+		if (full.getLikes() != null && full.getLikes().getCount() != null)
+		    extInfo = "" + full.getLikes().getCount() + " ";
+
+		
 		final WallPost post = getOrigPost((WallPostFull)item);
 		boolean picture = false;
 		final List<WallpostAttachment> attachments = post.getAttachments();
@@ -246,7 +253,7 @@ class WallArea extends ListArea
 		    luwrain.setEventResponse(DefaultEventResponse.hint(Hint.EMPTY_LINE));
 		    return;
 		}
-	    	luwrain.setEventResponse(DefaultEventResponse.listItem(picture?Sounds.PICTURE:Sounds.LIST_ITEM, text, null));
+	    	luwrain.setEventResponse(DefaultEventResponse.listItem(picture?Sounds.PICTURE:Sounds.LIST_ITEM, extInfo + text, null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
