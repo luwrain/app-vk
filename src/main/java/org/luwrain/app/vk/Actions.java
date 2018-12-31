@@ -46,19 +46,22 @@ final class Actions
     private final Luwrain luwrain;
     private final Strings strings;
     private final Base base;
+    private final App app;
     final Conversations conv;
     final ActionLists lists;
 
-    Actions(Luwrain luwrain, Strings strings, Base base)
+    Actions(Luwrain luwrain, Strings strings, Base base, App app)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
 	NullCheck.notNull(base, "base");
+	NullCheck.notNull(app, "app");
 	this.luwrain = luwrain;
 	this.strings = strings;
 	this.base = base;
 	this.conv = new Conversations(luwrain, strings);
 	this.lists = new ActionLists(luwrain, strings, base);
+	this.app = app;
     }
 
     boolean onHomeWallUpdate(Runnable onSuccess)
@@ -80,7 +83,7 @@ final class Actions
 		    {
 			luwrain.runUiSafely(()->{
 				base.resetTask();
-				luwrain.crash(e);
+				onException(e);
 			    });
 		    }
 	}, null));
@@ -522,5 +525,17 @@ final class Actions
 	//FIXME:Limit up to 1000
 	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(UserField.STATUS, UserField.LAST_SEEN, UserField.CITY, UserField.BDATE).execute();
 	return resp.toArray(new UserFull[resp.size()]);
+    }
+
+    private void onException(Exception e, boolean closeA)
+    {
+	NullCheck.notNull(e, "e");
+	if (e instanceof com.vk.api.sdk.exceptions.ClientException && e.getMessage() != null &&
+	    e.getMessage().equals("I/O exception"))
+	{
+	    luwrain.crash(new org.luwrain.app.crash.App(org.luwrain.app.crash.App.Type.NETWORK_SERVICE_INACCESSIBLE, app, null));
+	    base.closeApp();
+	} else
+	    luwrain.crash(e);
     }
 }
