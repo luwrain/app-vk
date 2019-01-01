@@ -35,6 +35,11 @@ final class Conversations
 	this.strings = strings;
     }
 
+    File attachPhoto()
+    {
+	return Popups.file(luwrain, strings.attachPhotoPopupName(), strings.attachPhotoPopupPrefix(), new String[]{"jpg", "jpeg"});
+    }
+
     String messageText()
     {
 	return Popups.simple(luwrain, strings.messageTextPopupName(), strings.messageTextPopupPrefix(), "");

@@ -83,7 +83,7 @@ final class Actions
 		    {
 			luwrain.runUiSafely(()->{
 				base.resetTask();
-				onException(e);
+				onExceptionWithClose(e);
 			    });
 		    }
 	}, null));
@@ -527,7 +527,7 @@ final class Actions
 	return resp.toArray(new UserFull[resp.size()]);
     }
 
-    private void onException(Exception e, boolean closeA)
+    private void onExceptionWithClose(Exception e)
     {
 	NullCheck.notNull(e, "e");
 	if (e instanceof com.vk.api.sdk.exceptions.ClientException && e.getMessage() != null &&

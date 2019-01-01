@@ -50,6 +50,14 @@ final class ActionLists
 	};
     }
 
+        Action[] getWallPostActions()
+    {
+	return new Action[]{
+	    new Action("attach-photo", strings.actionAttachPhoto(), new KeyboardEvent(KeyboardEvent.Special.F5)),
+	};
+    }
+
+
         Action[] getUsersActions()
     {
 	return new Action[] {

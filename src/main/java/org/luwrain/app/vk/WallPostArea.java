@@ -17,13 +17,14 @@
 package org.luwrain.app.vk;
 
 import java.util.*;
+import java.io.*;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-final class WallPostArea extends EditArea
+final class WallPostArea extends FormArea
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -31,11 +32,12 @@ final class WallPostArea extends EditArea
     private final Actions actions;
     private final ActionLists actionLists;
     private final Runnable closing;
+    private int nextAttachmentNum = 0;
 
     WallPostArea(Luwrain luwrain, Strings strings, Base base,
 		 Actions actions, ActionLists actionLists, Runnable closing)
     {
-	super(createParams(luwrain, strings, base));
+	super(new DefaultControlEnvironment(luwrain), strings.wallPostAreaName());
 	NullCheck.notNull(actions, "actions");
 	NullCheck.notNull(actionLists, "actionLists");
 	NullCheck.notNull(closing, "closing");
@@ -45,6 +47,9 @@ final class WallPostArea extends EditArea
 	this.actions = actions;
 	this.actionLists = actionLists;
 	this.closing = closing;
+
+	activateMultilineEdit("Введите текст новой записи ниже:", new String[0], true);
+	
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)
@@ -67,6 +72,9 @@ final class WallPostArea extends EditArea
 	    return super.onSystemEvent(event);
 	switch(event.getCode())
 	{
+	case ACTION:
+	    if (ActionEvent.isAction(event, "attach-photo"))
+		return onAttachPhoto();
 	case OK:
 	    {
 		final String text = getPostText();
@@ -89,12 +97,22 @@ final class WallPostArea extends EditArea
 
     @Override public Action[] getAreaActions()
     {
-return new Action[0];
+	return actionLists.getWallPostActions();
+    }
+
+    private boolean onAttachPhoto()
+    {
+	final File file = actions.conv.attachPhoto();
+	if (file == null)
+	    	return true;
+	addStatic("photo" + nextAttachmentNum, file.getName(), file);
+	++nextAttachmentNum;
+	return true;
     }
 
     private String getPostText()
     {
-	final String[] lines = getLines();
+	final String[] lines = getMultilineEditTextVec();
 	if (lines.length == 0)
 	    return "";
 	final StringBuilder b = new StringBuilder();
@@ -102,16 +120,5 @@ return new Action[0];
 	for(int i = 1;i < lines.length - 1;++i)
 	    b.append("\n" + lines[i]);
 	return new String(b);
-    }
-
-    static private EditArea.Params createParams(Luwrain luwrain, Strings strings, Base base)
-    {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(strings, "strings");
-	NullCheck.notNull(base, "base");
-	final EditArea.Params params = new EditArea.Params();
-	params.context = new DefaultControlEnvironment(luwrain);
-	params.name = strings.wallPostAreaName();
-	return params;
     }
 }

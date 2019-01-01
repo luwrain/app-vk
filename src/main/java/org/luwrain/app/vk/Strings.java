@@ -20,6 +20,7 @@ interface Strings
 {
     static final String NAME = "luwrain.vk";
 
+    String actionAttachPhoto();
     String actionConversations();
     String actionDelete();
     String actionFollowings();
@@ -31,6 +32,8 @@ interface Strings
     String actionWallDelete();
         String actionWallPost();
     String appName();
+    String attachPhotoPopupName();
+    String attachPhotoPopupPrefix();
     String conversationsAreaName();
     String followingsAreaName();
     String friendsAreaName();
