@@ -31,6 +31,7 @@ import com.vk.api.sdk.objects.newsfeed.NewsfeedItem;
 import com.vk.api.sdk.objects.newsfeed.ItemWallpost;
 import com.vk.api.sdk.objects.newsfeed.NewsfeedItemType;
 import com.vk.api.sdk.queries.newsfeed.NewsfeedGetFilter;
+import com.vk.api.sdk.objects.photos.Photo;
 
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
@@ -152,15 +153,25 @@ final class Actions
     }
 
 
-    boolean onWallPost(String text, Runnable onSuccess, Runnable onFailure)
+    boolean onWallPost(String text, File[] photos, Runnable onSuccess, Runnable onFailure)
     {
 	NullCheck.notEmpty(text, "text");
+	NullCheck.notNullItems(photos, "photos");
 	NullCheck.notNull(onSuccess, "onSuccess");
 	NullCheck.notNull(onFailure, "onFailure");
 	return base.runTask(new FutureTask(()->{
 		    try {
+			final List<String> attachments = new LinkedList();
+			for(File f: photos)
+			{
+final com.vk.api.sdk.objects.photos.PhotoUpload server = base.vk.photos().getWallUploadServer(base.actor).execute();
+final com.vk.api.sdk.objects.photos.responses.WallUploadResponse upload = base.vk.upload().photoWall(server.getUploadUrl(), f).execute();
+for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).server(upload.getServer()).hash(upload.getHash()).execute())
+    attachments.add("photo" + p.getOwnerId() + "_" + p.getId());
+			}
 			final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
 			.message(text)
+			.attachments(attachments)
 			.execute();
 						final com.vk.api.sdk.objects.wall.responses.GetResponse respPosts = base.vk.wall().get(base.actor)
 			.execute();

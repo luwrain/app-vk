@@ -80,7 +80,7 @@ final class WallPostArea extends FormArea
 		final String text = getPostText();
 		if (text.trim().isEmpty())
 		    return false;
-		if (!actions.onWallPost(text, ()->{
+		if (!actions.onWallPost(text, new File[]{new File("")}, ()->{
 			closing.run();
 			}, ()->{}))
 		    return false;
