@@ -87,6 +87,12 @@ abstract class UsersArea extends ConsoleArea2
 	case ACTION:
 	    if (ActionEvent.isAction(event, "request-friendship"))
 		return onRequestFriendship();
+	    	    if (ActionEvent.isAction(event, "message"))
+		return onMessage();
+		    return false;
+
+
+		    
 	case CLOSE:
 	    base.closeApp();
 	    return true;
@@ -125,6 +131,19 @@ abstract class UsersArea extends ConsoleArea2
 	final UserFull user = (UserFull)selected;
 	return  actions.onNewFriendship(user.getId(), ()->luwrain.message(strings.friendshipRequestSent(), Luwrain.MessageType.OK));
     }
+
+        private boolean onMessage()
+    {
+	final Object selected = selected();
+	if (selected == null || !(selected instanceof UserFull))
+	    return false;
+	final UserFull user = (UserFull)selected;
+	final String text = actions.conv.messageText();
+	if (text == null || text.trim().isEmpty())
+	    return true;
+	return actions.onMessageSend(user.getId(), text, ()->luwrain.message(strings.messageSent(), Luwrain.MessageType.OK), ()->{});
+    }
+
 
     static private ConsoleArea2.Params createParams(Luwrain luwrain, Strings strings, Base base)
     {

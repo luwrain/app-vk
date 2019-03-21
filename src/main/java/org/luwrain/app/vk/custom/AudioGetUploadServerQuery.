@@ -1,0 +1,34 @@
+
+package org.luwrain.app.vk.custom;
+
+import com.vk.api.sdk.client.AbstractQueryBuilder;
+import com.vk.api.sdk.client.VkApiClient;
+import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.objects.photos.responses.GetOwnerPhotoUploadServerResponse;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class AudioGetUploadServerQuery extends AbstractQueryBuilder<PhotosGetOwnerPhotoUploadServerQuery, GetOwnerPhotoUploadServerResponse>
+{
+    public AudioGetUploadServerQuery(VkApiClient client, UserActor actor)
+    {
+        super(client, "audio.getUploadServer", GetOwnerPhotoUploadServerResponse.class);
+        accessToken(actor.getAccessToken());
+    }
+
+    public PhotosGetOwnerPhotoUploadServerQuery ownerId(Integer value)
+    {
+        return unsafeParam("owner_id", value);
+    }
+
+    @Override
+    protected PhotosGetOwnerPhotoUploadServerQuery getThis() {
+        return this;
+    }
+
+    @Override
+    protected List<String> essentialKeys() {
+        return Arrays.asList("access_token");
+    }
+}

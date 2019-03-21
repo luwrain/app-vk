@@ -95,6 +95,11 @@ abstract class FriendsArea extends ListArea
 	case ACTION:
 	    if (ActionEvent.isAction(event, "message"))
 		return onMessage();
+
+	    	    if (ActionEvent.isAction(event, "delete"))
+		return onDelete();
+
+		    return false;
 	case CLOSE:
 	    base.closeApp();
 	    return true;
@@ -136,6 +141,19 @@ abstract class FriendsArea extends ListArea
 	    return true;
 	return actions.onMessageSend(user.getId(), text, ()->luwrain.message(strings.messageSent(), Luwrain.MessageType.OK), ()->{});
     }
+
+            private boolean onDelete()
+    {
+	final Object selected = selected();
+	if (selected == null || !(selected instanceof UserFull))
+	    return false;
+	final UserFull user = (UserFull)selected;
+	return actions.onFriendshipDelete(user.getId(), ()->{
+		refresh();
+		luwrain.playSound(Sounds.OK);
+	    });
+    }
+
 
     void setDefaultArea(Area defaultArea)
     {

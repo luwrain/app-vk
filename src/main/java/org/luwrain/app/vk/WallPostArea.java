@@ -77,10 +77,14 @@ final class WallPostArea extends FormArea
 		return onAttachPhoto();
 	case OK:
 	    {
+		final List<File> photos = new LinkedList();
+		for(int i = 0; i < getItemCount();++i)
+		    if (getItemTypeOnLine(i) == FormArea.Type.STATIC && getItemNameOnLine(i).startsWith("photo"))
+			photos.add((File)getItemObjOnLine(i));
 		final String text = getPostText();
-		if (text.trim().isEmpty())
+		if (text.trim().isEmpty() && photos.isEmpty())
 		    return false;
-		if (!actions.onWallPost(text, new File[]{new File("")}, ()->{
+		if (!actions.onWallPost(text, photos.toArray(new File[photos.size()]), ()->{
 			closing.run();
 			}, ()->{}))
 		    return false;
