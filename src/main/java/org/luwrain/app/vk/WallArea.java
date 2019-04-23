@@ -143,7 +143,7 @@ class WallArea extends ListArea
 	NullCheck.notNull(strings, "strings");
 	NullCheck.notNull(base, "base");
 	final ListArea.Params params = new ListArea.Params();
-	params.context = new DefaultControlEnvironment(luwrain);
+	params.context = new DefaultControlContext(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain, strings);
 	params.name = strings.wallAreaName();
@@ -217,7 +217,7 @@ class WallArea extends ListArea
 	private final Strings strings;
 	Appearance(Luwrain luwrain, Strings strings)
 	{
-	    super(new DefaultControlEnvironment(luwrain));
+	    super(new DefaultControlContext(luwrain));
 	    NullCheck.notNull(luwrain, "luwrain");
 	    NullCheck.notNull(strings, "strings");
 	    this.luwrain = luwrain;

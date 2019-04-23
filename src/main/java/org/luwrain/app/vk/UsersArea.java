@@ -25,7 +25,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-abstract class UsersArea extends ConsoleArea2
+abstract class UsersArea extends ConsoleArea
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -52,13 +52,13 @@ abstract class UsersArea extends ConsoleArea2
 	setConsoleInputHandler((area,text)->{
 		NullCheck.notNull(text, "text");
 		if (text.trim().isEmpty() || base.isBusy())
-		    return ConsoleArea2.InputHandler.Result.REJECTED;
+		    return ConsoleArea.InputHandler.Result.REJECTED;
 		if (!actions.onUsersSearch(text, ()->{
 			    area.refresh();
 			    luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.ERROR);
 			}))
-		    return ConsoleArea2.InputHandler.Result.REJECTED;
-		return ConsoleArea2.InputHandler.Result.OK;
+		    return ConsoleArea.InputHandler.Result.REJECTED;
+		return ConsoleArea.InputHandler.Result.OK;
 	    });
     }
 
@@ -145,21 +145,21 @@ abstract class UsersArea extends ConsoleArea2
     }
 
 
-    static private ConsoleArea2.Params createParams(Luwrain luwrain, Strings strings, Base base)
+    static private ConsoleArea.Params createParams(Luwrain luwrain, Strings strings, Base base)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
 	NullCheck.notNull(base, "base");
-	final ConsoleArea2.Params params = new ConsoleArea2.Params();
-	params.context = new DefaultControlEnvironment(luwrain);
+	final ConsoleArea.Params params = new ConsoleArea.Params();
+	params.context = new DefaultControlContext(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain, strings);
 	params.areaName = strings.usersAreaName();
-	params.inputPos = ConsoleArea2.InputPos.TOP;
+	params.inputPos = ConsoleArea.InputPos.TOP;
 	return params;
     }
 
-    static private final class Appearance implements ConsoleArea2.Appearance
+    static private final class Appearance implements ConsoleArea.Appearance
     {
 	private final Luwrain luwrain;
 	private final Strings strings;
@@ -209,7 +209,7 @@ if (user.getLastSeen() != null)
     }
 	    };
 
-    static private final class Model implements ConsoleArea2.Model
+    static private final class Model implements ConsoleArea.Model
     {
 	private final Base base;
 	Model(Base base)

@@ -152,7 +152,7 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	NullCheck.notNull(strings, "strings");
 	NullCheck.notNull(base, "base");
 	final ListArea.Params params = new ListArea.Params();
-	params.context = new DefaultControlEnvironment(luwrain);
+	params.context = new DefaultControlContext(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain, strings, base);
 	params.name = strings.conversationsAreaName();

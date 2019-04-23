@@ -37,7 +37,7 @@ final class WallPostArea extends FormArea
     WallPostArea(Luwrain luwrain, Strings strings, Base base,
 		 Actions actions, ActionLists actionLists, Runnable closing)
     {
-	super(new DefaultControlEnvironment(luwrain), strings.wallPostAreaName());
+	super(new DefaultControlContext(luwrain), strings.wallPostAreaName());
 	NullCheck.notNull(actions, "actions");
 	NullCheck.notNull(actionLists, "actionLists");
 	NullCheck.notNull(closing, "closing");

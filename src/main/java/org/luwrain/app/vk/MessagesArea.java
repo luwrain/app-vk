@@ -23,7 +23,7 @@ import org.luwrain.core.events.*;
 import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
 
-class MessagesArea extends ConsoleArea2 implements NotificationNewMessage
+class MessagesArea extends ConsoleArea implements NotificationNewMessage
 {
     private final Luwrain luwrain;
     private final Strings strings;
@@ -55,15 +55,15 @@ class MessagesArea extends ConsoleArea2 implements NotificationNewMessage
 	setConsoleInputHandler((area,text)->{
 		NullCheck.notNull(text, "text");
 		if (activeUserId < 0 || text.trim().isEmpty() || base.isBusy())
-		    return ConsoleArea2.InputHandler.Result.REJECTED;
+		    return ConsoleArea.InputHandler.Result.REJECTED;
 		if (!actions.onMessageSend(activeUserId, text, ()->{
 			    refresh();
 			    luwrain.onAreaNewBackgroundSound(MessagesArea.this);
 			    luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.OK);
 			}, ()->luwrain.onAreaNewBackgroundSound(MessagesArea.this)))
-		    return ConsoleArea2.InputHandler.Result.REJECTED;
+		    return ConsoleArea.InputHandler.Result.REJECTED;
 		luwrain.onAreaNewBackgroundSound(area);
-		return ConsoleArea2.InputHandler.Result.CLEAR_INPUT;
+		return ConsoleArea.InputHandler.Result.CLEAR_INPUT;
 	    });
     }
 
@@ -150,21 +150,21 @@ class MessagesArea extends ConsoleArea2 implements NotificationNewMessage
 	this.defaultArea = defaultArea;
     }
 
-    static private ConsoleArea2.Params createParams(Luwrain luwrain, Strings strings, Base base)
+    static private ConsoleArea.Params createParams(Luwrain luwrain, Strings strings, Base base)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
 	NullCheck.notNull(base, "base");
-	final ConsoleArea2.Params params = new ConsoleArea2.Params();
-	params.context = new DefaultControlEnvironment(luwrain);
+	final ConsoleArea.Params params = new ConsoleArea.Params();
+	params.context = new DefaultControlContext(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain);
 	params.areaName = strings.messagesAreaName();
-	params.inputPos = ConsoleArea2.InputPos.TOP;
+	params.inputPos = ConsoleArea.InputPos.TOP;
 	return params;
     }
 
-    static private final class Appearance implements ConsoleArea2.Appearance
+    static private final class Appearance implements ConsoleArea.Appearance
     {
 	private final Luwrain luwrain;
 	Appearance(Luwrain luwrain)
@@ -195,7 +195,7 @@ class MessagesArea extends ConsoleArea2 implements NotificationNewMessage
 	}
     };
 
-    static private final class Model implements ConsoleArea2.Model
+    static private final class Model implements ConsoleArea.Model
     {
 	private final Base base;
 	Model(Base base)
