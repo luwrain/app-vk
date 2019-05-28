@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -25,7 +25,7 @@ import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
 
-class App implements Application
+class App implements Application, MonoApp
 {
     private Luwrain luwrain = null;
     private Strings strings = null;
@@ -242,5 +242,11 @@ class App implements Application
 	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_RIGHT, defaultArea, usersArea));
 	luwrain.setActiveArea(usersArea);
 	return true;
+    }
+
+    @Override public MonoApp.Result onMonoAppSecondInstance(Application app)
+    {
+	NullCheck.notNull(app, "app");
+	return MonoApp.Result.BRING_FOREGROUND;
     }
 }

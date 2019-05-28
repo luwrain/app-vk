@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2018 Michael Pozhidaev <michael.pozhidaev@gmail.com>
+   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -27,7 +27,6 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.callback.longpoll.responses.GetLongPollEventsResponse;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
-
 
 import org.luwrain.core.*;
 
@@ -75,5 +74,22 @@ final class Watching
 		w.listeners.add(listener);
 		return;
 	    }
+    }
+
+    void removeListener(Listener listener)
+    {
+	NullCheck.notNull(listener, "listener");
+	for(Watch w: watches)
+	{
+	    final Iterator<Listener> it = w.listeners.iterator();
+	    while(it.hasNext())
+	    {
+		if (it.next() == listener)
+		{
+		    it.remove();
+		    break;
+		}
+	    }
+	}
     }
 }
