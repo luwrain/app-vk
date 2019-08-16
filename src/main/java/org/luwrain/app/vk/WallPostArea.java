@@ -116,7 +116,7 @@ final class WallPostArea extends FormArea
 
     private String getPostText()
     {
-	final String[] lines = getMultilineEditTextVec();
+	final String[] lines = getMultilineEditLines();
 	if (lines.length == 0)
 	    return "";
 	final StringBuilder b = new StringBuilder();
