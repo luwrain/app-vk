@@ -544,7 +544,7 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	if (e instanceof com.vk.api.sdk.exceptions.ClientException && e.getMessage() != null &&
 	    e.getMessage().equals("I/O exception"))
 	{
-	    luwrain.crash(new org.luwrain.app.crash.App(org.luwrain.app.crash.App.Type.NETWORK_SERVICE_INACCESSIBLE, app, null));
+	    luwrain.crash(new org.luwrain.app.crash.App(new InitResult(InitResult.Type.NETWORK_SERVICE_INACCESSIBLE)));
 	    base.closeApp();
 	} else
 	    luwrain.crash(e);
