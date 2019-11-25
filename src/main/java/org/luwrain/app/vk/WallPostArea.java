@@ -80,7 +80,7 @@ final class WallPostArea extends FormArea
 		final List<File> photos = new LinkedList();
 		for(int i = 0; i < getItemCount();++i)
 		    if (getItemTypeOnLine(i) == FormArea.Type.STATIC && getItemNameOnLine(i).startsWith("photo"))
-			photos.add((File)getItemObjOnLine(i));
+			photos.add((File)getItemObj(i));
 		final String text = getPostText();
 		if (text.trim().isEmpty() && photos.isEmpty())
 		    return false;
