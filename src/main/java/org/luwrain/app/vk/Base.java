@@ -47,8 +47,8 @@ import org.luwrain.core.*;
 
 final class Base implements Watching.Listener
 {
-    private final Luwrain luwrain;
-    private final Strings strings;
+    final Luwrain luwrain;
+    final Strings strings;
     private final Watching watching;
     private final TransportClient transportClient;
     final VkApiClient vk;
@@ -58,6 +58,7 @@ final class Base implements Watching.Listener
     private Area[] visibleAreas = new Area[0];
     final Map<Integer, UserFull> userCache = new HashMap();
 
+    final TaskCancelling taskCancelling = new TaskCancelling();
     private FutureTask task = null;
 
     //Central area
@@ -65,7 +66,6 @@ final class Base implements Watching.Listener
     UserFull shownUser = null;
     WallpostFull[] shownUserWallPosts = new WallpostFull[0];
 
-    
     ConversationWithMessage[] dialogs = new ConversationWithMessage[0];
     Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];
@@ -135,6 +135,15 @@ final class Base implements Watching.Listener
 	return true;
     }
 
+    boolean runBkg(Runnable runnable)
+    {
+	NullCheck.notNull(runnable, "runnable");
+	return runTask(new FutureTask(()->{
+		    runnable.run();
+		    resetTask();
+	}, null));
+    }
+
     void resetTask()
     {
 	this.task = null;
@@ -145,6 +154,19 @@ final class Base implements Watching.Listener
     boolean isBusy()
     {
 	return task != null && !task.isDone();
+    }
+
+    void acceptTaskResult(TaskCancelling.TaskId taskId, Runnable runnable)
+    {
+	NullCheck.notNull(taskId, "taskId");
+	NullCheck.notNull(runnable, "runnable");
+	luwrain.runUiSafely(runnable);
+    }
+
+    void onTaskError(Exception e)
+    {
+	NullCheck.notNull(e, "e");
+	
     }
 
     void closeApp()

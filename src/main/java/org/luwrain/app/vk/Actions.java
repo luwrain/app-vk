@@ -21,19 +21,16 @@ import java.util.concurrent.*;
 import java.io.*;
 
 import com.vk.api.sdk.exceptions.*;
-//import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Conversation;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.wall.WallpostFull;
-//import com.vk.api.sdk.queries.users.UserField;
 import com.vk.api.sdk.objects.users.Fields;
 import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.queries.users.*;
 import com.vk.api.sdk.objects.newsfeed.NewsfeedItem;
 import com.vk.api.sdk.objects.newsfeed.ItemWallpost;
 import com.vk.api.sdk.objects.newsfeed.NewsfeedItemType;
-//import com.vk.api.sdk.queries.newsfeed.NewsfeedGetFilter;
 import com.vk.api.sdk.objects.photos.Photo;
 
 import org.luwrain.core.*;
@@ -42,6 +39,7 @@ import org.luwrain.popups.Popups;
 import org.luwrain.speech.*;
 
 import org.luwrain.app.vk.custom.*;
+import org.luwrain.app.vk.TaskCancelling.TaskId;
 
 final class Actions
 {
@@ -54,14 +52,12 @@ final class Actions
     final Conversations conv;
     final ActionLists lists;
 
-    Actions(Luwrain luwrain, Strings strings, Base base, App app)
+    Actions(Base base, App app)
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(strings, "strings");
 	NullCheck.notNull(base, "base");
 	NullCheck.notNull(app, "app");
-	this.luwrain = luwrain;
-	this.strings = strings;
+	this.luwrain = base.luwrain;
+	this.strings = base.strings;
 	this.base = base;
 	this.conv = new Conversations(luwrain, strings);
 	this.lists = new ActionLists(luwrain, strings, base);
@@ -71,14 +67,13 @@ final class Actions
     boolean onHomeWallUpdate(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
-	return base.runTask(new FutureTask(()->{
+	final TaskId taskId = base.taskCancelling.newTaskId();
+	return base.runBkg(()->{
 		    try {
-			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
-			.execute();
-			luwrain.runUiSafely(()->{
+			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor).execute();
+			base.acceptTaskResult(taskId, ()->{
 				final List<WallpostFull> list = resp.getItems();
 				base.wallPosts = list.toArray(new WallpostFull[list.size()]);
-				base.resetTask();
 				onSuccess.run();
 			    });
 			return;
@@ -86,11 +81,12 @@ final class Actions
 		    catch(Exception e)
 		    {
 			luwrain.runUiSafely(()->{
+				base.onTaskError(e);
 				base.resetTask();
 				onExceptionWithClose(e);
 			    });
 		    }
-	}, null));
+	});
     }
 
     boolean onUserInfoUpdate(int userId, Runnable onSuccess)
@@ -131,12 +127,13 @@ final class Actions
 	NullCheck.notNull(post, "post");
 	NullCheck.notNull(onSuccess, "onSuccess");
 	NullCheck.notNull(onFailure, "onFailure");
+	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runTask(new FutureTask(()->{
 		    try {
 			base.vk.wall().delete(base.actor).postId(post.getId()).execute();
 			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
 			.execute();
-			luwrain.runUiSafely(()->{
+			base.acceptTaskResult(taskId, ()->{
 				final List<WallpostFull> list = resp.getItems();
 				base.wallPosts = list.toArray(new WallpostFull[list.size()]);
 				base.resetTask();

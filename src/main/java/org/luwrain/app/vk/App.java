@@ -52,7 +52,7 @@ class App implements Application, MonoApp
 	strings = (Strings)o;
 	this.luwrain = luwrain;
 	this.base = new Base(luwrain, strings, watching);
-	this.actions = new Actions(luwrain, strings, base, this);
+	this.actions = new Actions(base, this);
 	this.actionLists = new ActionLists(luwrain, strings, base);
 	createDefaultArea();
 	base.setVisibleAreas(new Area[]{defaultArea});
