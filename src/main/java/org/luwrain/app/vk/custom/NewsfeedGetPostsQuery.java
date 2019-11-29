@@ -4,7 +4,7 @@ import com.vk.api.sdk.client.AbstractQueryBuilder;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.queries.EnumParam;
-import com.vk.api.sdk.queries.newsfeed.NewsfeedGetFilter;
+//import com.vk.api.sdk.queries.newsfeed.NewsfeedGetFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,9 +31,11 @@ public class NewsfeedGetPostsQuery extends AbstractQueryBuilder<NewsfeedGetPosts
      * @param value value of "filters" parameter.
      * @return a reference to this {@code AbstractQueryBuilder} object to fulfill the "Builder" pattern.
      */
+    /*
     public NewsfeedGetPostsQuery filters(NewsfeedGetFilter... value) {
         return unsafeParam("filters", value);
     }
+    */
 
     /**
      * Filters to apply
@@ -41,10 +43,11 @@ public class NewsfeedGetPostsQuery extends AbstractQueryBuilder<NewsfeedGetPosts
      * @param value value of "filters" parameter.
      * @return a reference to this {@code AbstractQueryBuilder} object to fulfill the "Builder" pattern.
      */
+    /*
     public NewsfeedGetPostsQuery filters(List<NewsfeedGetFilter> value) {
         return unsafeParam("filters", value);
     }
-
+    */
 
     /**
      * Return news items from banned sources

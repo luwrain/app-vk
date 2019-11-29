@@ -18,8 +18,8 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
-import com.vk.api.sdk.objects.wall.WallPost;
-import com.vk.api.sdk.objects.wall.WallPostFull;
+import com.vk.api.sdk.objects.wall.Wallpost;
+import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.wall.WallpostAttachment;
 import com.vk.api.sdk.objects.wall.WallpostAttachmentType;
 import com.vk.api.sdk.objects.wall.PostType;
@@ -94,10 +94,10 @@ class WallArea extends ListArea
 	    if (ActionEvent.isAction(event, "delete"))
 	    {
 		final Object selected = selected();
-		if (selected == null || !(selected instanceof WallPostFull))
+		if (selected == null || !(selected instanceof WallpostFull))
 		    return false;
 		//FIXME:confirmation
-		if (!actions.onWallDelete((WallPostFull)selected, ()->{
+		if (!actions.onWallDelete((WallpostFull)selected, ()->{
 			    refresh();
 			    luwrain.onAreaNewBackgroundSound(this);
 			    luwrain.playSound(Sounds.OK);
@@ -195,8 +195,10 @@ class WallArea extends ListArea
 		    {
 			final StringBuilder b = new StringBuilder();
 			b.append("Интересы:");
+			/*
 			if (base.shownUser.getInterests() != null && !base.shownUser.getInterests().trim().isEmpty())
 			    b.append(" ").append(base.shownUser.getInterests().trim());
+			*/
 			return new String(b);
 		    }
 		case 4:
@@ -231,16 +233,16 @@ class WallArea extends ListArea
 	@Override public void announceNonSection(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    if (item instanceof WallPostFull)
+	    if (item instanceof WallpostFull)
 	    {
 
-				final WallPostFull full = (WallPostFull)item;
+				final WallpostFull full = (WallpostFull)item;
 String extInfo = "";
 		if (full.getLikes() != null && full.getLikes().getCount() != null)
 		    extInfo = "" + full.getLikes().getCount() + " ";
 
 		
-		final WallPost post = getOrigPost((WallPostFull)item);
+		final Wallpost post = getOrigPost((WallpostFull)item);
 		boolean picture = false;
 		final List<WallpostAttachment> attachments = post.getAttachments();
 		if (attachments != null)
@@ -261,14 +263,14 @@ String extInfo = "";
 	@Override public String getNonSectionScreenAppearance(Object item)
 	{
 	    NullCheck.notNull(item, "item");
-	    if (item instanceof WallPostFull)
+	    if (item instanceof WallpostFull)
 	    {
-		final WallPost post = getOrigPost((WallPostFull)item);
+		final Wallpost post = getOrigPost((WallpostFull)item);
 		return getText(post);
 	    }
 	    return item.toString();
 	}
-	private String getText(WallPost post)
+	private String getText(Wallpost post)
 	{
 	    NullCheck.notNull(post, "post");
 	    boolean picture = false;
@@ -283,7 +285,7 @@ String extInfo = "";
 		return "[ФОТО]";//FIXME:
 	    return "";
 	}
-	private WallPost getOrigPost(WallPostFull post)
+	private Wallpost getOrigPost(WallpostFull post)
 	{
 	    NullCheck.notNull(post, "post");
 	    if (post.getCopyHistory() == null || post.getCopyHistory().isEmpty())

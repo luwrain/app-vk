@@ -18,7 +18,9 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
-import com.vk.api.sdk.objects.messages.Dialog;
+//import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.messages.Conversation;
+import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.messages.Message;
 
 import org.luwrain.core.*;
@@ -49,13 +51,13 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	this.closing = closing;
 	setListClickHandler((area,index,obj)->{
 		NullCheck.notNull(obj, "obj");
-		if (!(obj instanceof Dialog))
+		if (!(obj instanceof ConversationWithMessage))
 		    return false;
-		final Dialog dialog = (Dialog)obj;
-		if (dialog.getMessage() == null || dialog.getMessage().getUserId() < 0)
+		final ConversationWithMessage dialog = (ConversationWithMessage)obj;
+		if (dialog.getLastMessage() == null || dialog.getLastMessage().getFromId() < 0)
 		    return false;
-		return actions.onMessagesHistory(dialog.getMessage().getUserId(), ()->{
-			messagesArea.activateConv(dialog.getMessage().getUserId());
+		return actions.onMessagesHistory(dialog.getLastMessage().getFromId(), ()->{
+			messagesArea.activateConv(dialog.getLastMessage().getFromId());
 		    }, ()->{});
 	    });
 	actions.onDialogsUpdate(()->{
@@ -200,13 +202,13 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    if (item instanceof Dialog)
+	    if (item instanceof ConversationWithMessage)
 	    {
-		final Dialog dialog = (Dialog)item;
-		final Message message = dialog.getMessage();
-		if (dialog.getUnread() != null)
-		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.SELECTED, base.getUserCommonName(message.getUserId()) + " " + dialog.getUnread() + " " + message.getBody(), null)); else
-		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getUserId()) + " " + message.getBody(), null));
+		final Conversation dialog = ((ConversationWithMessage)item).getConversation();
+		final Message message = ((ConversationWithMessage)item).getLastMessage();
+		if (dialog.getUnreadCount() != null)
+		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.ATTENTION, base.getUserCommonName(message.getFromId()) + " " + dialog.getUnreadCount() + " " + message.getText(), null)); else
+		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getFromId()) + " " + message.getText(), null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -215,13 +217,13 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	{
 	    NullCheck.notNull(item, "item");
 	    NullCheck.notNull(flags, "flags");
-	    if (item instanceof Dialog)
+	    if (item instanceof ConversationWithMessage)
 	    {
-		final Dialog dialog = (Dialog)item;
-		final Message message = dialog.getMessage();
-		if (dialog.getUnread() != null)
-		    return base.getUserCommonName(message.getUserId()) + " (" + dialog.getUnread() + "): " + message.getBody(); else
-		    return base.getUserCommonName(message.getUserId()) + ": " + message.getBody();
+		final Conversation dialog = ((ConversationWithMessage)item).getConversation();
+		final Message message = ((ConversationWithMessage)item).getLastMessage();
+		if (dialog.getUnreadCount() != null)
+		    return base.getUserCommonName(message.getFromId()) + " (" + dialog.getUnreadCount() + "): " + message.getText(); else
+		    return base.getUserCommonName(message.getFromId()) + ": " + message.getText();
 	    }
 	    return item.toString();
 	}

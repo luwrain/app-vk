@@ -178,7 +178,7 @@ class MessagesArea extends ConsoleArea implements NotificationNewMessage
 	    if (item instanceof Message)
 	    {
 		final Message message = (Message)item;
- 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, message.getBody(), null));
+ 		luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, message.getText(), null));
 		return;
 	    }
 	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
@@ -189,7 +189,7 @@ class MessagesArea extends ConsoleArea implements NotificationNewMessage
 	    if (item instanceof Message)
 	    {
 		final Message message = (Message)item;
-		return message.getBody();
+		return message.getText();
 	    }
 	    return item.toString();
 	}

@@ -22,9 +22,11 @@ import java.util.concurrent.*;
 
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.objects.messages.Dialog;
+//import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.messages.Conversation;
+import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.messages.Message;
-import com.vk.api.sdk.objects.wall.WallPostFull;
+import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.objects.newsfeed.NewsfeedItem;
 
@@ -35,10 +37,11 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.UserAuthResponse;
 import com.vk.api.sdk.objects.friends.UserXtrLists;
 import com.vk.api.sdk.objects.friends.responses.GetFieldsResponse;
-import com.vk.api.sdk.objects.messages.Dialog;
+//import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Message;
-import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
-import com.vk.api.sdk.queries.users.UserField;
+//import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
+//import com.vk.api.sdk.queries.users.UserField;
+import com.vk.api.sdk.objects.users.Fields;
 
 import org.luwrain.core.*;
 
@@ -58,12 +61,12 @@ final class Base implements Watching.Listener
     private FutureTask task = null;
 
     //Central area
-    WallPostFull[] wallPosts = new WallPostFull[0];
+    WallpostFull[] wallPosts = new WallpostFull[0];
     UserFull shownUser = null;
-    WallPostFull[] shownUserWallPosts = new WallPostFull[0];
+    WallpostFull[] shownUserWallPosts = new WallpostFull[0];
 
     
-    Dialog[] dialogs = new Dialog[0];
+    ConversationWithMessage[] dialogs = new ConversationWithMessage[0];
     Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];
     UserFull[] friends = new UserFull[0];

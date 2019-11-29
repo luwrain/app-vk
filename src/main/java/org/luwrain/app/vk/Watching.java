@@ -24,7 +24,7 @@ import com.google.gson.JsonObject;
 import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.callback.longpoll.responses.GetLongPollEventsResponse;
+import com.vk.api.sdk.objects.callback.longpoll.responses.GetLongPollEventsResponse;
 import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 

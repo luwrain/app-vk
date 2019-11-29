@@ -1,6 +1,6 @@
 package org.luwrain.app.vk.custom;
 
-import com.vk.api.sdk.callback.objects.longpoll.GetLongPollEventsActInfo;
+import com.vk.api.sdk.objects.callback.longpoll.GetLongPollEventsActInfo;
 import com.vk.api.sdk.callback.longpoll.LongPollQueryBuilder;
 import com.vk.api.sdk.client.VkApiClient;
 
