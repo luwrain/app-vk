@@ -135,16 +135,26 @@ final class Base implements Watching.Listener
 	return true;
     }
 
-    boolean runBkg(Runnable runnable)
+    boolean runBkg(Operation op)
     {
-	NullCheck.notNull(runnable, "runnable");
+	NullCheck.notNull(op, "op");
 	return runTask(new FutureTask(()->{
-		    runnable.run();
-		    resetTask();
+		    try {
+			try {
+			    op.run();
+			}
+			catch(Exception e)
+			{
+			    onTaskError(e);
+			}
+		    }
+		    finally {
+			luwrain.runUiSafely(()->resetTask());
+		    }
 	}, null));
     }
 
-    void resetTask()
+    private void resetTask()
     {
 	this.task = null;
 	for(Area a: visibleAreas)
@@ -161,7 +171,7 @@ final class Base implements Watching.Listener
 	NullCheck.notNull(taskId, "taskId");
 	NullCheck.notNull(runnable, "runnable");
 	luwrain.runUiSafely(runnable);
-    }
+	    }
 
     void onTaskError(Exception e)
     {
@@ -174,6 +184,11 @@ final class Base implements Watching.Listener
 		if (watching != null)
 		    watching.removeListener(this);
 	luwrain.closeApp();
+    }
+
+    interface Operation
+    {
+	void run() throws Exception;
     }
 }
 

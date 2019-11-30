@@ -101,7 +101,7 @@ class WallArea extends ListArea
 			    refresh();
 			    luwrain.onAreaNewBackgroundSound(this);
 			    luwrain.playSound(Sounds.OK);
-			}, ()->luwrain.onAreaNewBackgroundSound(this)))
+			}))
 		    return false;
 		luwrain.onAreaNewBackgroundSound(this);
 		return true;

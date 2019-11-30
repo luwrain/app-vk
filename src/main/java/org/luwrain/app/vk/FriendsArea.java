@@ -139,7 +139,7 @@ abstract class FriendsArea extends ListArea
 	final String text = actions.conv.messageText();
 	if (text == null || text.trim().isEmpty())
 	    return true;
-	return actions.onMessageSend(user.getId(), text, ()->luwrain.message(strings.messageSent(), Luwrain.MessageType.OK), ()->{});
+	return actions.onMessageSend(user.getId(), text, ()->luwrain.message(strings.messageSent(), Luwrain.MessageType.OK));
     }
 
             private boolean onDelete()

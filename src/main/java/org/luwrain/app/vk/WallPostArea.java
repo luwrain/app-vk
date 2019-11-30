@@ -86,7 +86,7 @@ final class WallPostArea extends FormArea
 		    return false;
 		if (!actions.onWallPost(text, photos.toArray(new File[photos.size()]), ()->{
 			closing.run();
-			}, ()->{}))
+			}))
 		    return false;
 		luwrain.message(strings.sendingPost());
 		return true;

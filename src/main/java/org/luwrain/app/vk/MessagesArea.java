@@ -60,7 +60,7 @@ class MessagesArea extends ConsoleArea implements NotificationNewMessage
 			    refresh();
 			    luwrain.onAreaNewBackgroundSound(MessagesArea.this);
 			    luwrain.playSound(base.users.length > 0?Sounds.OK:Sounds.OK);
-			}, ()->luwrain.onAreaNewBackgroundSound(MessagesArea.this)))
+			}))
 		    return ConsoleArea.InputHandler.Result.REJECTED;
 		luwrain.onAreaNewBackgroundSound(area);
 		return ConsoleArea.InputHandler.Result.CLEAR_INPUT;

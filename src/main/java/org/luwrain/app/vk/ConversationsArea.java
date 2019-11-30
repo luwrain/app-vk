@@ -58,18 +58,18 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 		    return false;
 		return actions.onMessagesHistory(dialog.getLastMessage().getFromId(), ()->{
 			messagesArea.activateConv(dialog.getLastMessage().getFromId());
-		    }, ()->{});
+		    });
 	    });
-	actions.onDialogsUpdate(()->{
+	actions.onConversationsUpdate(()->{
 		//luwrain.playSound(Sounds.CLICK);
 		luwrain.setActiveArea(ConversationsArea.this);
 		refresh();
-	    }, ()->{});
+	    });
     }
 
     @Override public void onMessage(int messageId, int peerId, String messageText)
     {
-	actions.onDialogsUpdateNonInteractive(()->refresh());
+	actions.onConversationsUpdateNonInteractive(()->refresh());
     }
 
     @Override public boolean onInputEvent(KeyboardEvent event)
