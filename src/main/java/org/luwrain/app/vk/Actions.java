@@ -69,13 +69,13 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor).execute();
-			base.acceptTaskResult(taskId, ()->{
-				final List<WallpostFull> list = resp.getItems();
-				base.wallPosts = list.toArray(new WallpostFull[list.size()]);
-				onSuccess.run();
-			    });
-	});
+		final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor).execute();
+		base.acceptTaskResult(taskId, ()->{
+			final List<WallpostFull> list = resp.getItems();
+			base.wallPosts = list.toArray(new WallpostFull[list.size()]);
+			onSuccess.run();
+		    });
+	    });
     }
 
     boolean onUserInfoUpdate(int userId, Runnable onSuccess)
@@ -108,15 +108,15 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			base.vk.wall().delete(base.actor).postId(post.getId()).execute();
-			final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
-			.execute();
-			base.acceptTaskResult(taskId, ()->{
-				final List<WallpostFull> list = resp.getItems();
-				base.wallPosts = list.toArray(new WallpostFull[list.size()]);
-				onSuccess.run();
-			    });
-	});
+		base.vk.wall().delete(base.actor).postId(post.getId()).execute();
+		final com.vk.api.sdk.objects.wall.responses.GetResponse resp = base.vk.wall().get(base.actor)
+		.execute();
+		base.acceptTaskResult(taskId, ()->{
+			final List<WallpostFull> list = resp.getItems();
+			base.wallPosts = list.toArray(new WallpostFull[list.size()]);
+			onSuccess.run();
+		    });
+	    });
     }
 
     boolean onWallPost(String text, File[] photos, Runnable onSuccess)
@@ -126,26 +126,26 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			final List<String> attachments = new LinkedList();
-			for(File f: photos)
-			{
-final com.vk.api.sdk.objects.photos.PhotoUpload server = base.vk.photos().getWallUploadServer(base.actor).execute();
-final com.vk.api.sdk.objects.photos.responses.WallUploadResponse upload = base.vk.upload().photoWall(server.getUploadUrl().toString(), f).execute();
-for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).server(upload.getServer()).hash(upload.getHash()).execute())
-    attachments.add("photo" + p.getOwnerId() + "_" + p.getId());
-			}
-			final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
-			.message(text)
-			.attachments(attachments)
-			.execute();
-						final com.vk.api.sdk.objects.wall.responses.GetResponse respPosts = base.vk.wall().get(base.actor)
-			.execute();
-						base.acceptTaskResult(taskId, ()->{
-				final List<WallpostFull> list = respPosts.getItems();
-				base.wallPosts = list.toArray(new WallpostFull[list.size()]);
-				onSuccess.run();
-			    });
-	});
+		final List<String> attachments = new LinkedList();
+		for(File f: photos)
+		{
+		    final com.vk.api.sdk.objects.photos.PhotoUpload server = base.vk.photos().getWallUploadServer(base.actor).execute();
+		    final com.vk.api.sdk.objects.photos.responses.WallUploadResponse upload = base.vk.upload().photoWall(server.getUploadUrl().toString(), f).execute();
+		    for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).server(upload.getServer()).hash(upload.getHash()).execute())
+			attachments.add("photo" + p.getOwnerId() + "_" + p.getId());
+		}
+		final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
+		.message(text)
+		.attachments(attachments)
+		.execute();
+		final com.vk.api.sdk.objects.wall.responses.GetResponse respPosts = base.vk.wall().get(base.actor)
+		.execute();
+		base.acceptTaskResult(taskId, ()->{
+			final List<WallpostFull> list = respPosts.getItems();
+			base.wallPosts = list.toArray(new WallpostFull[list.size()]);
+			onSuccess.run();
+		    });
+	    });
     }
 
     boolean onConversationsUpdate(Runnable onSuccess)
@@ -167,17 +167,17 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	    });
     }
 
-        void onConversationsUpdateNonInteractive(Runnable onSuccess)
+    void onConversationsUpdateNonInteractive(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
 	luwrain.executeBkg(new FutureTask(()->{
 		    try {
 			final com.vk.api.sdk.objects.messages.responses.GetConversationsResponse resp = base.vk.messages().getConversations(base.actor).execute();
-							final List<ConversationWithMessage> list = resp.getItems();
-							final List<String> userIds = new LinkedList();
-							for(ConversationWithMessage d: list)
-							    userIds.add(d.getLastMessage().getFromId().toString());
-							final UserFull[] users = getUsersForCache(userIds);
+			final List<ConversationWithMessage> list = resp.getItems();
+			final List<String> userIds = new LinkedList();
+			for(ConversationWithMessage d: list)
+			    userIds.add(d.getLastMessage().getFromId().toString());
+			final UserFull[] users = getUsersForCache(userIds);
 			luwrain.runUiSafely(()->{
 				base.dialogs = list.toArray(new ConversationWithMessage[list.size()]);
 				base.cacheUsers(users);
@@ -197,18 +197,18 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
-			.userId(userId)
-			.execute();
-			base.acceptTaskResult(taskId, ()->{
-				final List<Message> list = resp.getItems();
-				base.messages = list.toArray(new Message[list.size()]);
-				onSuccess.run();
-			    });
-	});
+		final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
+		.userId(userId)
+		.execute();
+		base.acceptTaskResult(taskId, ()->{
+			final List<Message> list = resp.getItems();
+			base.messages = list.toArray(new Message[list.size()]);
+			onSuccess.run();
+		    });
+	    });
     }
 
-        void onMessagesHistoryNonInteractive(int userId, Runnable onSuccess)
+    void onMessagesHistoryNonInteractive(int userId, Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
 	luwrain.executeBkg(new FutureTask(()->{
@@ -236,15 +236,15 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			base.vk.messages().send(base.actor).message(text).peerId(userId).execute();
-						final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
-			.userId(userId)
-			.execute();
-						base.acceptTaskResult(taskId, ()->{
-				final List<Message> list = resp.getItems();
-				base.messages = list.toArray(new Message[list.size()]);
-				onSuccess.run();
-			    });
+		base.vk.messages().send(base.actor).message(text).peerId(userId).execute();
+		final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
+		.userId(userId)
+		.execute();
+		base.acceptTaskResult(taskId, ()->{
+			final List<Message> list = resp.getItems();
+			base.messages = list.toArray(new Message[list.size()]);
+			onSuccess.run();
+		    });
 	    });
     }
 
@@ -254,28 +254,28 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			if (query.trim().toLowerCase().matches("id[0-9]+"))
-			{
-			    final List<String> ids = new LinkedList();
-			    ids.add(query.trim().substring(2));
-			    final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.CITY, Fields.LAST_SEEN).execute();
-			    base.acceptTaskResult(taskId, ()->{
-				    base.users = resp.toArray(new UserFull[resp.size()]);
-				    onSuccess.run();
-				});
-			    return;
-			}
-			final com.vk.api.sdk.objects.users.responses.SearchResponse resp = base.vk.users().search(base.actor).q(query)
-			.offset(0)
-			.count(100)
-			.fields(Fields.STATUS, Fields.CITY, Fields.LAST_SEEN)
-			.execute();
-			base.acceptTaskResult(taskId, ()->{
-				final List<UserFull> list = resp.getItems();
-				base.users = list.toArray(new UserFull[list.size()]);
-				onSuccess.run();
-			    });
-	});
+		if (query.trim().toLowerCase().matches("id[0-9]+"))
+		{
+		    final List<String> ids = new LinkedList();
+		    ids.add(query.trim().substring(2));
+		    final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.CITY, Fields.LAST_SEEN).execute();
+		    base.acceptTaskResult(taskId, ()->{
+			    base.users = resp.toArray(new UserFull[resp.size()]);
+			    onSuccess.run();
+			});
+		    return;
+		}
+		final com.vk.api.sdk.objects.users.responses.SearchResponse resp = base.vk.users().search(base.actor).q(query)
+		.offset(0)
+		.count(100)
+		.fields(Fields.STATUS, Fields.CITY, Fields.LAST_SEEN)
+		.execute();
+		base.acceptTaskResult(taskId, ()->{
+			final List<UserFull> list = resp.getItems();
+			base.users = list.toArray(new UserFull[list.size()]);
+			onSuccess.run();
+		    });
+	    });
     }
 
     boolean onFriendshipRequestsUpdate(Runnable onSuccess)
@@ -283,39 +283,39 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).order(com.vk.api.sdk.objects.enums.FriendsOrder.NAME).execute();
-			final List<Integer> friendsList = friendsResp.getItems();
-			final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
-			final UserFull[] friendsUsers = getUsersForCache(friendsIds);
-			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).execute();
-			final List<Integer> requestsList = requestsResp.getItems();
-			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
-			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
-			base.acceptTaskResult(taskId, ()->{
-				base.friends = friendsUsers;
-				base.friendshipRequests = requestsUsers;
-				onSuccess.run();
-			    });
-	});
+		final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).order(com.vk.api.sdk.objects.enums.FriendsOrder.NAME).execute();
+		final List<Integer> friendsList = friendsResp.getItems();
+		final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
+		final UserFull[] friendsUsers = getUsersForCache(friendsIds);
+		final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).execute();
+		final List<Integer> requestsList = requestsResp.getItems();
+		final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+		final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+		base.acceptTaskResult(taskId, ()->{
+			base.friends = friendsUsers;
+			base.friendshipRequests = requestsUsers;
+			onSuccess.run();
+		    });
+	    });
     }
 
-        boolean onFollowingsUpdate(Runnable onSuccess)
+    boolean onFollowingsUpdate(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).out(true).execute();
-			final List<Integer> requestsList = requestsResp.getItems();
-			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
-			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
-						final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
-				final List<UserFull> list = resp.getItems();
-			base.acceptTaskResult(taskId, ()->{
-				base.followings = requestsUsers;
-				base.suggestions = list.toArray(new UserFull[list.size()]);
-				onSuccess.run();
-			    });
-	});
+		final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).out(true).execute();
+		final List<Integer> requestsList = requestsResp.getItems();
+		final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+		final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+		final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
+		final List<UserFull> list = resp.getItems();
+		base.acceptTaskResult(taskId, ()->{
+			base.followings = requestsUsers;
+			base.suggestions = list.toArray(new UserFull[list.size()]);
+			onSuccess.run();
+		    });
+	    });
     }
 
     //FIXME:refresh friends and friendsrequests
@@ -324,19 +324,19 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-			final com.vk.api.sdk.objects.friends.responses.DeleteResponse deleteResp = base.vk.friends().delete(base.actor/*, userId*/).execute();
-			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).out(true).execute();
-			final List<Integer> requestsList = requestsResp.getItems();
-			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
-			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
-						final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
-				final List<UserFull> list = resp.getItems();
-				base.acceptTaskResult(taskId, ()->{
-				base.followings = requestsUsers;
-				base.suggestions = list.toArray(new UserFull[list.size()]);
-				onSuccess.run();
-			    });
-	});
+		final com.vk.api.sdk.objects.friends.responses.DeleteResponse deleteResp = base.vk.friends().delete(base.actor/*, userId*/).execute();
+		final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).out(true).execute();
+		final List<Integer> requestsList = requestsResp.getItems();
+		final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+		final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+		final com.vk.api.sdk.objects.friends.responses.GetSuggestionsResponse resp = base.vk.friends().getSuggestions(base.actor).execute();
+		final List<UserFull> list = resp.getItems();
+		base.acceptTaskResult(taskId, ()->{
+			base.followings = requestsUsers;
+			base.suggestions = list.toArray(new UserFull[list.size()]);
+			onSuccess.run();
+		    });
+	    });
     }
 
     //FIXME:request followings and suggestions
@@ -345,28 +345,28 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId(); 
 	return base.runBkg(()->{
-			base.vk.friends().add(base.actor/*, userId*/).execute();
-			final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).execute();
-			final List<Integer> friendsList = friendsResp.getItems();
-			final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
-			final UserFull[] friendsUsers = getUsersForCache(friendsIds);
-			final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).execute();
-			final List<Integer> requestsList = requestsResp.getItems();
-			final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
-			final UserFull[] requestsUsers = getUsersForCache(requestsIds);
-			base.acceptTaskResult(taskId, ()->{
-				base.friends = friendsUsers;
-				base.friendshipRequests = requestsUsers;
-				onSuccess.run();
-			    });
-	});
+		base.vk.friends().add(base.actor/*, userId*/).execute();
+		final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).execute();
+		final List<Integer> friendsList = friendsResp.getItems();
+		final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
+		final UserFull[] friendsUsers = getUsersForCache(friendsIds);
+		final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).execute();
+		final List<Integer> requestsList = requestsResp.getItems();
+		final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+		final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+		base.acceptTaskResult(taskId, ()->{
+			base.friends = friendsUsers;
+			base.friendshipRequests = requestsUsers;
+			onSuccess.run();
+		    });
+	    });
     }
 
     boolean onNewsfeedUpdate(Runnable onSuccess)
     {
 	/*
-	NullCheck.notNull(onSuccess, "onSuccess");
-	return base.runTask(new FutureTask(()->{
+	  NullCheck.notNull(onSuccess, "onSuccess");
+	  return base.runTask(new FutureTask(()->{
 		    try {
 			final GetNewsfeedPostsResponse resp = new NewsfeedGetPostsQuery (base.vk, base.actor).filters(NewsfeedGetFilter.POST).execute();
 			final List<ItemWallpost> items = resp.getItems();
@@ -389,7 +389,7 @@ for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).serve
 	return false;
     }
 
-            private UserFull[] getUsersForCache(Integer[] ids) throws ApiException, ClientException
+    private UserFull[] getUsersForCache(Integer[] ids) throws ApiException, ClientException
     {
 	final List<String> list = new LinkedList();
 	for(Integer i: ids)
