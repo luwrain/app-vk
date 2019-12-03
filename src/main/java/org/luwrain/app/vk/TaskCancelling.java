@@ -25,7 +25,7 @@ public final class TaskCancelling
 {
     static public final class TaskId
     {
-	private long id;
+	private final long id;
 	public TaskId(long id)
 	{
 	    if (id < 0)
@@ -38,22 +38,22 @@ public final class TaskCancelling
 	}
     }
 
-    private long id = 0;
-    private boolean cancelled = false;
+    private volatile long id = 0;
+    private volatile boolean cancelled = false;
 
-    public TaskId newTaskId()
+    synchronized public TaskId newTaskId()
     {
 	this.id++;
 	this.cancelled = false;
 	return new TaskId(this.id);
     }
 
-    public void cancel()
+    synchronized public void cancel()
     {
 	this.cancelled = true;
     }
 
-    boolean isValidTaskId(TaskId taskId)
+    synchronized boolean isValidTaskId(TaskId taskId)
     {
 	NullCheck.notNull(taskId, "taskId");
 	return this.id == taskId.getId() && !this.cancelled;

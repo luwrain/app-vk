@@ -345,7 +345,7 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId(); 
 	return base.runBkg(()->{
-		base.vk.friends().add(base.actor/*, userId*/).execute();
+		base.vk.friends().add(base.actor).userId(userId).execute();
 		final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).execute();
 		final List<Integer> friendsList = friendsResp.getItems();
 		final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
