@@ -59,20 +59,18 @@ final class Base implements Watching.Listener
     final TaskCancelling taskCancelling = new TaskCancelling();
     private FutureTask task = null;
 
-    //Central area
     WallpostFull[] wallPosts = new WallpostFull[0];
     UserFull shownUser = null;
     WallpostFull[] shownUserWallPosts = new WallpostFull[0];
-
     ConversationWithMessage[] conversations = new ConversationWithMessage[0];
     Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];
     UserFull[] friends = new UserFull[0];
     UserFull[] friendshipRequests = new UserFull[0];
 
-        UserFull[] followings = new UserFull[0];
-        UserFull[] suggestions = new UserFull[0];
-    
+    UserFull[] followings = new UserFull[0];
+    UserFull[] suggestions = new UserFull[0];
+
     NewsfeedItem[] newsfeedItems = new NewsfeedItem[0];
 
     Base(Luwrain luwrain, Strings strings, Watching watching)
@@ -97,12 +95,6 @@ final class Base implements Watching.Listener
 		luwrain.runUiSafely(()->{((NotificationNewMessage)a).onMessage(messageId, peerId, messageText);});
     }
 
-    void setVisibleAreas(Area[] visibleAreas)
-    {
-	NullCheck.notNullItems(visibleAreas, "visibleAreas");
-	this.visibleAreas = visibleAreas;
-    }
-
     String getUserCommonName(int userId)
     {
 	if (userId < 0 || !userCache.containsKey(new Integer(userId)))
@@ -117,6 +109,12 @@ final class Base implements Watching.Listener
 	for(UserFull u: users)
 	    if (!userCache.containsKey(u.getId()))
 		userCache.put(u.getId(), u);
+    }
+
+        void setVisibleAreas(Area[] visibleAreas)
+    {
+	NullCheck.notNullItems(visibleAreas, "visibleAreas");
+	this.visibleAreas = visibleAreas.clone();
     }
 
     boolean runTask(FutureTask task)
@@ -167,7 +165,7 @@ final class Base implements Watching.Listener
 	NullCheck.notNull(taskId, "taskId");
 	NullCheck.notNull(runnable, "runnable");
 	luwrain.runUiSafely(runnable);
-	    }
+    }
 
     void onTaskError(Exception e)
     {
@@ -183,8 +181,8 @@ final class Base implements Watching.Listener
 
     void closeApp()
     {
-		if (watching != null)
-		    watching.removeListener(this);
+	if (watching != null)
+	    watching.removeListener(this);
 	luwrain.closeApp();
     }
 
@@ -193,7 +191,7 @@ final class Base implements Watching.Listener
 	return rand.nextInt();
     }
 
-private final class ConversationsListModel implements ListArea.Model
+    private final class ConversationsListModel implements ListArea.Model
     {
 	@Override public int getItemCount()
 	{
@@ -208,46 +206,14 @@ private final class ConversationsListModel implements ListArea.Model
 	@Override public void refresh()
 	{
 	}
-}
+    }
     ListArea.Model getConversationsListModel()
     {
 	return new ConversationsListModel();
     }
-
 
     interface Operation
     {
 	void run() throws Exception;
     }
 }
-
-/*
-		    UserField fields = null;
-		    GetFieldsResponse l = vk.friends().get(actor, fields.ABOUT).execute();
-			GetDialogsResponse x = vk.messages().getDialogs(actor).execute();
-			System.out.println(x.getCount());
-			System.out.println("Выводим последние сообщения из диалогов, если в друзьях, то выводиться его Фамилия+Имя+сообщение");
-			for (int i=0;i<x.getItems().size();i++)
-			{
-				Dialog r = x.getItems().get(i);
-				Message m = r.getMessage();
-				int index=0;
-				for (int j=0;j<l.getCount();j++) {
-					int e2=m.getUserId();
-					UserXtrLists e = l.getItems().get(j);
-					int e3=l.getItems().get(j).getId();
-					if (e2==e3) 
-					{
-						index=j;
-					}
-				}
-				if (index>0)
-				{
-					System.out.println(l.getItems().get(index).getLastName()+" "+l.getItems().get(index).getFirstName()+" "+m.getBody());
-				}
-				else
-				{
-					System.out.println(m.getUserId()+" "+m.getBody());
-				}
-			}
-    */

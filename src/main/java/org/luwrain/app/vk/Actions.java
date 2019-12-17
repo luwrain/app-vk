@@ -410,16 +410,4 @@ final class Actions
 	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.LAST_SEEN, Fields.CITY, Fields.BDATE).execute();
 	return resp.toArray(new UserFull[resp.size()]);
     }
-
-    private void onExceptionWithClose(Exception e)
-    {
-	NullCheck.notNull(e, "e");
-	if (e instanceof com.vk.api.sdk.exceptions.ClientException && e.getMessage() != null &&
-	    e.getMessage().equals("I/O exception"))
-	{
-	    luwrain.crash(new org.luwrain.app.crash.App(new InitResult(InitResult.Type.NETWORK_SERVICE_INACCESSIBLE)));
-	    base.closeApp();
-	} else
-	    luwrain.crash(e);
-    }
 }
