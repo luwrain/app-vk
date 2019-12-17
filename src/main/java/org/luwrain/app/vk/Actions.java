@@ -163,7 +163,7 @@ final class Actions
 		}
 		final UserFull[] users = getUsersForCache(userIds);
 		base.acceptTaskResult(taskId, ()->{
-			base.dialogs = list.toArray(new ConversationWithMessage[list.size()]);
+			base.conversations = list.toArray(new ConversationWithMessage[list.size()]);
 			base.cacheUsers(users);
 			onSuccess.run();
 		    });
@@ -182,7 +182,7 @@ final class Actions
 			    userIds.add(d.getLastMessage().getFromId().toString());
 			final UserFull[] users = getUsersForCache(userIds);
 			luwrain.runUiSafely(()->{
-				base.dialogs = list.toArray(new ConversationWithMessage[list.size()]);
+				base.conversations = list.toArray(new ConversationWithMessage[list.size()]);
 				base.cacheUsers(users);
 				onSuccess.run();
 			    });

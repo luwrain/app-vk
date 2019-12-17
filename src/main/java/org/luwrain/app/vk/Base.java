@@ -22,7 +22,6 @@ import java.util.concurrent.*;
 
 import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
-//import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Conversation;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.messages.Message;
@@ -65,7 +64,7 @@ final class Base implements Watching.Listener
     UserFull shownUser = null;
     WallpostFull[] shownUserWallPosts = new WallpostFull[0];
 
-    ConversationWithMessage[] dialogs = new ConversationWithMessage[0];
+    ConversationWithMessage[] conversations = new ConversationWithMessage[0];
     Message[] messages = new Message[0];
     UserFull[] users = new UserFull[0];
     UserFull[] friends = new UserFull[0];
@@ -198,13 +197,13 @@ private final class ConversationsListModel implements ListArea.Model
     {
 	@Override public int getItemCount()
 	{
-	    NullCheck.notNullItems(dialogs, "dialogs");
-	    return dialogs.length;
+	    NullCheck.notNullItems(conversations, "conversations");
+	    return conversations.length;
 	}
 	@Override public Object getItem(int index)
 	{
-	    NullCheck.notNullItems(dialogs, "dialogs");
-	    return dialogs[index];
+	    NullCheck.notNullItems(conversations, "conversations");
+	    return conversations[index];
 	}
 	@Override public void refresh()
 	{
