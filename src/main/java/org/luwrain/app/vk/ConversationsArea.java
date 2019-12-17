@@ -49,11 +49,11 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 		NullCheck.notNull(obj, "obj");
 		if (!(obj instanceof ConversationWithMessage))
 		    return false;
-		final ConversationWithMessage dialog = (ConversationWithMessage)obj;
-		if (dialog.getLastMessage() == null || dialog.getLastMessage().getFromId() < 0)
-		    return false;
-		return actions.onMessagesHistory(dialog.getLastMessage().getFromId(), ()->{
-			messagesArea.activateConv(dialog.getLastMessage().getFromId());
+		final ConversationWithMessage conv = (ConversationWithMessage)obj;
+		return actions.onMessagesHistory(conv, ()->{
+			final Message message = conv.getLastMessage();
+			final int userId = message.getOut() == BoolInt.YES?message.getPeerId():message.getFromId();
+			messagesArea.activateConv(userId);
 		    });
 	    });
 	actions.onConversationsUpdate(()->{
@@ -169,14 +169,24 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	    NullCheck.notNull(flags, "flags");
 	    if (item instanceof ConversationWithMessage)
 	    {
-		final Message message = ((ConversationWithMessage)item).getLastMessage();
-		final String title;
+
+				final Conversation conv = ((ConversationWithMessage)item).getConversation();
+						final Message message = ((ConversationWithMessage)item).getLastMessage();
+						final boolean noUnread = conv.getOutRead().equals(message.getId());
+final String title;
 		if (message.getOut() == BoolInt.YES)
 		    title = base.getUserCommonName(message.getPeerId()); else
 		    title = base.getUserCommonName(message.getFromId());
-		if (message.getOut() == BoolInt.YES)
-		    base.luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, title + " " + message.getText(), null)); else
-		    base.luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.ATTENTION, title + " " + message.getText(), null));
+		final Sounds sound;
+				if (message.getOut() == BoolInt.YES)
+				{
+				    				    sound = noUnread?Sounds.SELECTED:Sounds.LIST_ITEM;
+
+				} else
+				    				    sound = noUnread?Sounds.ATTENTION:Sounds.LIST_ITEM;
+				    //				    				    sound = Sounds.ATTENTION;
+
+		    base.luwrain.setEventResponse(DefaultEventResponse.listItem(sound, title + ": " + message.getText(), null));
 		return;
 	    }
 	    base.luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));

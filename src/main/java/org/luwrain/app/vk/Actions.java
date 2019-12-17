@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.io.*;
 
+import com.vk.api.sdk.objects.base.BoolInt;
 import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.objects.messages.Conversation;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
@@ -195,13 +196,25 @@ final class Actions
 	}, null));
     }
 
-    boolean onMessagesHistory(int userId, Runnable onSuccess)
+    boolean onMessagesHistory(ConversationWithMessage conv, Runnable onSuccess)
     {
+	NullCheck.notNull(conv, "conv");
 	NullCheck.notNull(onSuccess, "onSuccess");
+	final Message message = conv.getLastMessage();
+	if (message == null)
+	    return false;
+	final int peerId;
+	if (message.getOut() == BoolInt.YES)
+	    peerId = message.getPeerId(); else
+	    peerId = message.getFromId();
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
+		base.vk.messages().markAsRead(base.actor)
+		.peerId(peerId)
+		.startMessageId(message.getId())
+		.execute();
 		final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
-		.userId(userId)
+		.userId(peerId)
 		.execute();
 		base.acceptTaskResult(taskId, ()->{
 			final List<Message> list = resp.getItems();
