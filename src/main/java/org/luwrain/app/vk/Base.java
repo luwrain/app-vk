@@ -37,18 +37,17 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.UserAuthResponse;
 import com.vk.api.sdk.objects.friends.UserXtrLists;
 import com.vk.api.sdk.objects.friends.responses.GetFieldsResponse;
-//import com.vk.api.sdk.objects.messages.Dialog;
 import com.vk.api.sdk.objects.messages.Message;
-//import com.vk.api.sdk.objects.messages.responses.GetDialogsResponse;
-//import com.vk.api.sdk.queries.users.UserField;
 import com.vk.api.sdk.objects.users.Fields;
 
 import org.luwrain.core.*;
+import org.luwrain.controls.*;
 
 final class Base implements Watching.Listener
 {
     final Luwrain luwrain;
     final Strings strings;
+    private final org.apache.commons.lang3.RandomUtils rand = new org.apache.commons.lang3.RandomUtils();
     private final Watching watching;
     private final TransportClient transportClient;
     final VkApiClient vk;
@@ -107,10 +106,8 @@ final class Base implements Watching.Listener
 
     String getUserCommonName(int userId)
     {
-	if (userId < 0)
-	    return "" + userId;
-	if (!userCache.containsKey(new Integer(userId)))
-	    return "" + userId;
+	if (userId < 0 || !userCache.containsKey(new Integer(userId)))
+	    return String.valueOf(userId);
 	final UserFull user = userCache.get(new Integer(userId));
 	return user.getFirstName() + " " + user.getLastName();
     }
@@ -176,7 +173,13 @@ final class Base implements Watching.Listener
     void onTaskError(Exception e)
     {
 	NullCheck.notNull(e, "e");
-	
+	if (e instanceof com.vk.api.sdk.exceptions.ClientException && e.getMessage() != null &&
+	    e.getMessage().equals("Can't parse json response"))
+	{
+	    luwrain.message("Отказано в доступе", Luwrain.MessageType.ERROR);
+	    return;
+	}
+	luwrain.crash(e);
     }
 
     void closeApp()
@@ -185,6 +188,33 @@ final class Base implements Watching.Listener
 		    watching.removeListener(this);
 	luwrain.closeApp();
     }
+
+    int nextRandomId()
+    {
+	return rand.nextInt();
+    }
+
+private final class ConversationsListModel implements ListArea.Model
+    {
+	@Override public int getItemCount()
+	{
+	    NullCheck.notNullItems(dialogs, "dialogs");
+	    return dialogs.length;
+	}
+	@Override public Object getItem(int index)
+	{
+	    NullCheck.notNullItems(dialogs, "dialogs");
+	    return dialogs[index];
+	}
+	@Override public void refresh()
+	{
+	}
+}
+    ListArea.Model getConversationsListModel()
+    {
+	return new ConversationsListModel();
+    }
+
 
     interface Operation
     {

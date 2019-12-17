@@ -157,7 +157,10 @@ final class Actions
 		final List<ConversationWithMessage> list = resp.getItems();
 		final List<String> userIds = new LinkedList();
 		for(ConversationWithMessage d: list)
+		{
 		    userIds.add(d.getLastMessage().getFromId().toString());
+		    		    userIds.add(d.getLastMessage().getPeerId().toString());
+		}
 		final UserFull[] users = getUsersForCache(userIds);
 		base.acceptTaskResult(taskId, ()->{
 			base.dialogs = list.toArray(new ConversationWithMessage[list.size()]);
@@ -236,7 +239,11 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-		base.vk.messages().send(base.actor).message(text).peerId(userId).execute();
+		base.vk.messages().send(base.actor)
+		.message(text)
+		.randomId(base.nextRandomId())
+		.peerId(userId)
+		.execute();
 		final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
 		.userId(userId)
 		.execute();
@@ -324,7 +331,7 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-		final com.vk.api.sdk.objects.friends.responses.DeleteResponse deleteResp = base.vk.friends().delete(base.actor/*, userId*/).execute();
+		final com.vk.api.sdk.objects.friends.responses.DeleteResponse deleteResp = base.vk.friends().delete(base.actor).userId(userId).execute();
 		final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).out(true).execute();
 		final List<Integer> requestsList = requestsResp.getItems();
 		final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);

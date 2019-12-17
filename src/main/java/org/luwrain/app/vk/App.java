@@ -146,7 +146,7 @@ class App implements Application, MonoApp
 	    this.layout.setBasicLayout(new AreaLayout(defaultArea));
 	    luwrain.announceActiveArea();
 	};
-	final ConversationsArea conversationsArea = new ConversationsArea(luwrain, strings, base, actions, closing);
+	final ConversationsArea conversationsArea = new ConversationsArea(base, actions, closing);
 	final MessagesArea messagesArea = new MessagesArea(luwrain, strings, base, actions, closing);
 	layout.setBasicLayout(new AreaLayout(AreaLayout.LEFT_TOP_BOTTOM, defaultArea, conversationsArea, messagesArea));
 	conversationsArea.setMessagesArea(messagesArea);

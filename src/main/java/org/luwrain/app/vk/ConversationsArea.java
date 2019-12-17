@@ -18,7 +18,7 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
-//import com.vk.api.sdk.objects.messages.Dialog;
+import com.vk.api.sdk.objects.base.BoolInt;
 import com.vk.api.sdk.objects.messages.Conversation;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.messages.Message;
@@ -30,8 +30,6 @@ import org.luwrain.controls.*;
 
 final class ConversationsArea extends ListArea implements NotificationNewMessage
 {
-    private final Luwrain luwrain;
-    private final Strings strings;
     private final Base base;
     private final Actions actions;
     private final Runnable closing;
@@ -39,13 +37,11 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
     private MessagesArea messagesArea = null;
     private Area defaultArea = null;
 
-    ConversationsArea(Luwrain luwrain, Strings strings, Base base, Actions actions, Runnable closing)
+    ConversationsArea(Base base, Actions actions, Runnable closing)
     {
-	super(createParams(luwrain, strings, base));
+	super(createParams(base));
 	NullCheck.notNull(actions, "actions");
 	NullCheck.notNull(closing, "closing");
-	this.luwrain = luwrain;
-	this.strings = strings;
 	this.base = base;
 	this.actions = actions;
 	this.closing = closing;
@@ -62,7 +58,7 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	    });
 	actions.onConversationsUpdate(()->{
 		//luwrain.playSound(Sounds.CLICK);
-		luwrain.setActiveArea(ConversationsArea.this);
+		base.luwrain.setActiveArea(ConversationsArea.this);
 		refresh();
 	    });
     }
@@ -81,12 +77,12 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	    case TAB:
 		if (messagesArea == null)
 		    return false;
-		luwrain.setActiveArea(messagesArea);
+		base.luwrain.setActiveArea(messagesArea);
 		return true;
 	    case BACKSPACE:
 		if (defaultArea == null)
 		    return false;
-		luwrain.setActiveArea(defaultArea);
+		base.luwrain.setActiveArea(defaultArea);
 		return true;
 	    case ESCAPE:
 		closing.run();
@@ -148,54 +144,23 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	this.defaultArea = defaultArea;
     }
 
-    static private ListArea.Params createParams(Luwrain luwrain, Strings strings, Base base)
+    static private ListArea.Params createParams(Base base)
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(strings, "strings");
 	NullCheck.notNull(base, "base");
 	final ListArea.Params params = new ListArea.Params();
-	params.context = new DefaultControlContext(luwrain);
-	params.model = new Model(base);
-	params.appearance = new Appearance(luwrain, strings, base);
-	params.name = strings.conversationsAreaName();
+	params.context = new DefaultControlContext(base.luwrain);
+	params.model = base.getConversationsListModel();
+	params.appearance = new Appearance(base);
+	params.name = base.strings.conversationsAreaName();
 	return params;
     }
 
-    static private final class Model implements ListArea.Model
-    {
-	private final Base base;
-	Model(Base base)
-	{
-	    NullCheck.notNull(base, "base");
-	    this.base = base;
-	}
-	@Override public int getItemCount()
-	{
-	    NullCheck.notNullItems(base.dialogs, "base.dialogs");
-	    return base.dialogs.length;
-	}
-	@Override public Object getItem(int index)
-	{
-	    NullCheck.notNullItems(base.dialogs, "base.dialogs");
-	    return base.dialogs[index];
-	}
-	@Override public void refresh()
-	{
-	}
-    };
-
     static private final class Appearance implements ListArea.Appearance
     {
-	private final Luwrain luwrain;
-	private final Strings strings;
 	private final Base base;
-	Appearance(Luwrain luwrain, Strings strings, Base base)
+	Appearance(Base base)
 	{
-	    NullCheck.notNull(luwrain, "luwrain");
-	    NullCheck.notNull(strings, "strings");
 	    NullCheck.notNull(base, "base");
-	    this.luwrain = luwrain;
-	    this.strings = strings;
 	    this.base = base;
 	}
 	@Override public void announceItem(Object item, Set<Flags> flags)
@@ -204,14 +169,17 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	    NullCheck.notNull(flags, "flags");
 	    if (item instanceof ConversationWithMessage)
 	    {
-		final Conversation dialog = ((ConversationWithMessage)item).getConversation();
 		final Message message = ((ConversationWithMessage)item).getLastMessage();
-		if (dialog.getUnreadCount() != null)
-		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.ATTENTION, base.getUserCommonName(message.getFromId()) + " " + dialog.getUnreadCount() + " " + message.getText(), null)); else
-		    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, base.getUserCommonName(message.getFromId()) + " " + message.getText(), null));
+		final String title;
+		if (message.getOut() == BoolInt.YES)
+		    title = base.getUserCommonName(message.getPeerId()); else
+		    title = base.getUserCommonName(message.getFromId());
+		if (message.getOut() == BoolInt.YES)
+		    base.luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, title + " " + message.getText(), null)); else
+		    base.luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.ATTENTION, title + " " + message.getText(), null));
 		return;
 	    }
-	    luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
+	    base.luwrain.setEventResponse(DefaultEventResponse.listItem(Sounds.LIST_ITEM, item.toString(), null));
 	}
 	@Override public String getScreenAppearance(Object item, Set<Flags> flags)
 	{
