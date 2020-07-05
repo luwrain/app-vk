@@ -68,7 +68,7 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	actions.onConversationsUpdateNonInteractive(()->refresh());
     }
 
-    @Override public boolean onInputEvent(KeyboardEvent event)
+    @Override public boolean onInputEvent(InputEvent event)
     {
 	NullCheck.notNull(event, "event");
 	if (event.isSpecial() && !event.isModified())

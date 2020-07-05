@@ -81,7 +81,7 @@ class App implements Application, MonoApp
     private void createDefaultArea()
     {
 	this.defaultArea = new WallArea(luwrain, strings, base, actions){
-		@Override public boolean onInputEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(InputEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())
@@ -226,7 +226,7 @@ class App implements Application, MonoApp
 		    NullCheck.notNull(user, "user");
 		    return defaultArea.showUserInfo(user.getId());
 		}
-		@Override public boolean onInputEvent(KeyboardEvent event)
+		@Override public boolean onInputEvent(InputEvent event)
 		{
 		    NullCheck.notNull(event, "event");
 		    if (event.isSpecial() && !event.isModified())

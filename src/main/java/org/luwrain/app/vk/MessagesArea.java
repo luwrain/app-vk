@@ -84,7 +84,7 @@ class MessagesArea extends ConsoleArea implements NotificationNewMessage
 	actions.onMessagesHistoryNonInteractive(activeUserId, ()->refresh());
     }
 
-    @Override public boolean onInputEvent(KeyboardEvent event)
+    @Override public boolean onInputEvent(InputEvent event)
     {
 	NullCheck.notNull(event, "event");
 	if (event.isSpecial() && !event.isModified())
@@ -159,7 +159,7 @@ class MessagesArea extends ConsoleArea implements NotificationNewMessage
 	params.context = new DefaultControlContext(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain);
-	params.areaName = strings.messagesAreaName();
+	params.name = strings.messagesAreaName();
 	params.inputPos = ConsoleArea.InputPos.TOP;
 	return params;
     }
@@ -203,12 +203,12 @@ class MessagesArea extends ConsoleArea implements NotificationNewMessage
 	    NullCheck.notNull(base, "base");
 	    this.base = base;
 	}
-	@Override public int getConsoleItemCount()
+	@Override public int getItemCount()
 	{
 	    NullCheck.notNullItems(base.messages, "base.messages");
 	    return base.messages.length;
 	}
-	@Override public Object getConsoleItem(int index)
+	@Override public Object getItem(int index)
 	{
 	    NullCheck.notNullItems(base.messages, "base.messages");
 	    return base.messages[index];

@@ -170,10 +170,9 @@ final class Base implements Watching.Listener
     void onTaskError(Exception e)
     {
 	NullCheck.notNull(e, "e");
-	if (e instanceof com.vk.api.sdk.exceptions.ClientException && e.getMessage() != null &&
-	    e.getMessage().equals("Can't parse json response"))
+	if (e instanceof com.vk.api.sdk.exceptions.ApiPrivateProfileException)
 	{
-	    luwrain.message("Отказано в доступе", Luwrain.MessageType.ERROR);
+	    luwrain.message("Профиль пользователя закрыт для просмотра", Luwrain.MessageType.ERROR);
 	    return;
 	}
 	luwrain.crash(e);

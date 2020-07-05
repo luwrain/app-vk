@@ -64,7 +64,7 @@ abstract class UsersArea extends ConsoleArea
 
     abstract boolean onClick(UserFull user);
 
-    @Override public boolean onInputEvent(KeyboardEvent event)
+    @Override public boolean onInputEvent(InputEvent event)
     {
 	NullCheck.notNull(event, "event");
 	if (event.isSpecial() && !event.isModified())
@@ -154,7 +154,7 @@ abstract class UsersArea extends ConsoleArea
 	params.context = new DefaultControlContext(luwrain);
 	params.model = new Model(base);
 	params.appearance = new Appearance(luwrain, strings);
-	params.areaName = strings.usersAreaName();
+	params.name = strings.usersAreaName();
 	params.inputPos = ConsoleArea.InputPos.TOP;
 	return params;
     }
@@ -217,12 +217,12 @@ if (user.getLastSeen() != null)
 	    NullCheck.notNull(base, "base");
 	    this.base = base;
 	}
-	@Override public int getConsoleItemCount()
+	@Override public int getItemCount()
 	{
 	    NullCheck.notNullItems(base.users, "base.users");
 	    return base.users.length;
 	}
-	@Override public Object getConsoleItem(int index)
+	@Override public Object getItem(int index)
 	{
 	    NullCheck.notNullItems(base.users, "base.users");
 	    return base.users[index];

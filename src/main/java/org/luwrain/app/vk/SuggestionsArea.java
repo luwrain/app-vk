@@ -61,7 +61,7 @@ luwrain.playSound(Sounds.OK);
 
         abstract boolean onProperties(UserFull user);
 
-    @Override public boolean onInputEvent(KeyboardEvent event)
+    @Override public boolean onInputEvent(InputEvent event)
     {
 	NullCheck.notNull(event, "event");
 	if (event.isSpecial() && !event.isModified())

@@ -40,20 +40,20 @@ final class ActionLists
     Action[] getWallActions()
     {
 	return new Action[]{
-	    new Action("post", strings.actionWallPost(), new KeyboardEvent(KeyboardEvent.Special.INSERT)),
-	    	    new Action("delete", strings.actionWallDelete(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
-	    	    new Action("conversations", strings.actionConversations(), new KeyboardEvent(KeyboardEvent.Special.F5)),
-	    	    	    new Action("friends", strings.actionFriends(), new KeyboardEvent(KeyboardEvent.Special.F6)),
-	    	    	    	    new Action("followings", strings.actionFollowings(), new KeyboardEvent(KeyboardEvent.Special.F7)),
-	    //new Action("news", strings.actionNewsfeed(), new KeyboardEvent(KeyboardEvent.Special.F8)),
-	    new Action("users", strings.actionUsers(), new KeyboardEvent(KeyboardEvent.Special.F9)),
+	    new Action("post", strings.actionWallPost(), new InputEvent(InputEvent.Special.INSERT)),
+	    	    new Action("delete", strings.actionWallDelete(), new InputEvent(InputEvent.Special.DELETE)),
+	    	    new Action("conversations", strings.actionConversations(), new InputEvent(InputEvent.Special.F5)),
+	    	    	    new Action("friends", strings.actionFriends(), new InputEvent(InputEvent.Special.F6)),
+	    	    	    	    new Action("followings", strings.actionFollowings(), new InputEvent(InputEvent.Special.F7)),
+	    //new Action("news", strings.actionNewsfeed(), new InputEvent(InputEvent.Special.F8)),
+	    new Action("users", strings.actionUsers(), new InputEvent(InputEvent.Special.F9)),
 	};
     }
 
         Action[] getWallPostActions()
     {
 	return new Action[]{
-	    new Action("attach-photo", strings.actionAttachPhoto(), new KeyboardEvent(KeyboardEvent.Special.F5)),
+	    new Action("attach-photo", strings.actionAttachPhoto(), new InputEvent(InputEvent.Special.F5)),
 	};
     }
 
@@ -61,8 +61,8 @@ final class ActionLists
         Action[] getUsersActions()
     {
 	return new Action[] {
-	    new Action("message", strings.actionMessage(), new KeyboardEvent(KeyboardEvent.Special.F5)),
-	    new Action("request-friendship", strings.actionRequestFriendship(), new KeyboardEvent(KeyboardEvent.Special.F6)),
+	    new Action("message", strings.actionMessage(), new InputEvent(InputEvent.Special.F5)),
+	    new Action("request-friendship", strings.actionRequestFriendship(), new InputEvent(InputEvent.Special.F6)),
 	};
     }
 
@@ -75,8 +75,8 @@ final class ActionLists
             Action[] getFriendsActions()
     {
 	return new Action[]{
-	    new Action("delete", strings.actionDelete(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
-	    new Action("message", strings.actionMessage(), new KeyboardEvent(KeyboardEvent.Special.F5))
+	    new Action("delete", strings.actionDelete(), new InputEvent(InputEvent.Special.DELETE)),
+	    new Action("message", strings.actionMessage(), new InputEvent(InputEvent.Special.F5))
 	};
     }
 
@@ -88,8 +88,8 @@ final class ActionLists
         Action[] getFollowingsActions()
     {
 	return new Action[]{
-	    	    new Action("message", strings.actionMessage(), new KeyboardEvent(KeyboardEvent.Special.F5)),
-	    new Action("delete", strings.actionDelete(), new KeyboardEvent(KeyboardEvent.Special.DELETE)),
+	    	    new Action("message", strings.actionMessage(), new InputEvent(InputEvent.Special.F5)),
+	    new Action("delete", strings.actionDelete(), new InputEvent(InputEvent.Special.DELETE)),
 	};
     }
 
