@@ -25,7 +25,7 @@ import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
 
-class App implements Application, MonoApp
+public class App implements Application, MonoApp
 {
     private Luwrain luwrain = null;
     private Strings strings = null;
@@ -38,7 +38,7 @@ class App implements Application, MonoApp
 
     private final Watching watching;
 
-    App(Watching watching)
+    public App(Watching watching)
     {
 	this.watching = watching;
     }
