@@ -37,7 +37,7 @@ final class Conversations
 
     File attachPhoto()
     {
-	return Popups.existingFile(luwrain, strings.attachPhotoPopupName(), strings.attachPhotoPopupPrefix(), new String[]{"jpg", "jpeg"});
+	return Popups.existingFile(luwrain, strings.attachPhotoPopupPrefix(), luwrain.getFileProperty("luwrain.dir.userhome"), new String[]{"jpg", "jpeg"});
     }
 
     String messageText()
