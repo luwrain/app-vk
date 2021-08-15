@@ -18,11 +18,10 @@ package org.luwrain.app.vk;
 
 import java.util.*;
 
-import org.luwrain.base.*;
 import org.luwrain.core.*;
 import org.luwrain.cpanel.*;
 
-public final class Extension extends org.luwrain.core.extensions.EmptyExtension
+public final class Extension extends EmptyExtension
 {
     static final String LOG_COMPONENT = "vk";
 
