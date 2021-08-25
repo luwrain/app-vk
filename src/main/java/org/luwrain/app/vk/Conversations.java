@@ -42,6 +42,6 @@ final class Conversations
 
     String messageText()
     {
-	return Popups.simple(luwrain, strings.messageTextPopupName(), strings.messageTextPopupPrefix(), "");
+	return Popups.text(luwrain, strings.messageTextPopupName(), strings.messageTextPopupPrefix(), "");
     }
 }
