@@ -180,7 +180,7 @@ luwrain.playSound(Sounds.OK);
 	}
     };
 
-    static private final class Appearance implements ListArea.Appearance
+    static private final class Appearance implements ListArea.Appearance<Object>
     {
 	private final Luwrain luwrain;
 	private final Strings strings;

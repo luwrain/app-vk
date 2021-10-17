@@ -207,7 +207,7 @@ abstract class FriendsArea extends ListArea
 	}
     };
 
-    static private final class Appearance implements ListArea.Appearance
+    static private final class Appearance implements ListArea.Appearance<Object>
     {
 	private final Luwrain luwrain;
 	private final Strings strings;

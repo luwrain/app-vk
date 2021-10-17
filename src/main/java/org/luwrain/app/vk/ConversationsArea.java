@@ -155,7 +155,7 @@ final class ConversationsArea extends ListArea implements NotificationNewMessage
 	return params;
     }
 
-    static private final class Appearance implements ListArea.Appearance
+    static private final class Appearance implements ListArea.Appearance<Object>
     {
 	private final Base base;
 	Appearance(Base base)
