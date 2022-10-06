@@ -18,7 +18,8 @@ package org.luwrain.app.vk;
 
 interface Strings
 {
-    static final String NAME = "luwrain.vk";
+    static final String
+	NAME = "luwrain.vk";
 
     String actionAttachPhoto();
     String actionConversations();
