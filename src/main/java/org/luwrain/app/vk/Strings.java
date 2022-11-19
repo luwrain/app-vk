@@ -16,7 +16,7 @@
 
 package org.luwrain.app.vk;
 
-interface Strings
+public interface Strings
 {
     static final String
 	NAME = "luwrain.vk";
