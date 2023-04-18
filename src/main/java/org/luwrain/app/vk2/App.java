@@ -19,7 +19,8 @@ package org.luwrain.app.vk2;
 import java.util.*;
 import java.io.*;
 
-import com.vk.api.sdk.client.TransportClient;
+//import com.vk.api.sdk.client.TransportClient;
+import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
@@ -39,12 +40,12 @@ public final class App extends AppBase<Strings>
 
         final Map<Integer, UserFull> userCache = new HashMap<>();
 
-        private TransportClient transportClient = null;
-    private VkApiClient vk = null;
+    //        final TransportClient transportClient = new HttpTransportClient();
+    final VkApiClient vk = new VkApiClient(new HttpTransportClient());
     private UserActor actor = null;
 
-
     private Settings sett = null;
+    private Operations operations = null;
     private MainLayout mainLayout = null;
 
     public App()
@@ -55,7 +56,18 @@ public final class App extends AppBase<Strings>
     @Override protected AreaLayout onAppInit()
     {
 	this.sett = Settings.create(getLuwrain());
+	this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+
+	
+	this.operations = new Operations(this);
 	this.mainLayout = new MainLayout(this);
 	return null;
     }
+
+    //    TransportClient getTransportClient() { return transportClient; }
+    //    VkApiClient getVk() { return vk; }
+    UserActor getActor() { return actor; }
+    Operations getOperations() { return operations; }
+
+    
 }
