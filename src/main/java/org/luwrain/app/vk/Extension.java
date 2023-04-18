@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -30,7 +30,6 @@ public final class Extension extends EmptyExtension
 
     @Override public String init(Luwrain luwrain)
     {
-	NullCheck.notNull(luwrain, "luwrain");
 	this.watching = new Watching(luwrain);
 	watching.loadWatches();
 	watching.run();
@@ -40,34 +39,16 @@ public final class Extension extends EmptyExtension
     @Override public Command[] getCommands(Luwrain luwrain)
     {
 	return new Command[]{
-	    new Command(){
-		@Override public String getName()
-		{
-		    return "vk";
-		}
-		@Override public void onCommand(Luwrain luwrain)
-		{
-		    luwrain.launchApp("vk");
-		}
-	    }};
+	    new SimpleShortcutCommand("vk"),
+	    new SimpleShortcutCommand("vk2"),
+	    };
     }
 
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	return new ExtensionObject[]{
-
-	    new Shortcut() {
-		@Override public String getExtObjName()
-		{
-		    return "vk";
-		}
-		@Override public Application[] prepareApp(String[] args)
-		{
-		    NullCheck.notNullItems(args, "args");
-		    return new Application[]{new App(watching)};
-		}
-	    },
-
+	    new SimpleShortcut("vk", App.class),
+	    	    new SimpleShortcut("vk2", org.luwrain.app.vk2.App.class),
 	};
     }
 

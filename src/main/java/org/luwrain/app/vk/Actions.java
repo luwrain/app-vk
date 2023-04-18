@@ -300,17 +300,16 @@ final class Actions
 
     boolean onFriendshipRequestsUpdate(Runnable onSuccess)
     {
-	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-		final com.vk.api.sdk.objects.friends.responses.GetResponse friendsResp = base.vk.friends().get(base.actor).order(com.vk.api.sdk.objects.enums.FriendsOrder.NAME).execute();
-		final List<Integer> friendsList = friendsResp.getItems();
-		final Integer[] friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
-		final UserFull[] friendsUsers = getUsersForCache(friendsIds);
-		final com.vk.api.sdk.objects.friends.responses.GetRequestsResponse requestsResp = base.vk.friends().getRequests(base.actor).execute();
-		final List<Integer> requestsList = requestsResp.getItems();
-		final Integer[] requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
-		final UserFull[] requestsUsers = getUsersForCache(requestsIds);
+		final var friendsResp = base.vk.friends().get(base.actor).order(com.vk.api.sdk.objects.enums.FriendsOrder.NAME).execute();
+		final var friendsList = friendsResp.getItems();
+		final var friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
+		final var friendsUsers = getUsersForCache(friendsIds);
+		final var requestsResp = base.vk.friends().getRequests(base.actor).execute();
+		final var requestsList = requestsResp.getItems();
+		final var requestsIds = requestsList.toArray(new Integer[requestsList.size()]);
+		final var requestsUsers = getUsersForCache(requestsIds);
 		base.acceptTaskResult(taskId, ()->{
 			base.friends = friendsUsers;
 			base.friendshipRequests = requestsUsers;

@@ -19,12 +19,43 @@ package org.luwrain.app.vk2;
 import java.util.*;
 import java.io.*;
 
+import com.vk.api.sdk.client.TransportClient;
+import com.vk.api.sdk.client.VkApiClient;
+import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.objects.messages.ConversationWithMessage;
+import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.objects.users.UserFull;
 
 import org.luwrain.core.*;
-import org.luwrain.core.events.*;
-import org.luwrain.controls.*;
+import org.luwrain.app.base.*;
 
-public class App
+import org.luwrain.app.vk.Strings;
+import org.luwrain.app.vk.Settings;
+
+public final class App extends AppBase<Strings>
 {
+    final ArrayList<UserFull>
+	frRequests = new ArrayList<UserFull>();
+
+        final Map<Integer, UserFull> userCache = new HashMap<>();
+
+        private TransportClient transportClient = null;
+    private VkApiClient vk = null;
+    private UserActor actor = null;
+
+
+    private Settings sett = null;
+    private MainLayout mainLayout = null;
+
+    public App()
+    {
+	super(Strings.NAME, Strings.class, "luwrain.vk");
+    }
+
+    @Override protected AreaLayout onAppInit()
+    {
+	this.sett = Settings.create(getLuwrain());
+	this.mainLayout = new MainLayout(this);
+	return null;
+    }
 }
