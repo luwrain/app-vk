@@ -27,6 +27,7 @@ import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.users.UserFull;
 //import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.objects.users.Fields;
+import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 
 import org.luwrain.core.*;
 import org.luwrain.app.base.*;
@@ -36,13 +37,37 @@ import org.luwrain.app.vk.Settings;
 
 final class Operations
 {
-    private final VkApiClient vk;
-    private final UserActor actor;
+    final App app;
+final VkApiClient vk;
+final UserActor actor;
 
     Operations(App app)
     {
+	this.app = app;
 	this.vk = app.vk;
 	this.actor = app.getActor();
+    }
+
+    List<ConversationWithMessage> getChats()
+    {
+	try {
+	    final var resp = vk.messages().getConversations(actor).execute();
+	    final var list = resp.getItems();
+	    final var userIds = new ArrayList<String>();
+	    for(var d: list)
+	    {
+		userIds.add(d.getLastMessage().getFromId().toString());
+		userIds.add(d.getLastMessage().getPeerId().toString());
+	    }
+	    final var users = getUsersForCache(userIds);
+	    for(var u: users)
+		app.userCache.put(u.getId(), u);
+	    return list;
+	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
     }
 
     List<UserFull> getFriendshipRequests()

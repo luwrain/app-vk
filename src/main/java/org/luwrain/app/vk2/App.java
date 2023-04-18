@@ -38,6 +38,8 @@ public final class App extends AppBase<Strings>
     final ArrayList<UserFull>
 	frRequests = new ArrayList<UserFull>();
 
+    final List<ConversationWithMessage> chats = new ArrayList<>();
+
         final Map<Integer, UserFull> userCache = new HashMap<>();
 
     //        final TransportClient transportClient = new HttpTransportClient();
@@ -61,11 +63,33 @@ public final class App extends AppBase<Strings>
 	
 	this.operations = new Operations(this);
 	this.mainLayout = new MainLayout(this);
-	return null;
+	setAppName(getStrings().appName());
+	final var taskId = newTaskId();
+	runTask(taskId, ()->{
+final var c = operations.getChats();
+		finishedTask(taskId, ()->{
+			chats.addAll(c);
+			mainLayout.chatsArea.refresh();
+		    });
+	    });
+	return this.mainLayout.getAreaLayout();
     }
 
-    //    TransportClient getTransportClient() { return transportClient; }
-    //    VkApiClient getVk() { return vk; }
+    @Override public boolean onEscape()
+    {
+	closeApp();
+	return true;
+    }
+
+        String getUserCommonName(int userId)
+    {
+	if (userId < 0 || !userCache.containsKey(new Integer(userId)))
+	    return String.valueOf(userId);
+	final UserFull user = userCache.get(new Integer(userId));
+	return user.getFirstName() + " " + user.getLastName();
+    }
+
+
     UserActor getActor() { return actor; }
     Operations getOperations() { return operations; }
 
