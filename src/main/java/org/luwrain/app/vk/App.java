@@ -36,11 +36,11 @@ public class App implements Application, MonoApp
     private WallArea defaultArea = null;
     private AreaLayoutHelper layout = null;
 
-    private final Watching watching;
+    //    private final Watching watching;
 
-    public App(Watching watching)
+    public App(/*Watching watching*/)
     {
-	this.watching = watching;
+	//	this.watching = watching;
     }
 
     @Override public InitResult onLaunchApp(Luwrain luwrain)
@@ -51,7 +51,7 @@ public class App implements Application, MonoApp
 	    return new InitResult(InitResult.Type.NO_STRINGS_OBJ, Strings.NAME);
 	strings = (Strings)o;
 	this.luwrain = luwrain;
-	this.base = new Base(luwrain, strings, watching);
+	this.base = new Base(luwrain, strings/*, watching*/);
 	this.actions = new Actions(base, this);
 	this.actionLists = new ActionLists(luwrain, strings, base);
 	createDefaultArea();

@@ -84,7 +84,7 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-		final List<com.vk.api.sdk.objects.users.UserXtrCounters> userResp = base.vk.users().get(base.actor).userIds(new Integer(userId).toString())
+		final var userResp = base.vk.users().get(base.actor).userIds(new Integer(userId).toString())
 		.fields(Fields.STATUS, Fields.LAST_SEEN, Fields.OCCUPATION, Fields.INTERESTS, Fields.BDATE)
 		.execute();
 		if (userResp.isEmpty())
@@ -127,14 +127,17 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
+		
 		final List<String> attachments = new LinkedList();
+		/*
 		for(File f: photos)
 		{
-		    final com.vk.api.sdk.objects.photos.PhotoUpload server = base.vk.photos().getWallUploadServer(base.actor).execute();
+		    final var server = base.vk.photos().getWallUploadServer(base.actor).execute();
 		    final com.vk.api.sdk.objects.photos.responses.WallUploadResponse upload = base.vk.upload().photoWall(server.getUploadUrl().toString(), f).execute();
 		    for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).server(upload.getServer()).hash(upload.getHash()).execute())
 			attachments.add("photo" + p.getOwnerId() + "_" + p.getId());
 		}
+		*/
 		final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
 		.message(text)
 		.attachments(attachments)
@@ -278,7 +281,7 @@ final class Actions
 		{
 		    final List<String> ids = new LinkedList();
 		    ids.add(query.trim().substring(2));
-		    final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.CITY, Fields.LAST_SEEN).execute();
+		    final var resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.CITY, Fields.LAST_SEEN).execute();
 		    base.acceptTaskResult(taskId, ()->{
 			    base.users = resp.toArray(new UserFull[resp.size()]);
 			    onSuccess.run();
@@ -302,7 +305,7 @@ final class Actions
     {
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-		final var friendsResp = base.vk.friends().get(base.actor).order(com.vk.api.sdk.objects.enums.FriendsOrder.NAME).execute();
+		final var friendsResp = base.vk.friends().get(base.actor)/*.order(com.vk.api.sdk.objects.enums.FriendsOrder.NAME)*/.execute();
 		final var friendsList = friendsResp.getItems();
 		final var friendsIds = friendsList.toArray(new Integer[friendsList.size()]);
 		final var friendsUsers = getUsersForCache(friendsIds);
@@ -419,7 +422,7 @@ final class Actions
     private UserFull[] getUsersForCache(List<String> ids) throws ApiException, ClientException
     {
 	//FIXME:Limit up to 1000
-	final List<com.vk.api.sdk.objects.users.UserXtrCounters> resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.LAST_SEEN, Fields.CITY, Fields.BDATE).execute();
+	final var resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.LAST_SEEN, Fields.CITY, Fields.BDATE).execute();
 	return resp.toArray(new UserFull[resp.size()]);
     }
 }

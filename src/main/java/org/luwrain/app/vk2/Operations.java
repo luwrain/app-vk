@@ -89,9 +89,10 @@ return resp.getItems();
 	WallpostFull getWallPost(String id)
 	{
 	    try {
-		final var resp = vk.wall().getById(actor, id).execute();
-		if (resp != null && resp.size() == 1)
-		    return resp.get(0);
+		final var resp = vk.wall().getByIdExtended(actor, id).execute();
+		final var items = resp.getItems();
+		if (items != null && items.size() == 1)
+		    return items.get(0);
 		return null;
 	    	}
 		catch(ApiException | ClientException e)

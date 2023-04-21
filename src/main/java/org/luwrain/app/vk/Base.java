@@ -42,12 +42,12 @@ import com.vk.api.sdk.objects.users.Fields;
 import org.luwrain.core.*;
 import org.luwrain.controls.*;
 
-final class Base implements Watching.Listener
+final class Base //implements Watching.Listener
 {
     final Luwrain luwrain;
     final Strings strings;
     private final org.apache.commons.lang3.RandomUtils rand = new org.apache.commons.lang3.RandomUtils();
-    private final Watching watching;
+    //    private final Watching watching;
     private final TransportClient transportClient;
     final VkApiClient vk;
     final UserActor actor;
@@ -73,27 +73,31 @@ final class Base implements Watching.Listener
 
     NewsfeedItem[] newsfeedItems = new NewsfeedItem[0];
 
-    Base(Luwrain luwrain, Strings strings, Watching watching)
+    Base(Luwrain luwrain, Strings strings/*, Watching watching*/)
     {
 	NullCheck.notNull(luwrain, "luwrain");
 	NullCheck.notNull(strings, "strings");
 	this.luwrain = luwrain;
 	this.strings = strings;
-	this.watching = watching;
+	//	this.watching = watching;
 	this.sett = Settings.create(luwrain);
 	this.transportClient = new HttpTransportClient();
 	this.vk = new VkApiClient(transportClient);
 	this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+	/*
 	if (watching != null)
 	    watching.addListener(sett.getUserId(0), this);
+	*/
     }
 
+    /*
     @Override public void onMessage(int messageId, int peerId, String messageText)
     {
 	for(Area a: visibleAreas)
 	    if (a instanceof NotificationNewMessage)
 		luwrain.runUiSafely(()->{((NotificationNewMessage)a).onMessage(messageId, peerId, messageText);});
     }
+    */
 
     String getUserCommonName(int userId)
     {
@@ -180,8 +184,10 @@ final class Base implements Watching.Listener
 
     void closeApp()
     {
+	/*
 	if (watching != null)
 	    watching.removeListener(this);
+	*/
 	luwrain.closeApp();
     }
 
