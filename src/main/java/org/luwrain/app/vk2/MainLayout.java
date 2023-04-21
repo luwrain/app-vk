@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.*;
 import java.io.*;
 
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
+import com.vk.api.sdk.oneofs.NewsfeedNewsfeedItemOneOf;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
@@ -35,7 +36,7 @@ import static org.luwrain.controls.ListUtils.*;
 final class MainLayout extends LayoutBase
 {
     private final App app;
-    //    final ListArea newsArea;
+        final ListArea<NewsfeedNewsfeedItemOneOf> newsArea;
     final ListArea<ConversationWithMessage> chatsArea;
     //    final ListArea requestsArea;
 
@@ -43,7 +44,12 @@ final class MainLayout extends LayoutBase
     {
 	super(app);
 	this.app = app;
-	//	this.newsArea = new ListArea(listParams((params)->{}));
+		this.newsArea = new ListArea<NewsfeedNewsfeedItemOneOf>(listParams((params)->{
+			    params.name = "Новости";//FIXME:
+			    params.model = new ListModel(app.news);
+			    params.appearance = new NewsAppearance(app);
+			    params.clickHandler = this::onNewsClick;
+			}));
 
 		this.chatsArea = new ListArea<ConversationWithMessage>(listParams((params)->{
 			    params.name = app.getStrings().conversationsAreaName();
@@ -52,7 +58,30 @@ final class MainLayout extends LayoutBase
 			    		}));
 		
 		//				this.requestsArea = new ListArea(listParams((params)->{}));
-    
-    setAreaLayout(chatsArea, null);
+    final ActionInfo
+    actionHomeWall = action("home-wall", "Стена", App.HOT_KEY_HOME_WALL, app.layouts()::homeWall);
+		setAreaLayout(AreaLayout.LEFT_RIGHT,
+			      newsArea, actions(actionHomeWall),
+		  chatsArea, null);
+    }
+
+    private boolean onNewsClick(ListArea<NewsfeedNewsfeedItemOneOf> area, int index, NewsfeedNewsfeedItemOneOf item)
+    {
+	final var post = item.getOneOf0();
+	if (post.getSourceId() == null || post.getPostId() == null)
+	    return false;
+	final var taskId = app.newTaskId();
+	return app.runTask(taskId, ()->{
+		final var wallPost = app.getOperations().getWallPost(post.getSourceId().toString() + "_" + post.getPostId());
+		app.finishedTask(taskId, ()->{
+			final WallPostLayout layout = new WallPostLayout(app, wallPost, ()->{
+				app.setAreaLayout(this);
+				setActiveArea(newsArea);
+				return true;
+			});
+			app.setAreaLayout(layout);
+			getLuwrain().announceActiveArea();
+		    });
+	    });
     }
 }

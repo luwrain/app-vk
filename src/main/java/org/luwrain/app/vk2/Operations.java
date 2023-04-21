@@ -19,15 +19,17 @@ package org.luwrain.app.vk2;
 import java.util.*;
 import java.io.*;
 
-//import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.exceptions.*;
+import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.users.UserFull;
 //import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.objects.users.Fields;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
+import com.vk.api.sdk.oneofs.NewsfeedNewsfeedItemOneOf;
+import com.vk.api.sdk.objects.newsfeed.Filters;
 
 import org.luwrain.core.*;
 import org.luwrain.app.base.*;
@@ -47,6 +49,56 @@ final UserActor actor;
 	this.vk = app.vk;
 	this.actor = app.getActor();
     }
+
+    List<NewsfeedNewsfeedItemOneOf> getNews()
+    {
+	try {
+	    final var resp = vk.newsfeed().get(actor).filters(Filters.POST, Filters.PHOTO, /*Filters.WALL_PHOTO,*/ Filters.AUDIO, Filters.VIDEO).execute();
+		    final var ids = new ArrayList<String>();
+		    for(var i: resp.getItems())
+		    {
+			if (i.getOneOf1().getSourceId() != null)
+			    ids.add(i.getOneOf1().getSourceId().toString());
+		    }
+getUsersForCache(ids);
+return resp.getItems();
+	}
+		catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+    List<WallpostFull> getWallPosts()
+    {
+	try {
+			final var  resp = vk.wall().get(actor).execute();
+			final var res = new ArrayList<WallpostFull>();
+			if (resp != null && resp.getItems() != null)
+			    res.addAll(resp.getItems());
+			return res;
+				}
+		catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+
+			
+    }
+
+	WallpostFull getWallPost(String id)
+	{
+	    try {
+		final var resp = vk.wall().getById(actor, id).execute();
+		if (resp != null && resp.size() == 1)
+		    return resp.get(0);
+		return null;
+	    	}
+		catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+	}
 
     List<ConversationWithMessage> getChats()
     {
@@ -97,6 +149,8 @@ final UserActor actor;
 	final var resp = vk.users().get(actor).userIds(ids).fields(Fields.STATUS, Fields.LAST_SEEN, Fields.CITY, Fields.BDATE).execute();
 	final var res = new ArrayList<UserFull>();
 	res.addAll(resp);
+		    for(var u: res)
+		app.userCache.put(u.getId(), u);
 	return res;
     }
 }
