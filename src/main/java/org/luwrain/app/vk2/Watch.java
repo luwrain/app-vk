@@ -14,7 +14,7 @@
    General Public License for more details.
 */
 
-package org.luwrain.app.vk2.watching;
+package org.luwrain.app.vk2;
 
 import java.util.*;
 
@@ -38,7 +38,7 @@ public final class Watch implements Runnable
     final int userId;
     final VkApiClient vk;
     final UserActor actor;
-    //    final List<Watching.Listener> listeners = new LinkedList();
+    final List<WatchingListener> listeners = new ArrayList<>();
 
     Watch(Luwrain luwrain, int userId, VkApiClient vk, UserActor actor)
     {

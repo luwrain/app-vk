@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2019 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -14,7 +14,7 @@
    General Public License for more details.
 */
 
-package org.luwrain.app.vk;
+package org.luwrain.app.vk2;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -34,18 +34,9 @@ final class Watching
 {
     static private final String LOG_COMPONENT = "vk";
 
-    interface Listener extends NotificationNewMessage
-    {
-    }
-
-    private final Luwrain luwrain;
-    private List<Watch> watches = new LinkedList();
-
-    Watching(Luwrain luwrain)
-    {
-	NullCheck.notNull(luwrain, "luwrain");
-	this.luwrain = luwrain;
-    }
+    final Luwrain luwrain;
+    final List<Watch> watches = new ArrayList<>();
+    Watching(Luwrain luwrain) { this.luwrain = luwrain; }
 
     void run()
     {
@@ -58,14 +49,18 @@ final class Watching
 
     void loadWatches()
     {
-	final Settings sett = Settings.create(luwrain);
-	final TransportClient transportClient = new HttpTransportClient();
-	final VkApiClient vk = new VkApiClient(transportClient);
+		final Settings sett = Settings.create(luwrain);
+		if (sett.getUserId(0) == 0 || sett.getAccessToken("").isEmpty())
+		{
+		    Log.debug(LOG_COMPONENT, "no auth data to run watches");
+		    return;
+		}
+	final VkApiClient vk = new VkApiClient(new HttpTransportClient());
 	final UserActor actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
 	watches.add(new Watch(luwrain, sett.getUserId(0), vk, actor));
     }
 
-    void addListener(int userId, Listener listener)
+    void addListener(int userId, WatchingListener listener)
     {
 	NullCheck.notNull(listener, "listener");
 	for(Watch w: watches)
@@ -76,12 +71,12 @@ final class Watching
 	    }
     }
 
-    void removeListener(Listener listener)
+    void removeListener(WatchingListener listener)
     {
 	NullCheck.notNull(listener, "listener");
 	for(Watch w: watches)
 	{
-	    final Iterator<Listener> it = w.listeners.iterator();
+	    final Iterator<WatchingListener> it = w.listeners.iterator();
 	    while(it.hasNext())
 	    {
 		if (it.next() == listener)
