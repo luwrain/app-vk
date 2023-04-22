@@ -1,4 +1,5 @@
-package org.luwrain.app.vk.custom;
+
+package org.luwrain.app.vk2.api;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonArray;

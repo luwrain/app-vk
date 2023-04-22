@@ -24,10 +24,9 @@ import com.google.gson.JsonArray;
 import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.queries.longpoll.*;
 
 import org.luwrain.core.*;
-//import org.luwrain.app.vk.custom.*;
+import org.luwrain.app.vk2.api.*;
 
 public final class Watch implements Runnable
 {
@@ -66,15 +65,28 @@ public final class Watch implements Runnable
 	{
 	    try {
 		final com.vk.api.sdk.objects.messages.responses.GetLongPollServerResponse params = vk.messages().getLongPollServer(actor).needPts(true).execute();
-		Log.debug(LOG_COMPONENT, "starting watch for " + params.getServer());
-		String ts = String.valueOf(params.getTs());
+		Log.debug(LOG_COMPONENT, "watch server: " + params.getServer());
+		Integer ts = params.getTs();
 		while(true)
 		{
-		    //		    final GetLongPollEventsQuery query = new GetLongPollEventsQuery(vk, "https://" + params.getServer(), params.getKey(), ts);
-		    final GetLongPollEventsQuery query = vk.longPoll().getEvents("https://" + params.getServer(), params.getKey(), ts);
-		    final var resp = query.waitTime(WAIT_TIME).execute();
+		    		    		    Log.debug(LOG_COMPONENT, "longpoll request");
+		    		    final GetLongPollEventsQuery query = new GetLongPollEventsQuery(vk, "https://" + params.getServer(), params.getKey(), ts);
+				    final var resp = query.waitTime(WAIT_TIME).execute();
+
+
+				    /*
+				    //				    		    		    final GetLongPollEventsQuery query = vk.longPoll().getEvents("https://" + params.getServer(), params.getKey(), ts);
+		    //		    final var resp = query.waitTime(WAIT_TIME).execute();
+				    final var resp = vk.longPoll().getEvents("https://" + params.getServer(), params.getKey(), ts).waitTime(WAIT_TIME).execute();
+				    */
+		    
 		    ts = resp.getTs();
+		    final var updates = resp.getUpdates();
+		    Log.debug(LOG_COMPONENT, "" + updates.size() + " updates(s)");
 		    /*
+		    for(var u: updates)
+			Log.debug(LOG_COMPONENT, "update " + u.toString());
+		    */
 		    final List<JsonArray> objs = resp.getUpdates();
 		    for(JsonArray a: objs)
 		    {
@@ -85,16 +97,17 @@ public final class Watch implements Runnable
 			final int messageId = a.get(1).getAsInt();
 			final int peerId = a.get(3).getAsInt();
 			final String messageText = a.get(6).getAsString();
+			Log.debug(LOG_COMPONENT, messageText);
 			if (messageId < 0 || peerId < 0 || messageText == null)
 			    continue;
 			onMessage(messageId, peerId, messageText);
 		    }
-		    */
 		}
 	    }
 	    catch(ApiException | ClientException e)
 	    {
 		Log.debug(LOG_COMPONENT, "starting new watch, the current failed:" + e.getClass().getName() + ":" + e.getMessage());
+		e.printStackTrace();
 		try {
 		    Thread.sleep(5000);
 		}

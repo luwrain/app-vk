@@ -22,17 +22,17 @@ import org.luwrain.core.*;
 import org.luwrain.cpanel.*;
 import org.luwrain.i18n.*;
 
+import org.luwrain.app.vk2.Watching;
+
 public final class Extension extends EmptyExtension
 {
     static final String LOG_COMPONENT = "vk";
 
-    //    private Watching watching = null;
+        private Watching watching = null;
 
     @Override public String init(Luwrain luwrain)
     {
-	//	this.watching = new Watching(luwrain);
-	//	watching.loadWatches();
-	//	watching.run();
+	this.watching = new Watching(luwrain);
 	return null;
     }
 

@@ -30,13 +30,19 @@ import com.vk.api.sdk.httpclient.HttpTransportClient;
 
 import org.luwrain.core.*;
 
-final class Watching
+public final class Watching
 {
     static private final String LOG_COMPONENT = "vk";
 
     final Luwrain luwrain;
     final List<Watch> watches = new ArrayList<>();
-    Watching(Luwrain luwrain) { this.luwrain = luwrain; }
+
+    public Watching(Luwrain luwrain)
+    {
+	this.luwrain = luwrain;
+	loadWatches();
+	run();
+    }
 
     void run()
     {
