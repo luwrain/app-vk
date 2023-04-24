@@ -45,7 +45,9 @@ final class HomeWallLayout extends LayoutBase implements ListArea.ClickHandler<W
 		    params.appearance = new WallAppearance(app);
 		    params.clickHandler = this;
 		}));
-	setAreaLayout(wallArea, null);
+	setAreaLayout(wallArea, actions(
+					action("new-post", "Новая запись", new InputEvent(InputEvent.Special.INSERT), this::actNewPost)
+));
     }
 
     @Override public boolean onListClick(ListArea area, int index, WallpostFull post)
@@ -57,6 +59,18 @@ final class HomeWallLayout extends LayoutBase implements ListArea.ClickHandler<W
 	});
 	app.setAreaLayout(layout);
 	layout.setActiveArea(layout.textArea);
+	return true;
+    }
+
+    private boolean actNewPost()
+    {
+	final NewWallPostLayout layout = new NewWallPostLayout(app, ()->{
+		app.setAreaLayout(this);
+		setActiveArea(wallArea);
+		return true;
+	});
+	app.setAreaLayout(layout);
+	getLuwrain().announceActiveArea();
 	return true;
     }
     }

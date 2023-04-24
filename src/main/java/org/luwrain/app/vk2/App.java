@@ -41,11 +41,16 @@ import org.luwrain.app.vk.Settings;
 
 public final class App extends AppBase<Strings>
 {
-static final InputEvent
-    HOT_KEY_HOME_WALL = new InputEvent(Special.F9);
+    static final String
+	LOG_COMPONENT = "vk";
+
+    static final InputEvent
+	HOT_KEY_FRIENDS = new InputEvent(Special.F8),
+	HOT_KEY_HOME_WALL = new InputEvent(Special.F9);
 
     final ArrayList<UserFull>
-	frRequests = new ArrayList<UserFull>();
+	friends = new ArrayList<>(),
+	frRequests = new ArrayList<>();
 
     final List<WallpostFull> homeWallPosts = new ArrayList<>();
     final List<ConversationWithMessage> chats = new ArrayList<>();
@@ -61,6 +66,7 @@ static final InputEvent
     private Operations operations = null;
     private MainLayout mainLayout = null;
     private HomeWallLayout homeWallLayout = null;
+    private FriendsLayout friendsLayout = null;
 
     public App()
     {
@@ -74,6 +80,7 @@ static final InputEvent
 	this.operations = new Operations(this);
 	this.mainLayout = new MainLayout(this);
 	this.homeWallLayout = new HomeWallLayout(this);
+	this.friendsLayout = new FriendsLayout(this);
 	setAppName(getStrings().appName());
 	final var taskId = newTaskId();
 	runTask(taskId, ()->{
@@ -105,6 +112,7 @@ final var c = operations.getChats();
     Layouts layouts()
     {
 	return new Layouts(){
+
 	    @Override public boolean homeWall()
 	    {
 		final var taskId = newTaskId();
@@ -118,6 +126,21 @@ final var c = operations.getChats();
 			    });
 		    });
 	    }
+
+	    	    @Override public boolean friends()
+	    {
+		final var taskId = newTaskId();
+		return runTask(taskId, ()->{
+			final var  f = operations.getFriends(null);
+			finishedTask(taskId, ()->{
+				friends.clear();
+				friends.addAll(f);
+				friendsLayout.friendsArea.refresh();
+				setAreaLayout(friendsLayout);
+			    });
+		    });
+	    }
+
 	};
     }
 
@@ -127,5 +150,6 @@ final var c = operations.getChats();
     interface Layouts
     {
 	boolean homeWall();
+	boolean friends();
     }
 }

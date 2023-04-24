@@ -25,7 +25,7 @@ import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.users.UserFull;
-//import com.vk.api.sdk.objects.users.UserFull;
+import com.vk.api.sdk.objects.friends.GetOrder;
 import com.vk.api.sdk.objects.users.Fields;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.oneofs.NewsfeedNewsfeedItemOneOf;
@@ -123,7 +123,35 @@ return resp.getItems();
 	}
     }
 
-    List<UserFull> getFriendshipRequests()
+        List<UserFull> getFriends(Integer userId)
+    {
+	try {
+	    final com.vk.api.sdk.objects.friends.responses.GetResponse resp;
+	    if (userId != null)
+		resp = vk.friends().get(actor).userId(userId).order(GetOrder.NAME).execute(); else
+		resp = vk.friends().get(actor).order(GetOrder.NAME).execute();
+	    final var l = resp.getItems();
+	    final var ids = l.toArray(new Integer[l.size()]);
+	    return getUsersForCache(ids);
+	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+    void newFriendship(int userId)
+    {
+	try {
+		vk.friends().add(actor).userId(userId).execute();
+		}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+        List<UserFull> getFriendshipRequests()
     {
 	try {
 	    final var requestsResp = vk.friends().getRequests(actor).execute();

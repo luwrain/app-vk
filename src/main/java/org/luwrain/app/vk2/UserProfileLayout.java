@@ -17,11 +17,8 @@
 package org.luwrain.app.vk2;
 
 import java.util.*;
-import java.util.concurrent.atomic.*;
-import java.io.*;
 
-import com.vk.api.sdk.objects.messages.ConversationWithMessage;
-import com.vk.api.sdk.oneofs.NewsfeedNewsfeedItemOneOf;
+import com.vk.api.sdk.objects.users.UserFull;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
@@ -33,41 +30,45 @@ import org.luwrain.nlp.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class MainLayout extends LayoutBase
+final class UserProfileLayout extends LayoutBase
 {
     private final App app;
-        final ListArea<NewsfeedNewsfeedItemOneOf> newsArea;
-    final ListArea<ConversationWithMessage> chatsArea;
-    //    final ListArea requestsArea;
+        final ListArea<UserFull> friendsArea;
 
-    MainLayout(App app)
+    UserProfileLayout(App app, List<UserFull> friends, ActionHandler closing)
     {
 	super(app);
 	this.app = app;
-		this.newsArea = new ListArea<NewsfeedNewsfeedItemOneOf>(listParams((params)->{
-			    params.name = "Новости";//FIXME:
-			    params.model = new ListModel(app.news);
-			    params.appearance = new NewsAppearance(app);
-			    params.clickHandler = this::onNewsClick;
+		this.friendsArea = new ListArea<UserFull>(listParams((params)->{
+			    params.name = "Друзья";//FIXME:
+			    params.model = new ListModel(friends);
+			    params.appearance = new UserAppearance(app);
+			    //			    params.clickHandler = this::onNewsClick;
 			}));
-
-		this.chatsArea = new ListArea<ConversationWithMessage>(listParams((params)->{
-			    params.name = app.getStrings().conversationsAreaName();
-			    params.model = new ListModel(app.chats);
-			    params.appearance = new ChatsAppearance(app);
-			    		}));
-		
-		//				this.requestsArea = new ListArea(listParams((params)->{}));
-    final ActionInfo
-    actionHomeWall = action("home-wall", "Стена", App.HOT_KEY_HOME_WALL, app.layouts()::homeWall),
-        actionFriends = action("friends", "Друзья", App.HOT_KEY_FRIENDS, app.layouts()::friends);
-		setAreaLayout(AreaLayout.LEFT_RIGHT,
-			      newsArea, actions(actionFriends, actionHomeWall),
-		  chatsArea, null);
+		setCloseHandler(closing);
+		setAreaLayout(friendsArea, actions(
+						   action("new-friendship", "Добавить подписку", new InputEvent(InputEvent.Special.INSERT), this::actNewFriendship)
+						   ));
     }
 
+    private boolean actNewFriendship()
+    {
+	final var user = friendsArea.selected();
+	if (user == null)
+	    return false;
+	final var taskId = app.newTaskId();
+	return app.runTask(taskId, ()->{
+		app.getOperations().newFriendship(user.getId());
+		app.finishedTask(taskId, ()->{
+			getLuwrain().playSound(Sounds.OK);
+		    });
+	    });
+    }
+
+    /*
     private boolean onNewsClick(ListArea<NewsfeedNewsfeedItemOneOf> area, int index, NewsfeedNewsfeedItemOneOf item)
     {
+
 	final var post = item.getOneOf0();
 	if (post.getSourceId() == null || post.getPostId() == null)
 	    return false;
@@ -85,4 +86,5 @@ final class MainLayout extends LayoutBase
 		    });
 	    });
     }
+    */
 }

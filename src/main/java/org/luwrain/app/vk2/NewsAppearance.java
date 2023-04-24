@@ -25,6 +25,7 @@ import org.luwrain.core.*;
 import org.luwrain.controls.*;
 
 import static org.luwrain.core.DefaultEventResponse.*;
+import static org.luwrain.app.vk2.App.*;
 
 final class NewsAppearance extends ListUtils.AbstractAppearance<NewsfeedNewsfeedItemOneOf>
 {
@@ -33,26 +34,39 @@ final class NewsAppearance extends ListUtils.AbstractAppearance<NewsfeedNewsfeed
 
     @Override public void announceItem(NewsfeedNewsfeedItemOneOf item, Set<Flags> flags)
     {
-	Log.debug("proba", item.getRaw().toString());
-		final var post = item.getOneOf0();
-		final var userName = app.getUserCommonName(post.getSourceId());
-		switch(post.getType())
-		{
-		case POST:
-		    	if (post.getText() != null)
-	    app.setEventResponse(listItem(Sounds.LIST_ITEM, userName + " " + post.getText(), null)); else
-	    	app.setEventResponse(listItem(Sounds.LIST_ITEM, post.toString(), null));
-			break;
-		case FRIEND:
-		    app.setEventResponse(listItem(Sounds.LIST_ITEM, userName, null));
-		    break;
-		default:
-	app.setEventResponse(listItem(Sounds.LIST_ITEM, post.getType().toString(), null));
-		}
+	try {
+	    final var post = item.getOneOf0();
+	    final var userName = app.getUserCommonName(post.getSourceId());
+	    switch(post.getType())
+	    {
+	    case POST:
+		if (post.getText() != null)
+		    app.setEventResponse(listItem(Sounds.LIST_ITEM, userName + " " + post.getText(), Suggestions.CLICKABLE_LIST_ITEM)); else
+		    app.setEventResponse(hint(Hint.EMPTY_LINE));
+		break;
+	    case FRIEND:
+		app.setEventResponse(listItem(Sounds.LIST_ITEM, userName, null));
+		break;
+	    default:
+		app.setEventResponse(listItem(Sounds.LIST_ITEM, post.getType().toString(), null));
+	    }
+	}
+	catch(Exception e)
+	{
+	    Log.error(LOG_COMPONENT, "unable to parse news feed item: " + e.getClass().getName() + ": " + e.getMessage());
+	    app.setEventResponse(listItem(Sounds.ALERT, item.getRaw().toString(), null));
+	}
     }
 
     @Override public String getScreenAppearance(NewsfeedNewsfeedItemOneOf item, Set<Flags> flags)
     {
-	return item.toString();
-}
+	try {
+	    final var post = item.getOneOf0();
+	    return post.getText() != null?post.getText().trim():"";
+	}
+	catch(Exception e)
+	{
+	    return item.getRaw().toString();
+	}
+    }
 }
