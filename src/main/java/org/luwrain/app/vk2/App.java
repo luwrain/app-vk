@@ -64,6 +64,7 @@ public final class App extends AppBase<Strings>
 
     private Settings sett = null;
     private Operations operations = null;
+    private AuthLayout authLayout = null;
     private MainLayout mainLayout = null;
     private HomeWallLayout homeWallLayout = null;
     private FriendsLayout friendsLayout = null;
@@ -78,6 +79,7 @@ public final class App extends AppBase<Strings>
 	this.sett = Settings.create(getLuwrain());
 	this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
 	this.operations = new Operations(this);
+	this.authLayout = new AuthLayout(this);
 	this.mainLayout = new MainLayout(this);
 	this.homeWallLayout = new HomeWallLayout(this);
 	this.friendsLayout = new FriendsLayout(this);
@@ -93,6 +95,10 @@ final var c = operations.getChats();
 		    });
 	    });
 	return this.mainLayout.getAreaLayout();
+    }
+
+    void onAuth(int userId, String accessToken)
+    {
     }
 
     @Override public boolean onEscape()

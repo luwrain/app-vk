@@ -51,4 +51,10 @@ public interface Strings
     String usersAreaName();
     String wallAreaName();
     String wallPostAreaName();
+    String authIntro();
+    String authUserId();
+    String authAccessToken();
+    String authConnect();
+    String authInvalidUserId();
+    String authInvalidAccessToken();
 }
