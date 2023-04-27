@@ -34,13 +34,16 @@ import com.vk.api.sdk.objects.newsfeed.Filters;
 import com.vk.api.sdk.objects.account.SaveProfileInfoRelation;
 
 import org.luwrain.core.*;
-import org.luwrain.app.base.*;
+import org.luwrain.app.vk2.api.*;
 
 import org.luwrain.app.vk.Strings;
 import org.luwrain.app.vk.Settings;
 
 final class Operations
 {
+    static private final String LOG_COMPONENT = App.LOG_COMPONENT;
+
+    
     final App app;
 final VkApiClient vk;
 final UserActor actor;
@@ -84,9 +87,54 @@ return resp.getItems();
 	{
 	    throw new RuntimeException(e);
 	}
-
-			
     }
+
+    void newWallPost(String text, File[] photos, File[] audio)
+    {
+	try {
+	    final List<String> attachments = new LinkedList();
+
+	    for(File f: photos)
+	    {
+		final var server = vk.photos().getWallUploadServer(actor).execute();
+		final var upload = vk.upload().photoWall(server.getUploadUrl().toString(), f).execute();
+		for(var p: vk.photos().saveWallPhoto(actor, upload.getPhoto()).server(upload.getServer()).hash(upload.getHash()).execute())
+		    attachments.add("photo" + p.getOwnerId() + "_" + p.getId());
+	    }
+
+	    /*
+	    	    for(File f: audio)
+	    {
+		final var server = vk.photos().getWallUploadServer(actor).execute();
+	    }
+	    */
+
+	    final var resp = vk.wall().post(actor)
+	    .message(text)
+	    .attachments(attachments)
+	    .execute();
+	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+    List<String> getDocTypes(int userId)
+    {
+	try {
+	    final var resp = vk.docs().getTypes(actor, userId).execute();
+	    final var res = new ArrayList<String>();
+	    for(var i: resp.getItems())
+		res.add(i.getName());
+	    return res;
+	    	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
 
 	WallpostFull getWallPost(String id)
 	{
@@ -183,6 +231,19 @@ return resp.getItems();
 	try {
 return vk.account().getProfileInfo(actor).execute();
 		}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+    void test()
+    {
+	try {
+	    final var q = new AudioGetUploadServerQuery(vk, actor);
+	    final var r = q.execute();
+	    Log.debug(LOG_COMPONENT, "audio server " + r.getUploadUrl().toString());
+			}
 	catch(ApiException | ClientException e)
 	{
 	    throw new RuntimeException(e);
