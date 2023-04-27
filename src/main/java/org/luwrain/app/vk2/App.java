@@ -46,7 +46,8 @@ public final class App extends AppBase<Strings>
 
     static final InputEvent
 	HOT_KEY_FRIENDS = new InputEvent(Special.F8),
-	HOT_KEY_HOME_WALL = new InputEvent(Special.F9);
+	HOT_KEY_HOME_WALL = new InputEvent(Special.F9),
+	HOT_KEY_PERSONAL_INFO = new InputEvent(Special.F10, EnumSet.of(Modifiers.ALT));
 
     final ArrayList<UserFull>
 	friends = new ArrayList<>(),
@@ -147,6 +148,19 @@ final var c = operations.getChats();
 		    });
 	    }
 
+	    	    	    @Override public boolean personalInfo()
+	    {
+		final var taskId = newTaskId();
+		return runTask(taskId, ()->{
+			final var  i = operations.getPersonalInfo();
+			finishedTask(taskId, ()->{
+				final PersonalInfoLayout layout = new PersonalInfoLayout(App.this, i);
+				setAreaLayout(layout);
+			    });
+		    });
+	    }
+
+
 	};
     }
 
@@ -157,5 +171,6 @@ final var c = operations.getChats();
     {
 	boolean homeWall();
 	boolean friends();
+	boolean personalInfo();
     }
 }

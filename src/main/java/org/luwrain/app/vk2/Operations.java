@@ -25,11 +25,13 @@ import com.vk.api.sdk.exceptions.*;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.objects.users.UserFull;
+import com.vk.api.sdk.objects.users.UserSettingsXtr;
 import com.vk.api.sdk.objects.friends.GetOrder;
 import com.vk.api.sdk.objects.users.Fields;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.oneofs.NewsfeedNewsfeedItemOneOf;
 import com.vk.api.sdk.objects.newsfeed.Filters;
+import com.vk.api.sdk.objects.account.SaveProfileInfoRelation;
 
 import org.luwrain.core.*;
 import org.luwrain.app.base.*;
@@ -165,6 +167,28 @@ return resp.getItems();
 	}
     }
 
+    void savePersonalInfo(SaveProfileInfoRelation rel)
+    {
+	try {
+	    final var resp = vk.account().saveProfileInfo(actor).relation(rel).execute();
+		}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+	    UserSettingsXtr getPersonalInfo()
+    {
+	try {
+return vk.account().getProfileInfo(actor).execute();
+		}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
     List<UserFull> getUsersForCache(Integer[] ids) throws ApiException, ClientException
     {
 	final var list = new ArrayList<String>();
@@ -175,7 +199,7 @@ return resp.getItems();
 
     List<UserFull> getUsersForCache(List<String> ids)  throws ApiException, ClientException
     {
-	final var resp = vk.users().get(actor).userIds(ids).fields(Fields.STATUS, Fields.LAST_SEEN, Fields.CITY, Fields.BDATE).execute();
+	final var resp = vk.users().get(actor).userIds(ids).fields(Fields.STATUS, Fields.LAST_SEEN, Fields.CITY, Fields.BDATE, Fields.RELATION, Fields.SEX).execute();
 	final var res = new ArrayList<UserFull>();
 	res.addAll(resp);
 		    for(var u: res)

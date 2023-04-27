@@ -60,9 +60,10 @@ final class MainLayout extends LayoutBase
 		//				this.requestsArea = new ListArea(listParams((params)->{}));
     final ActionInfo
     actionHomeWall = action("home-wall", "Стена", App.HOT_KEY_HOME_WALL, app.layouts()::homeWall),
-        actionFriends = action("friends", "Друзья", App.HOT_KEY_FRIENDS, app.layouts()::friends);
+    actionFriends = action("friends", "Друзья", App.HOT_KEY_FRIENDS, app.layouts()::friends),
+    actionPersonalInfo = action("personal-info", "Персональная информация", App.HOT_KEY_PERSONAL_INFO, app.layouts()::personalInfo);
 		setAreaLayout(AreaLayout.LEFT_RIGHT,
-			      newsArea, actions(actionFriends, actionHomeWall),
+			      newsArea, actions(actionFriends, actionHomeWall, actionPersonalInfo),
 		  chatsArea, null);
     }
 
