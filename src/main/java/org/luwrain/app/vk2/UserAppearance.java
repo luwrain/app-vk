@@ -54,7 +54,7 @@ final class UserAppearance extends ListUtils.AbstractAppearance<UserFull>
 	if (user.getSex() == Sex.MALE)
 	    	switch(user.getRelation())
 	{
-	case SINGLE: return "Одинок";
+	case SINGLE: return "Холост";
 	case ENGAGED: return "Помолвлен";
 	case MARRIED: return "Женат";
 	case IN_LOVE: return "Влюблён";
@@ -62,7 +62,7 @@ final class UserAppearance extends ListUtils.AbstractAppearance<UserFull>
 		if (user.getSex() == Sex.FEMALE)
 	    	switch(user.getRelation())
 	{
-	case SINGLE: return "Одинока";
+	case SINGLE: return "Не замужем";
 	case ENGAGED: return "Помолвлена";
 	case MARRIED: return "Замужем";
 	case IN_LOVE: return "Влюблена";
@@ -72,7 +72,7 @@ final class UserAppearance extends ListUtils.AbstractAppearance<UserFull>
 	case NOT_SPECIFIED:
 	    return "Не указано";
 	case SINGLE:
-	    return "Одинок/одинока";
+	    return "Холост/не замужем";
 	case IN_A_RELATIONSHIP:
 	    return "В отношениях";
 	case ENGAGED:

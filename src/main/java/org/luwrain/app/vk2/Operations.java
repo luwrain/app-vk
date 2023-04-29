@@ -89,7 +89,7 @@ return resp.getItems();
 	}
     }
 
-    void newWallPost(String text, File[] photos, File[] audio)
+    void newWallPost(String text, File[] photos, File[] docs)
     {
 	try {
 	    final List<String> attachments = new LinkedList();
@@ -103,11 +103,13 @@ return resp.getItems();
 	    }
 
 	    /*
-	    	    for(File f: audio)
+	    	    for(File f: docs)
 	    {
-		final var server = vk.photos().getWallUploadServer(actor).execute();
+		final var server = vk.docs().getWallUploadServer(actor).execute();
+				final var upload = vk.upload().docWall(server.getUploadUrl().toString(), f).execute();
 	    }
 	    */
+
 
 	    final var resp = vk.wall().post(actor)
 	    .message(text)
@@ -250,6 +252,18 @@ return vk.account().getProfileInfo(actor).execute();
 	}
     }
 
+    List<UserFull> getLikesWallPost(int ownerId, int postId)
+    {
+	try {
+	    final var resp = vk.likes().getList(actor, com.vk.api.sdk.objects.likes.Type.POST).ownerId(ownerId).itemId(postId).execute();
+	    return getUsersForCacheIntList(resp.getItems());
+	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
     List<UserFull> getUsersForCache(Integer[] ids) throws ApiException, ClientException
     {
 	final var list = new ArrayList<String>();
@@ -257,6 +271,15 @@ return vk.account().getProfileInfo(actor).execute();
 	    list.add(i.toString());
 	return getUsersForCache(list);
     }
+
+        List<UserFull> getUsersForCacheIntList(List<Integer> ids) throws ApiException, ClientException
+    {
+	final var list = new ArrayList<String>();
+	for(Integer i: ids)
+	    list.add(i.toString());
+	return getUsersForCache(list);
+    }
+
 
     List<UserFull> getUsersForCache(List<String> ids)  throws ApiException, ClientException
     {

@@ -75,8 +75,9 @@ final class MainLayout extends LayoutBase
 	final var taskId = app.newTaskId();
 	return app.runTask(taskId, ()->{
 		final var wallPost = app.getOperations().getWallPost(post.getSourceId().toString() + "_" + post.getPostId());
+		final var likes = app.getOperations().getLikesWallPost(wallPost.getOwnerId(), wallPost.getId());
 		app.finishedTask(taskId, ()->{
-			final WallPostLayout layout = new WallPostLayout(app, wallPost, ()->{
+			final WallPostLayout layout = new WallPostLayout(app, wallPost, likes, ()->{
 				app.setAreaLayout(this);
 				setActiveArea(newsArea);
 				return true;

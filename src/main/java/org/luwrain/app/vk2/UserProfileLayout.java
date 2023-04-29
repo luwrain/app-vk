@@ -47,28 +47,13 @@ final class UserProfileLayout extends LayoutBase
 			}));
 		setCloseHandler(closing);
 		setAreaLayout(friendsArea, actions(
-						   action("new-friendship", "Добавить подписку", new InputEvent(InputEvent.Special.INSERT), this::actNewFriendship)
+						   action("new-friendship", "Добавить подписку", new InputEvent(InputEvent.Special.INSERT), ()->app.newFriendship(friendsArea.selected()))
 						   ));
-    }
-
-    private boolean actNewFriendship()
-    {
-	final var user = friendsArea.selected();
-	if (user == null)
-	    return false;
-	final var taskId = app.newTaskId();
-	return app.runTask(taskId, ()->{
-		app.getOperations().newFriendship(user.getId());
-		app.finishedTask(taskId, ()->{
-			getLuwrain().playSound(Sounds.OK);
-		    });
-	    });
     }
 
     /*
     private boolean onNewsClick(ListArea<NewsfeedNewsfeedItemOneOf> area, int index, NewsfeedNewsfeedItemOneOf item)
     {
-
 	final var post = item.getOneOf0();
 	if (post.getSourceId() == null || post.getPostId() == null)
 	    return false;

@@ -52,14 +52,19 @@ final class HomeWallLayout extends LayoutBase implements ListArea.ClickHandler<W
 
     @Override public boolean onListClick(ListArea area, int index, WallpostFull post)
     {
-	final WallPostLayout layout = new WallPostLayout(app, post, ()->{
+	final var taskId = app.newTaskId();
+	return app.runTask(taskId, ()->{
+		final var likes = app.getOperations().getLikesWallPost(post.getOwnerId(), post.getId());
+		app.finishedTask(taskId, ()->{
+			final WallPostLayout layout = new WallPostLayout(app, post, likes, ()->{
 		app.setAreaLayout(this);
 		setActiveArea(wallArea);
 		return true;
 	});
 	app.setAreaLayout(layout);
 	layout.setActiveArea(layout.textArea);
-	return true;
+		    });
+	    });
     }
 
     private boolean actNewPost()

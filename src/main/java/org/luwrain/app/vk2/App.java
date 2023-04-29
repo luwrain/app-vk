@@ -116,6 +116,21 @@ final var c = operations.getChats();
 	return user.getFirstName() + " " + user.getLastName();
     }
 
+            boolean newFriendship(UserFull user)
+    {
+	if (user == null)
+	    return false;
+	final var taskId = newTaskId();
+	return runTask(taskId, ()->{
+operations.newFriendship(user.getId());
+		finishedTask(taskId, ()->{
+			getLuwrain().playSound(Sounds.OK);
+		    });
+	    });
+    }
+
+
+
     Layouts layouts()
     {
 	return new Layouts(){

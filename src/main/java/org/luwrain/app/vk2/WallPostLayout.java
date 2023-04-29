@@ -19,6 +19,7 @@ package org.luwrain.app.vk2;
 import java.util.*;
 
 import com.vk.api.sdk.objects.wall.WallpostFull;
+import com.vk.api.sdk.objects.users.UserFull;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
@@ -35,17 +36,23 @@ final class WallPostLayout extends LayoutBase
     private final App app;
     private final WallpostFull wallPost;
     final SimpleArea textArea;
-    //    final ListArea<Object> likesArea;
-    //    final ListArea requestsArea;
+        final ListArea<UserFull> likesArea;
 
-    WallPostLayout(App app, WallpostFull wallPost, ActionHandler closing)
+    WallPostLayout(App app, WallpostFull wallPost, List<UserFull> likes, ActionHandler closing)
     {
 	super(app);
 	this.app = app;
 	this.wallPost = wallPost;
 	this.textArea = new SimpleArea(getControlContext(), "", prepareText(wallPost.getText()));
+	this.likesArea = new ListArea<UserFull>(listParams((params)->{
+		    params.name = "Лайки";
+		    params.model = new ListModel<>(likes);
+		    params.appearance = new UserAppearance(app);
+		}));
 	setCloseHandler(closing);
-	setAreaLayout(textArea, null);
+	setAreaLayout(AreaLayout.LEFT_RIGHT, textArea, null, likesArea, actions(
+		      action("new-friendship", "Добавить в друзья", new InputEvent(InputEvent.Special.INSERT), ()->app.newFriendship(likesArea.selected()))
+										));
     }
 
     static String[] prepareText(String text)
@@ -55,4 +62,5 @@ final class WallPostLayout extends LayoutBase
 	    res.add(s);
 	return res.toArray(new String[res.size()]);
     }
+
 }
