@@ -36,11 +36,12 @@ final class PersonalInfoLayout extends LayoutBase
 {
 static private final String
     LAST_NAME = "last-name";
-    
+
     private final App app;
     final FormArea formArea;
+    final EditArea statusArea;
 
-    PersonalInfoLayout(App app, UserSettingsXtr userSett)
+    PersonalInfoLayout(App app, UserSettingsXtr userSett, String status)
     {
 	super(app);
 	this.app = app;
@@ -58,15 +59,20 @@ static private final String
 		    }
 		}
 	    };
+	statusArea = new EditArea(editParams((params)->{
+		    params.name = "Статус";
+		    params.content = new MutableMarkedLinesImpl(status.split("\n", 1));
+		}));
 	formArea.addEdit(LAST_NAME, "Имя:", userSett.getLastName());
 	formArea.addEdit("relation", "Статус личной жизни:", userSett.getRelation().toString());
-	setAreaLayout(formArea, null);
+	setAreaLayout(AreaLayout.TOP_BOTTOM, formArea, null, statusArea, null);
 	    }
 
     private boolean onSave()
     {
 	final var taskId = app.newTaskId();
 	return app.runTask(taskId, ()->{
+		app.getOperations().setStatus(statusArea.getText(" "));
 		app.getOperations().savePersonalInfo(SaveProfileInfoRelation.NOT_SPECIFIED);
 		app.finishedTask(taskId, ()->{
 			app.getLuwrain().playSound(Sounds.DONE);

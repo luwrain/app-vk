@@ -58,7 +58,7 @@ final UserActor actor;
     List<NewsfeedNewsfeedItemOneOf> getNews()
     {
 	try {
-	    final var resp = vk.newsfeed().get(actor).filters(Filters.POST, Filters.PHOTO, /*Filters.WALL_PHOTO,*/ Filters.AUDIO, Filters.VIDEO).execute();
+	    final var resp = vk.newsfeed().get(actor).filters(Filters.POST, Filters.PHOTO/*, Filters.WALL_PHOTO, Filters.AUDIO, Filters.VIDEO*/).execute();
 		    final var ids = new ArrayList<String>();
 		    for(var i: resp.getItems())
 		    {
@@ -92,7 +92,7 @@ return resp.getItems();
     void newWallPost(String text, File[] photos, File[] docs)
     {
 	try {
-	    final List<String> attachments = new LinkedList();
+	    final List<String> attachments = new ArrayList<>();
 
 	    for(File f: photos)
 	    {
@@ -217,6 +217,23 @@ return resp.getItems();
 	}
     }
 
+    List<UserFull> getFriendshipSuggestions()
+    {
+	try {
+	    final var resp = vk.friends().getSuggestions(actor).fields(Fields.STATUS, Fields.LAST_SEEN, Fields.CITY, Fields.BDATE, Fields.RELATION, Fields.SEX).execute();
+final var l = resp.getItems();
+for(var u: l)
+    if (!app.userCache.containsKey(u.getId()))
+	app.userCache.put(u.getId(), u);
+return l;
+	}
+    	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+
     void savePersonalInfo(SaveProfileInfoRelation rel)
     {
 	try {
@@ -257,6 +274,29 @@ return vk.account().getProfileInfo(actor).execute();
 	try {
 	    final var resp = vk.likes().getList(actor, com.vk.api.sdk.objects.likes.Type.POST).ownerId(ownerId).itemId(postId).execute();
 	    return getUsersForCacheIntList(resp.getItems());
+	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+    String getStatus()
+    {
+	try {
+	    final var resp = vk.status().get(actor).execute();
+	    return resp.getText();
+	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
+    void setStatus(String text)
+    {
+	try {
+	    vk.status().set(actor).text(text).execute();
 	}
 	catch(ApiException | ClientException e)
 	{

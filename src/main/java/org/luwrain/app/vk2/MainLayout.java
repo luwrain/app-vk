@@ -46,14 +46,14 @@ final class MainLayout extends LayoutBase
 	this.app = app;
 		this.newsArea = new ListArea<NewsfeedNewsfeedItemOneOf>(listParams((params)->{
 			    params.name = "Новости";//FIXME:
-			    params.model = new ListModel(app.news);
+			    params.model = new ListModel<>(app.news);
 			    params.appearance = new NewsAppearance(app);
 			    params.clickHandler = this::onNewsClick;
 			}));
 
 		this.chatsArea = new ListArea<ConversationWithMessage>(listParams((params)->{
 			    params.name = app.getStrings().conversationsAreaName();
-			    params.model = new ListModel(app.chats);
+			    params.model = new ListModel<>(app.chats);
 			    params.appearance = new ChatsAppearance(app);
 			    		}));
 		
@@ -61,10 +61,11 @@ final class MainLayout extends LayoutBase
     final ActionInfo
     actionHomeWall = action("home-wall", "Стена", App.HOT_KEY_HOME_WALL, app.layouts()::homeWall),
     actionFriends = action("friends", "Друзья", App.HOT_KEY_FRIENDS, app.layouts()::friends),
+    actionSuggestions = action("friendship-suggestions", "Вероятные знакомые", App.HOT_KEY_FRIENDSHIP_SUGGESTIONS, app.layouts()::friendshipSuggestions),
     actionPersonalInfo = action("personal-info", "Персональная информация", App.HOT_KEY_PERSONAL_INFO, app.layouts()::personalInfo);
 		setAreaLayout(AreaLayout.LEFT_RIGHT,
-			      newsArea, actions(actionFriends, actionHomeWall, actionPersonalInfo),
-		  chatsArea, null);
+			      newsArea, actions(actionFriends, actionHomeWall, actionSuggestions, actionPersonalInfo),
+		  chatsArea, actions(actionFriends, actionHomeWall, actionSuggestions, actionPersonalInfo));
     }
 
     private boolean onNewsClick(ListArea<NewsfeedNewsfeedItemOneOf> area, int index, NewsfeedNewsfeedItemOneOf item)

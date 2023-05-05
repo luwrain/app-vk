@@ -41,7 +41,7 @@ final class UserProfileLayout extends LayoutBase
 	this.app = app;
 		this.friendsArea = new ListArea<UserFull>(listParams((params)->{
 			    params.name = "Друзья";//FIXME:
-			    params.model = new ListModel(friends);
+			    params.model = new ListModel<>(friends);
 			    params.appearance = new UserAppearance(app);
 			    //			    params.clickHandler = this::onNewsClick;
 			}));

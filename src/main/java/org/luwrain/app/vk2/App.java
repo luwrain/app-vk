@@ -17,6 +17,7 @@
 package org.luwrain.app.vk2;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.io.*;
 
 //import com.vk.api.sdk.client.TransportClient;
@@ -46,6 +47,7 @@ public final class App extends AppBase<Strings>
 
     static final InputEvent
 	HOT_KEY_FRIENDS = new InputEvent(Special.F8),
+	HOT_KEY_FRIENDSHIP_SUGGESTIONS = new InputEvent(Special.F8, EnumSet.of(Modifiers.ALT)),
 	HOT_KEY_HOME_WALL = new InputEvent(Special.F9),
 	HOT_KEY_PERSONAL_INFO = new InputEvent(Special.F10, EnumSet.of(Modifiers.ALT));
 
@@ -57,7 +59,7 @@ public final class App extends AppBase<Strings>
     final List<ConversationWithMessage> chats = new ArrayList<>();
     final List <NewsfeedNewsfeedItemOneOf> news = new ArrayList<>();
 
-        final Map<Integer, UserFull> userCache = new HashMap<>();
+        final ConcurrentMap<Integer, UserFull> userCache = new ConcurrentHashMap<>();
 
     //        final TransportClient transportClient = new HttpTransportClient();
     final VkApiClient vk = new VkApiClient(new HttpTransportClient());
@@ -163,13 +165,28 @@ operations.newFriendship(user.getId());
 		    });
 	    }
 
+	    	    	    @Override public boolean friendshipSuggestions()
+	    {
+		final var taskId = newTaskId();
+		return runTask(taskId, ()->{
+			final var  f = operations.getFriendshipSuggestions();
+			finishedTask(taskId, ()->{
+				final var layout = new SuggestionsLayout(App.this, f);
+				setAreaLayout(layout);
+				getLuwrain().announceActiveArea();
+			    });
+		    });
+	    }
+
+
 	    	    	    @Override public boolean personalInfo()
 	    {
 		final var taskId = newTaskId();
 		return runTask(taskId, ()->{
 			final var  i = operations.getPersonalInfo();
+			final var s = operations.getStatus();
 			finishedTask(taskId, ()->{
-				final PersonalInfoLayout layout = new PersonalInfoLayout(App.this, i);
+				final PersonalInfoLayout layout = new PersonalInfoLayout(App.this, i, s);
 				setAreaLayout(layout);
 			    });
 		    });
@@ -186,6 +203,7 @@ operations.newFriendship(user.getId());
     {
 	boolean homeWall();
 	boolean friends();
+	boolean friendshipSuggestions();
 	boolean personalInfo();
     }
 }

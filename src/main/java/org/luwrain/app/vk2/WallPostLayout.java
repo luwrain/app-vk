@@ -33,17 +33,27 @@ import static org.luwrain.controls.ListUtils.*;
 
 final class WallPostLayout extends LayoutBase
 {
+    static private final int
+	MAX_LINE_LEN = 80;
+
     private final App app;
     private final WallpostFull wallPost;
-    final SimpleArea textArea;
+    final NavigationArea textArea;
         final ListArea<UserFull> likesArea;
+
+    private final List<Line> lines = new ArrayList<>();
 
     WallPostLayout(App app, WallpostFull wallPost, List<UserFull> likes, ActionHandler closing)
     {
 	super(app);
 	this.app = app;
 	this.wallPost = wallPost;
-	this.textArea = new SimpleArea(getControlContext(), "", prepareText(wallPost.getText()));
+	prepareText();
+	this.textArea = new NavigationArea(getControlContext()) {
+		@Override public int getLineCount() { return lines.size(); }
+		@Override public String getLine(int index) { return lines.get(index).text; }
+		@Override public String getAreaName() { return "Запись"; }
+	    };
 	this.likesArea = new ListArea<UserFull>(listParams((params)->{
 		    params.name = "Лайки";
 		    params.model = new ListModel<>(likes);
@@ -55,12 +65,55 @@ final class WallPostLayout extends LayoutBase
 										));
     }
 
-    static String[] prepareText(String text)
+    void prepareText()
     {
-	final var res = new ArrayList<String>();
-	for (var s: text.split("\n", -1))
-	    res.add(s);
-	return res.toArray(new String[res.size()]);
+	lines.add(new Line(""));
+	if (wallPost.getViews() != null)
+	{
+	lines.add(new Line("Просмотров: " + wallPost.getViews().getCount()));
+	lines.add(new Line(""));
+	}
+	if (wallPost.getAttachments() != null && !wallPost.getAttachments().isEmpty())
+	{
+	    lines.add(new Line("Прикреплений: " + wallPost.getAttachments().size()));
+	lines.add(new Line(""));
+
+	}
+	for (var s: wallPost.getText().split("\n", -1))
+	{
+	    if (s.trim().isEmpty())
+		continue;
+var line = new StringBuilder();
+	    for(var w: s.split(" ", -1))
+	    {
+		if (w.isEmpty())
+		    continue;
+		if (line.length() == 0)
+		{
+		    line.append(w);
+		    continue;
+		}
+		if (line.length() + w.length() + 1 <= MAX_LINE_LEN)
+		{
+		    line.append(" ").append(w);
+		    continue;
+		}
+		lines.add(new Line(new String(line)));
+		line = new StringBuilder();
+		line.append(w);
+	    }
+	    if (line.length() > 0)
+		lines.add(new Line(new String(line)));
+	    lines.add(new Line(""));
+	}
     }
 
+static final class Line
+{
+    final String text;
+    Line(String text)
+    {
+	this.text = text;
+    }
+}
 }

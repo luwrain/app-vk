@@ -41,7 +41,7 @@ final class FriendsLayout extends LayoutBase
 	this.app = app;
 		this.friendsArea = new ListArea<UserFull>(listParams((params)->{
 			    params.name = "Друзья";//FIXME:
-			    params.model = new ListModel(app.friends);
+			    params.model = new ListModel<>(app.friends);
 			    params.appearance = new UserAppearance(app);
 			    			    params.clickHandler = this::openUser;
 			}));
