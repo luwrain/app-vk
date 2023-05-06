@@ -30,23 +30,20 @@ import org.luwrain.nlp.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class FriendsLayout extends LayoutBase
+final class FriendsLayout extends AppSection
 {
-    private final App app;
         final ListArea<UserFull> friendsArea;
 
     FriendsLayout(App app)
     {
 	super(app);
-	this.app = app;
 		this.friendsArea = new ListArea<UserFull>(listParams((params)->{
 			    params.name = "Друзья";//FIXME:
 			    params.model = new ListModel<>(app.friends);
 			    params.appearance = new UserAppearance(app);
 			    			    params.clickHandler = this::openUser;
 			}));
-
-		setAreaLayout(friendsArea, null);
+		setAreaLayout(friendsArea, actions());
 		    }
 
     private boolean openUser(ListArea<UserFull> area, int index, UserFull user)

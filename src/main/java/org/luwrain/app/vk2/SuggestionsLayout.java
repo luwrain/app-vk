@@ -23,19 +23,16 @@ import com.vk.api.sdk.objects.users.UserFull;
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
 import org.luwrain.controls.*;
-import org.luwrain.app.base.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class SuggestionsLayout extends LayoutBase
+final class SuggestionsLayout extends AppSection
 {
-    private final App app;
     final ListArea<UserFull> suggestionsArea;
 
     SuggestionsLayout(App app, List<UserFull> suggestions)
     {
 	super(app);
-	this.app = app;
 	this.suggestionsArea = new ListArea<UserFull>(listParams((params)->{
 		    params.name = "Вероятные знакомые";
 		    params.model = new ListModel<>(suggestions);

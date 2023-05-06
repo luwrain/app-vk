@@ -22,23 +22,17 @@ import com.vk.api.sdk.objects.wall.WallpostFull;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
-import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
-import org.luwrain.script.*;
-import org.luwrain.app.base.*;
-import org.luwrain.nlp.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class HomeWallLayout extends LayoutBase implements ListArea.ClickHandler<WallpostFull>
+final class HomeWallLayout extends AppSection implements ListArea.ClickHandler<WallpostFull>
 {
-    private final App app;
     final ListArea<WallpostFull> wallArea;
 
     HomeWallLayout(App app)
     {
 	super(app);
-	this.app = app;
 	this.wallArea = new ListArea<WallpostFull>(listParams((params)->{
 		    params.name = "Стена";
 		    params.model = new ListModel<>(app.homeWallPosts);

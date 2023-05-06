@@ -46,6 +46,7 @@ public final class App extends AppBase<Strings>
 	LOG_COMPONENT = "vk";
 
     static final InputEvent
+		HOT_KEY_MAIN_LAYOUT = new InputEvent(Special.F5),
 	HOT_KEY_FRIENDS = new InputEvent(Special.F8),
 	HOT_KEY_FRIENDSHIP_SUGGESTIONS = new InputEvent(Special.F8, EnumSet.of(Modifiers.ALT)),
 	HOT_KEY_HOME_WALL = new InputEvent(Special.F9),
@@ -80,13 +81,22 @@ public final class App extends AppBase<Strings>
     @Override protected AreaLayout onAppInit()
     {
 	this.sett = Settings.create(getLuwrain());
-	this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
-	this.operations = new Operations(this);
+
 	this.authLayout = new AuthLayout(this);
 	this.mainLayout = new MainLayout(this);
 	this.homeWallLayout = new HomeWallLayout(this);
 	this.friendsLayout = new FriendsLayout(this);
 	setAppName(getStrings().appName());
+	if (sett.getUserId(-1) == -1 || sett.getAccessToken("").isEmpty())
+	    return this.authLayout.getAreaLayout();
+	openInitial();
+	return this.mainLayout.getAreaLayout();
+    }
+
+    	    private void openInitial()
+	    {
+				this.actor = new UserActor(sett.getUserId(0), sett.getAccessToken(""));
+			this.operations = new Operations(this);
 	final var taskId = newTaskId();
 	runTask(taskId, ()->{
 		final var n = operations.getNews();
@@ -97,11 +107,14 @@ final var c = operations.getChats();
 			mainLayout.chatsArea.refresh();
 		    });
 	    });
-	return this.mainLayout.getAreaLayout();
-    }
+	    }
 
     void onAuth(int userId, String accessToken)
     {
+	sett.setUserId(userId);
+	sett.setAccessToken(accessToken);
+	openInitial();
+	setAreaLayout(mainLayout);
     }
 
     @Override public boolean onEscape()
@@ -136,6 +149,14 @@ operations.newFriendship(user.getId());
     Layouts layouts()
     {
 	return new Layouts(){
+
+	    	    @Override public boolean main()
+	    {
+		setAreaLayout(mainLayout);
+		getLuwrain().announceActiveArea();
+		return true;
+			    }
+
 
 	    @Override public boolean homeWall()
 	    {
@@ -201,6 +222,7 @@ operations.newFriendship(user.getId());
 
     interface Layouts
     {
+	boolean main();
 	boolean homeWall();
 	boolean friends();
 	boolean friendshipSuggestions();

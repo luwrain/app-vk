@@ -23,7 +23,9 @@ public interface Settings
     static final String PATH = "/org/luwrain/app/vk";
 
     int getUserId(int defValue);
+    void setUserId(int value);
     String getAccessToken(String defValue);
+    void setAccessToken(String value);
 
     static public Settings create(Luwrain luwrain)
     {

@@ -32,19 +32,17 @@ import org.luwrain.app.base.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class PersonalInfoLayout extends LayoutBase
+final class PersonalInfoLayout extends AppSection
 {
 static private final String
     LAST_NAME = "last-name";
 
-    private final App app;
     final FormArea formArea;
     final EditArea statusArea;
 
     PersonalInfoLayout(App app, UserSettingsXtr userSett, String status)
     {
 	super(app);
-	this.app = app;
 	this.formArea = new FormArea(getControlContext(), "Персональная информация"){
 		@Override public boolean onSystemEvent(SystemEvent event)
 		{
@@ -65,7 +63,7 @@ static private final String
 		}));
 	formArea.addEdit(LAST_NAME, "Имя:", userSett.getLastName());
 	formArea.addEdit("relation", "Статус личной жизни:", userSett.getRelation().toString());
-	setAreaLayout(AreaLayout.TOP_BOTTOM, formArea, null, statusArea, null);
+	setAreaLayout(AreaLayout.TOP_BOTTOM, formArea, actions(), statusArea, actions());
 	    }
 
     private boolean onSave()
