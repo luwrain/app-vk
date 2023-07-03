@@ -56,6 +56,7 @@ public final class App extends AppBase<Strings>
 	friends = new ArrayList<>(),
 	frRequests = new ArrayList<>();
 
+    final BirthdayUtils birthdayUtils = new BirthdayUtils(this);
     final List<WallpostFull> homeWallPosts = new ArrayList<>();
     final List<ConversationWithMessage> chats = new ArrayList<>();
     final List <NewsfeedNewsfeedItemOneOf> news = new ArrayList<>();

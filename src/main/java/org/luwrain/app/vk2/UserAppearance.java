@@ -35,8 +35,11 @@ final class UserAppearance extends ListUtils.AbstractAppearance<UserFull>
 
     @Override public void announceItem(UserFull user, Set<Flags> flags)
     {
+	final String age = app.birthdayUtils.getAge(user.getBdate());
 	final StringBuilder b = new StringBuilder();
 	b.append(app.getUserCommonName(user.getId()));
+	if (!age.isEmpty())
+	    b.append(", ").append(age);
 	if (user.getRelation() != null && user.getRelation() != UserRelation.NOT_SPECIFIED)
 	    b.append(", ").append(getRelationDescr(user));
 	app.setEventResponse(listItem(Sounds.LIST_ITEM, new String(b), Suggestions.CLICKABLE_LIST_ITEM));

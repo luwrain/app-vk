@@ -49,7 +49,18 @@ final class MainLayout extends LayoutBase
 			    params.model = new ListModel<>(app.news);
 			    params.appearance = new NewsAppearance(app);
 			    params.clickHandler = this::onNewsClick;
-			}));
+			})){
+			@Override public boolean onSystemEvent(SystemEvent event)
+			{
+			    if (event.getType() == SystemEvent.Type.REGULAR)
+				switch(event.getCode())
+				{
+				case SAVE:
+				return onAddLike();
+				}
+			    return super.onSystemEvent(event);
+			}
+		    };
 
 		this.chatsArea = new ListArea<ConversationWithMessage>(listParams((params)->{
 			    params.name = app.getStrings().conversationsAreaName();
@@ -88,4 +99,24 @@ final class MainLayout extends LayoutBase
 		    });
 	    });
     }
+
+        private boolean onAddLike()
+    {
+	final NewsfeedNewsfeedItemOneOf item = newsArea.selected();
+	if (item == null)
+	    return false;
+	final var post = item.getOneOf0();
+	if (post.getSourceId() == null || post.getPostId() == null)
+	    return false;
+	final var taskId = app.newTaskId();
+	return app.runTask(taskId, ()->{
+		final var wallPost = app.getOperations().getWallPost(post.getSourceId().toString() + "_" + post.getPostId());
+		app.getOperations().addLikeWallPost(wallPost);
+		app.finishedTask(taskId, ()->{
+			getLuwrain().playSound(Sounds.OK);
+		    });
+	    });
+    }
+
+    
 }

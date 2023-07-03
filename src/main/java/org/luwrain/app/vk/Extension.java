@@ -40,15 +40,15 @@ public final class Extension extends EmptyExtension
     {
 	return new Command[]{
 	    new SimpleShortcutCommand("vk"),
-	    new SimpleShortcutCommand("vk2"),
+	    new SimpleShortcutCommand("vk-old"),
 	    };
     }
 
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	return new ExtensionObject[]{
-	    new SimpleShortcut("vk", App.class),
-	    	    new SimpleShortcut("vk2", org.luwrain.app.vk2.App.class),
+	    	    	    new SimpleShortcut("vk", org.luwrain.app.vk2.App.class),
+	    new SimpleShortcut("vk-old", App.class),
 	};
     }
 

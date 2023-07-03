@@ -281,6 +281,17 @@ return vk.account().getProfileInfo(actor).execute();
 	}
     }
 
+    void addLikeWallPost(WallpostFull wallPost)
+    {
+	try {
+	    vk.likes().add(actor, com.vk.api.sdk.objects.likes.Type.POST, wallPost.getId()).ownerId(wallPost.getOwnerId()).execute();
+	}
+	catch(ApiException | ClientException e)
+	{
+	    throw new RuntimeException(e);
+	}
+    }
+
     String getStatus()
     {
 	try {
