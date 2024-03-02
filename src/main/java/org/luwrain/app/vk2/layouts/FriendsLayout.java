@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -14,7 +14,7 @@
    General Public License for more details.
 */
 
-package org.luwrain.app.vk2;
+package org.luwrain.app.vk2.layouts;
 
 import java.util.*;
 
@@ -30,11 +30,13 @@ import org.luwrain.nlp.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class FriendsLayout extends AppSection
-{
-        final ListArea<UserFull> friendsArea;
+import org.luwrain.app.vk2.*;
 
-    FriendsLayout(App app)
+public final class FriendsLayout extends AppSection
+{
+        public final ListArea<UserFull> friendsArea;
+
+    public FriendsLayout(App app)
     {
 	super(app);
 		this.friendsArea = new ListArea<UserFull>(listParams((params)->{

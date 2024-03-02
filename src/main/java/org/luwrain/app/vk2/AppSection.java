@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -21,11 +21,11 @@ import java.util.*;
 import org.luwrain.core.*;
 import org.luwrain.app.base.*;
 
-class AppSection extends LayoutBase
+public class AppSection extends LayoutBase
 {
     protected final App app;
 
-    AppSection(App app)
+    public AppSection(App app)
     {
 	super(app);
 	this.app = app;

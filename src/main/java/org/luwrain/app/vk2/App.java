@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -18,15 +18,12 @@ package org.luwrain.app.vk2;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.io.*;
 
-//import com.vk.api.sdk.client.TransportClient;
 import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.objects.wall.WallpostFull;
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
-import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.objects.users.UserFull;
 import com.vk.api.sdk.oneofs.NewsfeedNewsfeedItemOneOf;
 
@@ -37,22 +34,23 @@ import org.luwrain.app.base.*;
 
 import org.luwrain.app.vk.Strings;
 import org.luwrain.app.vk.Settings;
+import org.luwrain.app.vk2.layouts.*;
 
-
+import static org.luwrain.core.NullCheck.*;
 
 public final class App extends AppBase<Strings>
 {
     static final String
 	LOG_COMPONENT = "vk";
 
-    static final InputEvent
+    static public final InputEvent
 		HOT_KEY_MAIN_LAYOUT = new InputEvent(Special.F5),
 	HOT_KEY_FRIENDS = new InputEvent(Special.F8),
 	HOT_KEY_FRIENDSHIP_SUGGESTIONS = new InputEvent(Special.F8, EnumSet.of(Modifiers.ALT)),
 	HOT_KEY_HOME_WALL = new InputEvent(Special.F9),
 	HOT_KEY_PERSONAL_INFO = new InputEvent(Special.F10, EnumSet.of(Modifiers.ALT));
 
-    final ArrayList<UserFull>
+    public final ArrayList<UserFull>
 	friends = new ArrayList<>(),
 	frRequests = new ArrayList<>();
 
@@ -63,6 +61,7 @@ public final class App extends AppBase<Strings>
 
         final ConcurrentMap<Integer, UserFull> userCache = new ConcurrentHashMap<>();
 
+    final Watching watching;
     //        final TransportClient transportClient = new HttpTransportClient();
     final VkApiClient vk = new VkApiClient(new HttpTransportClient());
     private UserActor actor = null;
@@ -74,15 +73,16 @@ public final class App extends AppBase<Strings>
     private HomeWallLayout homeWallLayout = null;
     private FriendsLayout friendsLayout = null;
 
-    public App()
+    public App(Watching watching)
     {
 	super(Strings.NAME, Strings.class, "luwrain.vk");
+	notNull(watching, "watching");
+	this.watching = watching;
     }
 
     @Override protected AreaLayout onAppInit()
     {
 	this.sett = Settings.create(getLuwrain());
-
 	this.authLayout = new AuthLayout(this);
 	this.mainLayout = new MainLayout(this);
 	this.homeWallLayout = new HomeWallLayout(this);
@@ -124,6 +124,10 @@ final var c = operations.getChats();
 	return true;
     }
 
+    @Override public void onAppClose()
+    {
+    }
+
         String getUserCommonName(int userId)
     {
 	if (userId < 0 || !userCache.containsKey(Integer.valueOf(userId)))
@@ -145,8 +149,6 @@ operations.newFriendship(user.getId());
 	    });
     }
 
-
-
     Layouts layouts()
     {
 	return new Layouts(){
@@ -157,7 +159,6 @@ operations.newFriendship(user.getId());
 		getLuwrain().announceActiveArea();
 		return true;
 			    }
-
 
 	    @Override public boolean homeWall()
 	    {
@@ -219,7 +220,7 @@ operations.newFriendship(user.getId());
     }
 
     UserActor getActor() { return actor; }
-    Operations getOperations() { return operations; }
+    public Operations getOperations() { return operations; }
 
     interface Layouts
     {

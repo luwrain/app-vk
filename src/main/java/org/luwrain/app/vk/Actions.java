@@ -84,7 +84,7 @@ final class Actions
 	NullCheck.notNull(onSuccess, "onSuccess");
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
-		final var userResp = base.vk.users().get(base.actor).userIds(new Integer(userId).toString())
+		final var userResp = base.vk.users().get(base.actor).userIds(Integer.valueOf(userId).toString())
 		.fields(Fields.STATUS, Fields.LAST_SEEN, Fields.OCCUPATION, Fields.INTERESTS, Fields.BDATE)
 		.execute();
 		if (userResp.isEmpty())
@@ -128,16 +128,14 @@ final class Actions
 	final TaskId taskId = base.taskCancelling.newTaskId();
 	return base.runBkg(()->{
 		
-		final List<String> attachments = new LinkedList();
-		/*
+		final List<String> attachments = new LinkedList<>();
 		for(File f: photos)
 		{
 		    final var server = base.vk.photos().getWallUploadServer(base.actor).execute();
 		    final com.vk.api.sdk.objects.photos.responses.WallUploadResponse upload = base.vk.upload().photoWall(server.getUploadUrl().toString(), f).execute();
-		    for(Photo p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).server(upload.getServer()).hash(upload.getHash()).execute())
+		    for(var p: base.vk.photos().saveWallPhoto(base.actor, upload.getPhoto()).server(upload.getServer()).hash(upload.getHash()).execute())
 			attachments.add("photo" + p.getOwnerId() + "_" + p.getId());
 		}
-		*/
 		final com.vk.api.sdk.objects.wall.responses.PostResponse resp = base.vk.wall().post(base.actor)
 		.message(text)
 		.attachments(attachments)
@@ -159,7 +157,7 @@ final class Actions
 	return base.runBkg(()->{
 		final com.vk.api.sdk.objects.messages.responses.GetConversationsResponse resp = base.vk.messages().getConversations(base.actor).execute();
 		final List<ConversationWithMessage> list = resp.getItems();
-		final List<String> userIds = new LinkedList();
+		final List<String> userIds = new ArrayList<>();
 		for(ConversationWithMessage d: list)
 		{
 		    userIds.add(d.getLastMessage().getFromId().toString());
@@ -177,11 +175,11 @@ final class Actions
     void onConversationsUpdateNonInteractive(Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
-	luwrain.executeBkg(new FutureTask(()->{
+	luwrain.executeBkg(new FutureTask<Object>(()->{
 		    try {
 			final com.vk.api.sdk.objects.messages.responses.GetConversationsResponse resp = base.vk.messages().getConversations(base.actor).execute();
 			final List<ConversationWithMessage> list = resp.getItems();
-			final List<String> userIds = new LinkedList();
+			final List<String> userIds = new ArrayList<>();
 			for(ConversationWithMessage d: list)
 			    userIds.add(d.getLastMessage().getFromId().toString());
 			final UserFull[] users = getUsersForCache(userIds);
@@ -230,7 +228,7 @@ final class Actions
     void onMessagesHistoryNonInteractive(int userId, Runnable onSuccess)
     {
 	NullCheck.notNull(onSuccess, "onSuccess");
-	luwrain.executeBkg(new FutureTask(()->{
+	luwrain.executeBkg(new FutureTask<Object>(()->{
 		    try {
 			final com.vk.api.sdk.objects.messages.responses.GetHistoryResponse resp = base.vk.messages().getHistory(base.actor)
 			.userId(userId)
@@ -279,7 +277,7 @@ final class Actions
 	return base.runBkg(()->{
 		if (query.trim().toLowerCase().matches("id[0-9]+"))
 		{
-		    final List<String> ids = new LinkedList();
+		    final List<String> ids = new ArrayList<>();
 		    ids.add(query.trim().substring(2));
 		    final var resp = base.vk.users().get(base.actor).userIds(ids).fields(Fields.STATUS, Fields.CITY, Fields.LAST_SEEN).execute();
 		    base.acceptTaskResult(taskId, ()->{
@@ -413,7 +411,7 @@ final class Actions
 
     private UserFull[] getUsersForCache(Integer[] ids) throws ApiException, ClientException
     {
-	final List<String> list = new LinkedList();
+	final List<String> list = new ArrayList<>();
 	for(Integer i: ids)
 	    list.add(i.toString());
 	return getUsersForCache(list);

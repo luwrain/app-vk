@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -39,14 +39,13 @@ import org.luwrain.app.vk2.api.*;
 import org.luwrain.app.vk.Strings;
 import org.luwrain.app.vk.Settings;
 
-final class Operations
+public final class Operations
 {
     static private final String LOG_COMPONENT = App.LOG_COMPONENT;
 
-    
     final App app;
-final VkApiClient vk;
-final UserActor actor;
+    final VkApiClient vk;
+    final UserActor actor;
 
     Operations(App app)
     {
@@ -59,16 +58,16 @@ final UserActor actor;
     {
 	try {
 	    final var resp = vk.newsfeed().get(actor).filters(Filters.POST, Filters.PHOTO/*, Filters.WALL_PHOTO, Filters.AUDIO, Filters.VIDEO*/).execute();
-		    final var ids = new ArrayList<String>();
-		    for(var i: resp.getItems())
-		    {
-			if (i.getOneOf1().getSourceId() != null)
-			    ids.add(i.getOneOf1().getSourceId().toString());
-		    }
-getUsersForCache(ids);
-return resp.getItems();
+	    final var ids = new ArrayList<String>();
+	    for(var i: resp.getItems())
+	    {
+		if (i.getOneOf1().getSourceId() != null)
+		    ids.add(i.getOneOf1().getSourceId().toString());
+	    }
+	    getUsersForCache(ids);
+	    return resp.getItems();
 	}
-		catch(ApiException | ClientException e)
+	catch(ApiException | ClientException e)
 	{
 	    throw new RuntimeException(e);
 	}
@@ -175,7 +174,7 @@ return resp.getItems();
 	}
     }
 
-        List<UserFull> getFriends(Integer userId)
+        public List<UserFull> getFriends(Integer userId)
     {
 	try {
 	    final com.vk.api.sdk.objects.friends.responses.GetResponse resp;

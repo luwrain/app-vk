@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -47,7 +47,10 @@ public final class Extension extends EmptyExtension
     @Override public ExtensionObject[] getExtObjects(Luwrain luwrain)
     {
 	return new ExtensionObject[]{
-	    	    	    new SimpleShortcut("vk", org.luwrain.app.vk2.App.class),
+	    new Shortcut(){
+		@Override public String getExtObjName() { return "vk"; }
+		@Override public Application[] prepareApp(String[] args) { return new Application[]{new org.luwrain.app.vk2.App(watching)}; }
+	    },
 	    new SimpleShortcut("vk-old", App.class),
 	};
     }

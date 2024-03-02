@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -28,10 +28,10 @@ import org.luwrain.controls.*;
 
 import static org.luwrain.core.DefaultEventResponse.*;
 
-final class UserAppearance extends ListUtils.AbstractAppearance<UserFull>
+public final class UserAppearance extends ListUtils.AbstractAppearance<UserFull>
 {
     final App app;
-    UserAppearance(App app) { this.app = app;}
+    public UserAppearance(App app) { this.app = app;}
 
     @Override public void announceItem(UserFull user, Set<Flags> flags)
     {

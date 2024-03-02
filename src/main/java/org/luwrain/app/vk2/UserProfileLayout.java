@@ -30,12 +30,12 @@ import org.luwrain.nlp.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class UserProfileLayout extends LayoutBase
+public final class UserProfileLayout extends LayoutBase
 {
     private final App app;
         final ListArea<UserFull> friendsArea;
 
-    UserProfileLayout(App app, List<UserFull> friends, ActionHandler closing)
+    public UserProfileLayout(App app, List<UserFull> friends, ActionHandler closing)
     {
 	super(app);
 	this.app = app;

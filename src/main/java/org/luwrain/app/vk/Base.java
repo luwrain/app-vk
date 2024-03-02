@@ -54,7 +54,7 @@ final class Base //implements Watching.Listener
     final Settings sett;
 
     private Area[] visibleAreas = new Area[0];
-    final Map<Integer, UserFull> userCache = new HashMap();
+    final Map<Integer, UserFull> userCache = new HashMap<>();
 
     final TaskCancelling taskCancelling = new TaskCancelling();
     private FutureTask task = null;
@@ -101,9 +101,9 @@ final class Base //implements Watching.Listener
 
     String getUserCommonName(int userId)
     {
-	if (userId < 0 || !userCache.containsKey(new Integer(userId)))
+	if (userId < 0 || !userCache.containsKey(Integer.valueOf(userId)))
 	    return String.valueOf(userId);
-	final UserFull user = userCache.get(new Integer(userId));
+	final UserFull user = userCache.get(Integer.valueOf(userId));
 	return user.getFirstName() + " " + user.getLastName();
     }
 
@@ -136,7 +136,7 @@ final class Base //implements Watching.Listener
     boolean runBkg(Operation op)
     {
 	NullCheck.notNull(op, "op");
-	return runTask(new FutureTask(()->{
+	return runTask(new FutureTask<Object>(()->{
 		    try {
 			try {
 			    op.run();

@@ -63,9 +63,13 @@ public class App implements Application, MonoApp
 	return new InitResult();
     }
 
-        @Override public void closeApp()
+        public void closeApp()
     {
 	base.closeApp();
+    }
+
+    @Override public void onAppClose()
+    {
     }
 
     @Override public AreaLayout getAreaLayout()

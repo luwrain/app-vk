@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -28,6 +28,8 @@ import com.vk.api.sdk.client.actors.UserActor;
 import org.luwrain.core.*;
 import org.luwrain.app.vk2.api.*;
 
+import static org.luwrain.core.NullCheck.*;
+
 public final class Watch implements Runnable
 {
     static private final String LOG_COMPONENT = "vk";
@@ -41,9 +43,9 @@ public final class Watch implements Runnable
 
     Watch(Luwrain luwrain, int userId, VkApiClient vk, UserActor actor)
     {
-	NullCheck.notNull(luwrain, "luwrain");
-	NullCheck.notNull(vk, "vk");
-	NullCheck.notNull(actor, "actor");
+	notNull(luwrain, "luwrain");
+	notNull(vk, "vk");
+	notNull(actor, "actor");
 	this.luwrain = luwrain;
 	this.userId = userId;
 	this.vk = vk;
@@ -52,11 +54,9 @@ public final class Watch implements Runnable
 
     private void onMessage(int messageId, int peerId, String messageText)
     {
-	/*
-	for(Watching.Listener l: listeners)
+	for(WatchingListener l: listeners)
 	    l.onMessage(messageId, peerId, messageText);
-	*/
-	luwrain.message(messageText, Sounds.CHAT_MESSAGE);
+	luwrain.announcement(messageText, Luwrain.AnnouncementType.CHAT, "vk", "message", null);
     }
 
     @Override public void run()
