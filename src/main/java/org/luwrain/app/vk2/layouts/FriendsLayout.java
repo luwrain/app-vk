@@ -17,20 +17,12 @@
 package org.luwrain.app.vk2.layouts;
 
 import java.util.*;
-
 import com.vk.api.sdk.objects.users.UserFull;
 
-import org.luwrain.core.*;
-import org.luwrain.core.events.*;
-import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
-import org.luwrain.script.*;
-import org.luwrain.app.base.*;
-import org.luwrain.nlp.*;
+import org.luwrain.app.vk2.*;
 
 import static org.luwrain.controls.ListUtils.*;
-
-import org.luwrain.app.vk2.*;
 
 public final class FriendsLayout extends AppSection
 {

@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2023 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -16,51 +16,41 @@
 
 package org.luwrain.app.vk2;
 
-import java.util.*;
-import java.util.concurrent.atomic.*;
-import java.io.*;
-
 import com.vk.api.sdk.objects.messages.ConversationWithMessage;
 import com.vk.api.sdk.oneofs.NewsfeedNewsfeedItemOneOf;
 
 import org.luwrain.core.*;
 import org.luwrain.core.events.*;
-import org.luwrain.core.queries.*;
 import org.luwrain.controls.*;
-import org.luwrain.script.*;
-import org.luwrain.app.base.*;
-import org.luwrain.nlp.*;
 
 import static org.luwrain.controls.ListUtils.*;
 
-final class MainLayout extends LayoutBase
+public final class MainLayout extends AppSection
 {
-    private final App app;
-        final ListArea<NewsfeedNewsfeedItemOneOf> newsArea;
+    final ListArea<NewsfeedNewsfeedItemOneOf> newsArea;
     final ListArea<ConversationWithMessage> chatsArea;
     //    final ListArea requestsArea;
 
-    MainLayout(App app)
+    public MainLayout(App app)
     {
 	super(app);
-	this.app = app;
-		this.newsArea = new ListArea<NewsfeedNewsfeedItemOneOf>(listParams((params)->{
-			    params.name = "Новости";//FIXME:
-			    params.model = new ListModel<>(app.news);
-			    params.appearance = new NewsAppearance(app);
-			    params.clickHandler = this::onNewsClick;
-			})){
-			@Override public boolean onSystemEvent(SystemEvent event)
+	this.newsArea = new ListArea<NewsfeedNewsfeedItemOneOf>(listParams((params)->{
+		    params.name = "Новости";//FIXME:
+		    params.model = new ListModel<>(app.news);
+		    params.appearance = new NewsAppearance(app);
+		    params.clickHandler = this::onNewsClick;
+		})){
+		@Override public boolean onSystemEvent(SystemEvent event)
+		{
+		    if (event.getType() == SystemEvent.Type.REGULAR)
+			switch(event.getCode())
 			{
-			    if (event.getType() == SystemEvent.Type.REGULAR)
-				switch(event.getCode())
-				{
-				case SAVE:
-				return onAddLike();
-				}
-			    return super.onSystemEvent(event);
+			case SAVE:
+			return onAddLike();
 			}
-		    };
+		    return super.onSystemEvent(event);
+		}
+	    };
 
 		this.chatsArea = new ListArea<ConversationWithMessage>(listParams((params)->{
 			    params.name = app.getStrings().conversationsAreaName();
@@ -68,15 +58,9 @@ final class MainLayout extends LayoutBase
 			    params.appearance = new ChatsAppearance(app);
 			    		}));
 		
-		//				this.requestsArea = new ListArea(listParams((params)->{}));
-    final ActionInfo
-    actionHomeWall = action("home-wall", "Стена", App.HOT_KEY_HOME_WALL, app.layouts()::homeWall),
-    actionFriends = action("friends", "Друзья", App.HOT_KEY_FRIENDS, app.layouts()::friends),
-    actionSuggestions = action("friendship-suggestions", "Вероятные знакомые", App.HOT_KEY_FRIENDSHIP_SUGGESTIONS, app.layouts()::friendshipSuggestions),
-    actionPersonalInfo = action("personal-info", "Персональная информация", App.HOT_KEY_PERSONAL_INFO, app.layouts()::personalInfo);
 		setAreaLayout(AreaLayout.LEFT_RIGHT,
-			      newsArea, actions(actionFriends, actionHomeWall, actionSuggestions, actionPersonalInfo),
-		  chatsArea, actions(actionFriends, actionHomeWall, actionSuggestions, actionPersonalInfo));
+			      newsArea, actions(),
+		  chatsArea, actions());
     }
 
     private boolean onNewsClick(ListArea<NewsfeedNewsfeedItemOneOf> area, int index, NewsfeedNewsfeedItemOneOf item)

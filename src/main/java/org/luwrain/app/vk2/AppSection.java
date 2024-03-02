@@ -21,6 +21,8 @@ import java.util.*;
 import org.luwrain.core.*;
 import org.luwrain.app.base.*;
 
+import static org.luwrain.app.vk2.App.*;
+
 public class AppSection extends LayoutBase
 {
     protected final App app;
@@ -34,13 +36,32 @@ public class AppSection extends LayoutBase
     @Override public Actions actions(ActionInfo ... a)
     {
 	final List<ActionInfo> aa = new ArrayList<>();
-	for(var i: a)
-	    aa.add(i);
-		aa.add(action("news", "Новости", App.HOT_KEY_MAIN_LAYOUT, app.layouts()::main));
-	aa.add(action("home-wall", "Стена", App.HOT_KEY_HOME_WALL, app.layouts()::homeWall));
-	aa.add(action("friends", "Друзья", App.HOT_KEY_FRIENDS, app.layouts()::friends));
-	aa.add(action("friendship-suggestions", "Вероятные знакомые", App.HOT_KEY_FRIENDSHIP_SUGGESTIONS, app.layouts()::friendshipSuggestions));
-	aa.add(action("personal-info", "Персональная информация", App.HOT_KEY_PERSONAL_INFO, app.layouts()::personalInfo));
+	aa.addAll(Arrays.asList(a));
+
+	aa.add(action("news",
+		      "Новости",
+		      HOT_KEY_MAIN_LAYOUT, app.layouts()::main));
+
+	aa.add(action("chats",
+		      "Чаты",
+		      HOT_KEY_CHATS, app.layouts()::chats));
+
+	aa.add(action("home-wall",
+		      "Стена",
+		      HOT_KEY_HOME_WALL, app.layouts()::homeWall));
+
+	aa.add(action("friends",
+		      "Друзья",
+		      HOT_KEY_FRIENDS, app.layouts()::friends));
+
+	aa.add(action("friendship-suggestions",
+		      "Вероятные знакомые",
+		      HOT_KEY_FRIENDSHIP_SUGGESTIONS, app.layouts()::friendshipSuggestions));
+
+	aa.add(action("personal-info",
+		      "Персональная информация",
+		      App.HOT_KEY_PERSONAL_INFO, app.layouts()::personalInfo));
+
 	return super.actions(aa.toArray(new ActionInfo[aa.size()]));
     }
     }

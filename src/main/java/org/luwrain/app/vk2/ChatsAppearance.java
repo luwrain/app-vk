@@ -1,5 +1,5 @@
 /*
-   Copyright 2012-2022 Michael Pozhidaev <msp@luwrain.org>
+   Copyright 2012-2024 Michael Pozhidaev <msp@luwrain.org>
 
    This file is part of LUWRAIN.
 
@@ -27,10 +27,10 @@ import org.luwrain.controls.*;
 
 import static org.luwrain.core.DefaultEventResponse.*;
 
-final class ChatsAppearance extends ListUtils.AbstractAppearance<ConversationWithMessage>
+public final class ChatsAppearance extends ListUtils.AbstractAppearance<ConversationWithMessage>
 {
     final App app;
-    ChatsAppearance(App app) { this.app = app;}
+    public ChatsAppearance(App app) { this.app = app;}
 
     @Override public void announceItem(ConversationWithMessage chat, Set<Flags> flags)
     {

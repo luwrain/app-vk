@@ -45,8 +45,9 @@ public final class App extends AppBase<Strings>
 
     static public final InputEvent
 		HOT_KEY_MAIN_LAYOUT = new InputEvent(Special.F5),
-	HOT_KEY_FRIENDS = new InputEvent(Special.F8),
-	HOT_KEY_FRIENDSHIP_SUGGESTIONS = new InputEvent(Special.F8, EnumSet.of(Modifiers.ALT)),
+	HOT_KEY_CHATS = new InputEvent(Special.F6),
+		HOT_KEY_FRIENDS = new InputEvent(Special.F7),
+	HOT_KEY_FRIENDSHIP_SUGGESTIONS = new InputEvent(Special.F7, EnumSet.of(Modifiers.ALT)),
 	HOT_KEY_HOME_WALL = new InputEvent(Special.F9),
 	HOT_KEY_PERSONAL_INFO = new InputEvent(Special.F10, EnumSet.of(Modifiers.ALT));
 
@@ -55,14 +56,13 @@ public final class App extends AppBase<Strings>
 	frRequests = new ArrayList<>();
 
     final BirthdayUtils birthdayUtils = new BirthdayUtils(this);
-    final List<WallpostFull> homeWallPosts = new ArrayList<>();
-    final List<ConversationWithMessage> chats = new ArrayList<>();
+    public final List<WallpostFull> homeWallPosts = new ArrayList<>();
+    public final List<ConversationWithMessage> chats = new ArrayList<>();
     final List <NewsfeedNewsfeedItemOneOf> news = new ArrayList<>();
 
         final ConcurrentMap<Integer, UserFull> userCache = new ConcurrentHashMap<>();
 
     final Watching watching;
-    //        final TransportClient transportClient = new HttpTransportClient();
     final VkApiClient vk = new VkApiClient(new HttpTransportClient());
     private UserActor actor = null;
 
@@ -71,6 +71,7 @@ public final class App extends AppBase<Strings>
     private AuthLayout authLayout = null;
     private MainLayout mainLayout = null;
     private HomeWallLayout homeWallLayout = null;
+    private ChatsLayout chatsLayout = null;
     private FriendsLayout friendsLayout = null;
 
     public App(Watching watching)
@@ -86,6 +87,7 @@ public final class App extends AppBase<Strings>
 	this.authLayout = new AuthLayout(this);
 	this.mainLayout = new MainLayout(this);
 	this.homeWallLayout = new HomeWallLayout(this);
+	this.chatsLayout = new ChatsLayout(this);
 	this.friendsLayout = new FriendsLayout(this);
 	setAppName(getStrings().appName());
 	if (sett.getUserId(-1) == -1 || sett.getAccessToken("").isEmpty())
@@ -174,6 +176,13 @@ operations.newFriendship(user.getId());
 		    });
 	    }
 
+	    	    @Override public boolean chats()
+	    {
+				setAreaLayout(chatsLayout);
+				return true;
+	    }
+
+
 	    	    @Override public boolean friends()
 	    {
 		final var taskId = newTaskId();
@@ -214,8 +223,6 @@ operations.newFriendship(user.getId());
 			    });
 		    });
 	    }
-
-
 	};
     }
 
@@ -226,6 +233,7 @@ operations.newFriendship(user.getId());
     {
 	boolean main();
 	boolean homeWall();
+	boolean chats();
 	boolean friends();
 	boolean friendshipSuggestions();
 	boolean personalInfo();
