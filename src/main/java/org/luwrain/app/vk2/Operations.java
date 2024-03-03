@@ -260,7 +260,6 @@ return vk.account().getProfileInfo(actor).execute();
 	try {
 	    final var q = new AudioGetUploadServerQuery(vk, actor);
 	    final var r = q.execute();
-	    Log.debug(LOG_COMPONENT, "audio server " + r.getUploadUrl().toString());
 			}
 	catch(ApiException | ClientException e)
 	{

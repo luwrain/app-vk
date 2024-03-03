@@ -65,11 +65,9 @@ public final class Watch implements Runnable
 	{
 	    try {
 		final com.vk.api.sdk.objects.messages.responses.GetLongPollServerResponse params = vk.messages().getLongPollServer(actor).needPts(true).execute();
-		Log.debug(LOG_COMPONENT, "watch server: " + params.getServer());
 		Integer ts = params.getTs();
 		while(true)
 		{
-		    		    		    Log.debug(LOG_COMPONENT, "longpoll request");
 		    		    final GetLongPollEventsQuery query = new GetLongPollEventsQuery(vk, "https://" + params.getServer(), params.getKey(), ts);
 				    final var resp = query.waitTime(WAIT_TIME).execute();
 
@@ -82,10 +80,8 @@ public final class Watch implements Runnable
 		    
 		    ts = resp.getTs();
 		    final var updates = resp.getUpdates();
-		    Log.debug(LOG_COMPONENT, "" + updates.size() + " updates(s)");
 		    /*
 		    for(var u: updates)
-			Log.debug(LOG_COMPONENT, "update " + u.toString());
 		    */
 		    final List<JsonArray> objs = resp.getUpdates();
 		    for(JsonArray a: objs)
@@ -97,7 +93,6 @@ public final class Watch implements Runnable
 			final int messageId = a.get(1).getAsInt();
 			final int peerId = a.get(3).getAsInt();
 			final String messageText = a.get(6).getAsString();
-			Log.debug(LOG_COMPONENT, messageText);
 			if (messageId < 0 || peerId < 0 || messageText == null)
 			    continue;
 			onMessage(messageId, peerId, messageText);
@@ -106,7 +101,6 @@ public final class Watch implements Runnable
 	    }
 	    catch(ApiException | ClientException e)
 	    {
-		Log.debug(LOG_COMPONENT, "starting new watch, the current failed:" + e.getClass().getName() + ":" + e.getMessage());
 		e.printStackTrace();
 		try {
 		    Thread.sleep(5000);

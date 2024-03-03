@@ -33,7 +33,6 @@ public final class BirthdayUtils
     {
 	if (birthday == null || birthday.isEmpty())
 	    return "";
-	Log.debug("proba", birthday);
 	final Matcher m = PAT_FULL.matcher(birthday);
 	if (!m.find())
 	    return "";

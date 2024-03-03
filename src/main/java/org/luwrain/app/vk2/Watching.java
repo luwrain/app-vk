@@ -46,7 +46,6 @@ public final class Watching
 
     void run()
     {
-	Log.debug(LOG_COMPONENT, "starting " + watches.size() + " watch(es)");
 	for(Watch w: watches)
 	{
 	    luwrain.executeBkg(new FutureTask(w, null));
@@ -58,7 +57,6 @@ public final class Watching
 		final Settings sett = Settings.create(luwrain);
 		if (sett.getUserId(0) == 0 || sett.getAccessToken("").isEmpty())
 		{
-		    Log.debug(LOG_COMPONENT, "no auth data to run watches");
 		    return;
 		}
 	final VkApiClient vk = new VkApiClient(new HttpTransportClient());
